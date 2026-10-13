@@ -83,6 +83,24 @@ h2{font-size:clamp(1.8rem,4.5vw,2.6rem);font-weight:800;margin:0 0 24px}
 .plan h3{margin:0 0 6px;font-size:1.15rem}
 .plan p{margin:0;opacity:.85;font-size:.95rem}
 .ask{margin:0;font-family:var(--display);font-weight:700;font-size:1.15rem}
+.form{background:var(--surface);color:var(--ink);border-radius:16px;padding:clamp(20px,4vw,32px);display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.form h3{grid-column:1/-1;margin:0;font-size:1.3rem}
+.f{display:flex;flex-direction:column;gap:6px;min-width:0}
+.f.full{grid-column:1/-1}
+.f label{font-weight:700;font-size:.9rem}
+.f label small{font-weight:600;color:var(--muted)}
+.f input,.f select,.f textarea{font:inherit;color:var(--ink);background:var(--bg);border:2px solid var(--line);border-radius:10px;padding:10px 12px;width:100%}
+.f textarea{min-height:120px;resize:vertical}
+.f input:focus,.f select:focus,.f textarea:focus{outline:none;border-color:var(--accent)}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.form .note{grid-column:1/-1;margin:0;font-size:.85rem;color:var(--muted)}
+.form button{grid-column:1/-1;justify-self:start;border:0;cursor:pointer;font-size:1rem}
+.form button[disabled]{opacity:.6;cursor:wait}
+.status{grid-column:1/-1;margin:0;font-weight:700}
+.status.ok{color:#2F7D32}.status.err{color:#C62828}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .status.ok{color:#7BD67F}:root:not([data-theme="light"]) .status.err{color:#FF8A80}}
+:root[data-theme="dark"] .status.ok{color:#7BD67F}:root[data-theme="dark"] .status.err{color:#FF8A80}
+@media (max-width:560px){.form{grid-template-columns:minmax(0,1fr)}}
 .plan .p{display:block;margin-top:12px;font-family:var(--display);font-weight:700;color:#FFB27A}
 
 footer{text-align:center;color:var(--muted);font-size:.85rem;padding:48px 16px calc(32px + env(safe-area-inset-bottom,0px))}
@@ -99,7 +117,7 @@ footer a{font-weight:700;text-decoration:none}
     <span class="badge">🔥 Rezept von Jan Vollmann</span>
     <h1>Die <em>perfekten</em> Spareribs</h1>
     <p>Zart vom Knochen, rauchig, mit glänzender Glasur. Jan Vollmann ist der beste Spareribs-Koch, den du kennen kannst, und verrät hier sein Rezept. Zu faul zum Selbermachen? Dann buch ihn einfach.</p>
-    <a class="cta" href="#rezept">Zum Rezept</a><a class="cta ghost" href="#buchen">Jan buchen</a>
+    <a class="cta" href="#rezept">Zum Rezept</a><a class="cta ghost" href="#anfrage">Jan buchen</a>
   </div>
 </header>
 
@@ -187,11 +205,50 @@ footer a{font-weight:700;text-decoration:none}
       <div class="plan"><h3>👨‍🍳 Ribs-Kurs</h3><p>Ein Nachmittag mit Jan am Grill: von der Silberhaut bis zur Glasur, Schritt für Schritt.</p><span class="p">Preis auf Anfrage</span></div>
       <div class="plan"><h3>📦 Rub &amp; Glasur</h3><p>Jans Gewürzmischung und Glasur, frisch angesetzt zum Mitnehmen.</p><span class="p">Preis auf Anfrage</span></div>
     </div>
-    <!-- Kontakt ergänzen, z. B.: <a class="cta" href="mailto:deine@adresse.de">Jan anfragen</a> -->
-    <p class="ask">Interesse? Sprich Jan einfach direkt an.</p>
+    <form class="form" id="anfrage" action="https://api.web3forms.com/submit" method="POST">
+      <h3>Jan anfragen</h3>
+      <input type="hidden" name="access_key" value="ff0180a8-a11e-4421-986e-84ef7bc0a822">
+      <input type="hidden" name="subject" value="Neue Spareribs-Anfrage über die Website">
+      <input type="hidden" name="from_name" value="Spareribs-Seite">
+      <input type="checkbox" name="botcheck" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <div class="f"><label for="f-name">Name</label><input id="f-name" name="name" type="text" autocomplete="name" required></div>
+      <div class="f"><label for="f-mail">E-Mail</label><input id="f-mail" name="email" type="email" autocomplete="email" required></div>
+      <div class="f full"><label for="f-art">Was darf es sein?</label>
+        <select id="f-art" name="angebot" required>
+          <option value="Grillabend">🔥 Grillabend</option>
+          <option value="Ribs-Kurs">👨‍🍳 Ribs-Kurs</option>
+          <option value="Rub &amp; Glasur">📦 Rub &amp; Glasur</option>
+        </select>
+      </div>
+      <div class="f"><label for="f-date">Wunschtermin <small>(optional)</small></label><input id="f-date" name="wunschtermin" type="date"></div>
+      <div class="f"><label for="f-pers">Personen <small>(optional)</small></label><input id="f-pers" name="personen" type="number" min="1" max="500" inputmode="numeric"></div>
+      <div class="f full"><label for="f-msg">Nachricht</label><textarea id="f-msg" name="message" required placeholder="Wo, wann, für wen und was du dir vorstellst."></textarea></div>
+      <p class="note">Deine Angaben werden über den Formulardienst Web3Forms per E-Mail an Jan übermittelt und nur zur Bearbeitung deiner Anfrage verwendet.</p>
+      <button class="cta" type="submit">Anfrage senden</button>
+      <p class="status" role="status" aria-live="polite"></p>
+    </form>
   </section>
 </main>
 
 <footer><a href="./">← Zurück zur Startseite</a></footer>
+<script>
+(function(){
+  var form=document.getElementById('anfrage');
+  var status=form.querySelector('.status');
+  var btn=form.querySelector('button');
+  form.addEventListener('submit',function(e){
+    e.preventDefault();
+    btn.disabled=true;status.className='status';status.textContent='Wird gesendet …';
+    fetch(form.action,{method:'POST',headers:{'Accept':'application/json'},body:new FormData(form)})
+      .then(function(r){return r.json().then(function(d){return {ok:r.ok&&d.success,d:d};});})
+      .then(function(res){
+        if(res.ok){form.reset();status.className='status ok';status.textContent='Danke! Deine Anfrage ist angekommen. Jan meldet sich bei dir.';}
+        else{throw new Error(res.d&&res.d.message);}
+      })
+      .catch(function(){status.className='status err';status.textContent='Das hat leider nicht geklappt. Bitte versuch es später noch einmal.';})
+      .then(function(){btn.disabled=false;});
+  });
+})();
+</script>
 </body>
 </html>
