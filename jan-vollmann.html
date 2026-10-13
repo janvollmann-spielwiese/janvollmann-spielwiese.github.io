@@ -4,61 +4,195 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Jan Vollmann</title>
-<meta name="description" content="Jan Vollmann testet hier aktuelle Themen.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Nunito+Sans:opsz,wght@6..12,400;6..12,600;6..12,700&display=swap" rel="stylesheet">
+<meta name="description" content="Jan Vollmann, Partner für Prozessmanagement bei der WG-DATA GmbH. Mehr als 15 Jahre Erfahrung in der Sparkassen-Finanzgruppe.">
+<link href="fonts/fonts.css" rel="stylesheet">
 <style>
 :root{--bg:#F4F4F4;--surface:#FFFFFF;--ink:#2E2E2E;--muted:#6B6B6B;--line:#DEDEDE;--accent:#FF9B0F;--accent-ink:#B05F00;--soft:#FFF1DC;
   --display:"Outfit","Futura","Avenir Next","Segoe UI",system-ui,sans-serif;--body:"Nunito Sans","Segoe UI",system-ui,sans-serif}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#262626;--surface:#313131;--ink:#F2F2F2;--muted:#B5B5B5;--line:#4A4A4A;--accent-ink:#FFB65A;--soft:#3E2E18}}
 :root[data-theme="dark"]{--bg:#262626;--surface:#313131;--ink:#F2F2F2;--muted:#B5B5B5;--line:#4A4A4A;--accent-ink:#FFB65A;--soft:#3E2E18}
 *,*::before,*::after{box-sizing:border-box}
-body{min-height:100vh;min-height:100dvh}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased;
-  display:flex;flex-direction:column;
-  background-image:radial-gradient(circle at 15% 10%,var(--soft) 0,transparent 45%),radial-gradient(circle at 90% 95%,var(--soft) 0,transparent 40%)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased;
+  background-image:radial-gradient(circle at 15% 0%,var(--soft) 0,transparent 40%)}
 :focus-visible{outline:3px solid var(--accent);outline-offset:4px}
-main{flex:1;width:100%;max-width:960px;margin:0 auto;padding:clamp(48px,10vh,120px) 16px 40px;display:flex;flex-direction:column;justify-content:center}
-.hero{text-align:center;margin:0 auto 48px;max-width:640px}
-.kicker{font-family:var(--display);font-weight:700;color:var(--muted);margin:0 0 10px}
+a{color:var(--accent-ink)}
+.wrap{max-width:960px;margin:0 auto;padding:0 16px}
+h1,h2,h3{font-family:var(--display);line-height:1.1;letter-spacing:-.01em}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:20px 0}
+.top a{font-family:var(--display);font-weight:600;text-decoration:none;color:var(--muted)}
+.top a:hover{color:var(--accent-ink)}
+.kicker{font-family:var(--display);font-weight:700;color:var(--muted);margin:0 0 8px}
 .kicker::before{content:"\\";color:var(--accent);font-weight:800;margin-right:8px;font-size:1.25em}
-h1{font-family:var(--display);font-weight:800;font-size:clamp(2.4rem,7vw,4rem);line-height:1.05;letter-spacing:-.02em;margin:0 0 16px}
-h1 em{font-style:normal;color:var(--accent-ink)}
-.hero p{font-size:1.12rem;color:var(--muted);margin:0}
-.about{max-width:640px;margin:0 auto;text-align:center}
-.about p{font-size:1.12rem;color:var(--muted);margin:0 0 16px}
-.big{width:96px;height:96px;font-size:2.4rem;margin:0 auto 24px}
-.back{display:inline-block;margin-top:24px;font-family:var(--display);font-weight:700;color:var(--accent-ink);text-decoration:none}
-.back:hover{text-decoration:underline;text-underline-offset:4px}
-.choices{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:20px}
-.card{position:relative;display:flex;flex-direction:column;gap:12px;background:var(--surface);border:2px solid var(--line);border-radius:14px;padding:28px;color:inherit;text-decoration:none;
-  overflow:hidden;transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease}
-.card::after{content:"";position:absolute;inset:auto 0 0 0;height:6px;background:var(--accent);transform:scaleX(0);transform-origin:left;transition:transform .25s ease}
-.card:hover{transform:translateY(-4px);border-color:var(--accent);box-shadow:0 14px 32px rgba(0,0,0,.08)}
-.card:hover::after{transform:scaleX(1)}
-.ico{width:64px;height:64px;border-radius:50%;background:var(--soft);display:grid;place-items:center;font-size:1.9rem;font-family:var(--display);font-weight:800;color:var(--accent-ink)}
-.label{font-size:.85rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
-.name{font-family:var(--display);font-weight:700;font-size:1.7rem;line-height:1.15}
-.desc{color:var(--muted);flex:1}
-.go{font-family:var(--display);font-weight:700;color:var(--accent-ink)}
-.card:hover .go{text-decoration:underline;text-underline-offset:4px}
-footer{text-align:center;color:var(--muted);font-size:.85rem;padding:24px 16px calc(24px + env(safe-area-inset-bottom,0px))}
-@media (prefers-reduced-motion:reduce){.card,.card::after{transition:none}.card:hover{transform:none}}
+
+/* Hero */
+.hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,300px);gap:clamp(24px,5vw,56px);align-items:center;padding:clamp(24px,6vw,64px) 0 clamp(32px,6vw,56px)}
+.hero h1{font-weight:800;font-size:clamp(2.6rem,7vw,4.2rem);margin:0 0 18px}
+.hero h1 em{font-style:normal;color:var(--accent-ink)}
+.hero .lead{font-size:clamp(1.05rem,2.2vw,1.2rem);margin:0 0 14px}
+.hero p{margin:0 0 14px;color:var(--muted)}
+.photo{position:relative;justify-self:center;width:100%;max-width:300px}
+.photo::before{content:"";position:absolute;inset:16px -16px -16px 16px;border-radius:20px;background:var(--accent);opacity:.9}
+.photo img{position:relative;display:block;width:100%;height:auto;aspect-ratio:4/5;object-fit:cover;border-radius:20px}
+.btns{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+.btn{display:inline-block;font-family:var(--display);font-weight:700;text-decoration:none;border-radius:999px;padding:12px 22px;background:var(--accent);color:#1E1E1E;transition:transform .15s}
+.btn:hover{transform:translateY(-2px)}
+.btn.ghost{background:transparent;color:var(--ink);border:2px solid var(--line)}
+.btn.ghost:hover{border-color:var(--accent)}
+
+/* Fakten */
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr));gap:12px}
+.fact{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px 20px}
+.fact b{display:block;font-family:var(--display);font-size:1.6rem;font-weight:800;color:var(--accent-ink);line-height:1.2}
+.fact span{color:var(--muted);font-size:.92rem;font-weight:600}
+
+section{padding:clamp(48px,8vw,72px) 0 0}
+h2{font-size:clamp(1.8rem,4.5vw,2.4rem);font-weight:800;margin:0 0 24px}
+
+/* Schwerpunkte */
+.focus{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,400px),1fr));gap:14px}
+.card{background:var(--surface);border:1px solid var(--line);border-left:6px solid var(--accent);border-radius:12px;padding:20px 22px}
+.card h3{margin:0 0 6px;font-size:1.15rem}
+.card p{margin:0;color:var(--muted);font-size:.97rem}
+
+/* Werdegang */
+.tl{list-style:none;margin:0;padding:0;position:relative}
+.tl::before{content:"";position:absolute;left:7px;top:8px;bottom:8px;width:2px;background:var(--line)}
+.tl li{position:relative;padding:0 0 26px 36px}
+.tl li:last-child{padding-bottom:0}
+.tl li::before{content:"";position:absolute;left:0;top:6px;width:16px;height:16px;border-radius:50%;background:var(--surface);border:3px solid var(--line)}
+.tl li.now::before{border-color:var(--accent);background:var(--accent)}
+.tl .when{font-size:.85rem;font-weight:700;color:var(--muted)}
+.tl h3{margin:2px 0 2px;font-size:1.15rem}
+.tl .org{font-weight:700;color:var(--accent-ink)}
+.tl p{margin:6px 0 0;color:var(--muted);font-size:.95rem}
+
+/* Listen */
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:16px}
+.box{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:22px 24px}
+.box h3{margin:0 0 12px;font-size:1.2rem}
+.box ul{margin:0;padding:0;list-style:none}
+.box li{padding:8px 0;border-bottom:1px dashed var(--line)}
+.box li:last-child{border-bottom:0}
+.box li small{display:block;color:var(--muted);font-size:.88rem}
+.tags{display:flex;flex-wrap:wrap;gap:8px}
+.tags span{background:var(--soft);color:var(--accent-ink);border-radius:999px;padding:6px 14px;font-weight:700;font-size:.92rem}
+
+.contact{margin-top:clamp(48px,8vw,72px);background:var(--surface);border:2px solid var(--line);border-top:8px solid var(--accent);border-radius:16px;padding:clamp(24px,5vw,40px);text-align:center}
+.contact h2{margin-bottom:10px}
+.contact p{margin:0 auto;max-width:56ch;color:var(--muted)}
+.contact .btns{justify-content:center}
+
+footer{text-align:center;color:var(--muted);font-size:.88rem;padding:40px 16px calc(32px + env(safe-area-inset-bottom,0px))}
+footer a{color:var(--muted);font-weight:700;text-decoration:none;margin:0 8px}
+footer a:hover{color:var(--accent-ink)}
+@media (max-width:720px){.hero{grid-template-columns:minmax(0,1fr)}.photo{order:-1;max-width:220px;margin-right:16px}}
+@media (prefers-reduced-motion:reduce){.btn{transition:none}.btn:hover{transform:none}}
 </style>
 </head>
 <body>
-<main>
-  <div class="about">
-    <span class="ico big" aria-hidden="true">JV</span>
-    <p class="kicker">Über mich</p>
-    <h1>Jan <em>Vollmann</em></h1>
-    <p>Hier teste ich aktuelle Themen aus: neue Ideen, Werkzeuge und kleine Experimente.</p>
-    <p>Viel zu sehen gibt es deshalb noch nicht. Was ausprobiert wird, landet auf der Spielwiese.</p>
-    <a class="back" href="spielwiese.html">Zur Spielwiese →</a><br>
-    <a class="back" href="./">← Zurück zur Startseite</a>
+<div class="wrap">
+  <nav class="top"><a href="./">← Startseite</a><a href="#kontakt">Kontakt</a></nav>
+
+  <header class="hero">
+    <div>
+      <p class="kicker">Partner · WG-DATA GmbH</p>
+      <h1>Hallo, ich bin <em>Jan.</em></h1>
+      <p class="lead">Seit Januar 2026 bin ich Partner bei der WG-DATA und verantworte dort den Bereich Prozessmanagement.</p>
+      <p>Davor habe ich mehr als 15 Jahre in und mit der Sparkassen-Finanzgruppe gearbeitet: als Anwendungsberater, als Unternehmensberater und zuletzt als Geschäftsbereichsleiter Betriebsorganisation der Sparkasse Südholstein. Ich kenne Sparkassen also von beiden Seiten des Tisches.</p>
+      <p>Auf dieser Seite teste ich nebenbei aktuelle Themen, etwa wie Gamification den Umgang mit KI greifbarer macht.</p>
+      <div class="btns">
+        <a class="btn" href="mailto:jan.vollmann@gmail.com">E-Mail schreiben</a>
+        <a class="btn ghost" href="https://www.linkedin.com/in/jan-vollmann-48819855" target="_blank" rel="noopener">LinkedIn</a>
+      </div>
+    </div>
+    <div class="photo"><img src="jan-vollmann.jpg" width="640" height="800" alt="Porträt von Jan Vollmann"></div>
+  </header>
+
+  <div class="facts" aria-label="Kurz und knapp">
+    <div class="fact"><b>15+ Jahre</b><span>in der Sparkassen-Finanzgruppe</span></div>
+    <div class="fact"><b>ca. 80</b><span>Mitarbeitende zuletzt geführt</span></div>
+    <div class="fact"><b>&gt; 12 Mio. €</b><span>Budgetverantwortung pro Jahr</span></div>
+    <div class="fact"><b>M.Sc.</b><span>Wirtschaftsinformatik, Bankkaufmann IHK</span></div>
   </div>
-</main>
-<footer>janvollmann-spielwiese.github.io</footer>
+
+  <section>
+    <p class="kicker">Was ich mache</p>
+    <h2>Meine Schwerpunkte</h2>
+    <div class="focus">
+      <div class="card"><h3>Prozessmanagement</h3><p>Prozesse analysieren, vereinfachen und messbar besser machen, von der Aufnahme bis zur Umsetzung.</p></div>
+      <div class="card"><h3>Organisation &amp; IT</h3><p>Betriebsorganisation, IT-Management und OSPlus aus Sicht von Sparkasse, Beratung und Anwendung.</p></div>
+      <div class="card"><h3>Kredit &amp; Regulatorik</h3><p>Kreditprozesse, MaRisk, EBA-Leitlinien und DORA, mit dem Blick dafür, was in der Praxis funktioniert.</p></div>
+      <div class="card"><h3>Projekte &amp; Transformation</h3><p>Programme und Projekte leiten, vom Neubau einer Hauptstelle bis zur Transformation des Gesamthauses.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <p class="kicker">Werdegang</p>
+    <h2>Stationen</h2>
+    <ol class="tl">
+      <li class="now"><span class="when">seit 01/2026</span><h3>Partner, Bereich Prozessmanagement</h3><span class="org">WG-DATA GmbH</span></li>
+      <li><span class="when">06/2024 – 12/2025</span><h3>Direktor, Geschäftsbereichsleiter Betriebsorganisation</h3><span class="org">Sparkasse Südholstein</span><p>Führung von Organisationsmanagement, Passiv- und Dienstleistungsmanagement, Kreditmanagement, IT-Management und Marktservice.</p></li>
+      <li><span class="when">04/2023 – 05/2024</span><h3>Bereichsleiter Betriebsorganisation</h3><span class="org">Sparkasse Südholstein</span></li>
+      <li><span class="when">06/2019 – 03/2023</span><h3>Referatsleiter Kreditmanagement</h3><span class="org">Sparkasse Südholstein</span></li>
+      <li><span class="when">10/2017 – 05/2019</span><h3>Prozessmanager Kreditmanagement</h3><span class="org">Sparkasse Südholstein</span></li>
+      <li><span class="when">04/2016 – 09/2017</span><h3>Senior Consultant</h3><span class="org">bankon Management Consulting</span><p>Projekte im Kreditgeschäft, Kernbankmigration einer Landesbank auf OSPlus, Prozessanalysen und Datenstrukturen.</p></li>
+      <li><span class="when">10/2010 – 03/2016</span><h3>Application Consultant</h3><span class="org">tekko Informationssysteme</span><p>Projektleitung im Kreditgeschäft und zu Regulatorik, Geschäftsprozessmanagement, Workshops und Schulungen für Verbände und Sparkassen.</p></li>
+      <li><span class="when">08/2008 – 07/2010</span><h3>Ausbildung zum Bankkaufmann</h3><span class="org">Sparkasse Holstein</span></li>
+    </ol>
+  </section>
+
+  <section>
+    <p class="kicker">Auswahl</p>
+    <h2>Projekte &amp; Ausbildung</h2>
+    <div class="cols">
+      <div class="box">
+        <h3>Projekte bei der Sparkasse Südholstein</h3>
+        <ul>
+          <li>Programmleitung „Neubau Hauptgeschäftsstelle“</li>
+          <li>Kernteam im Programm „Transformation Gesamthaus“</li>
+          <li>Projektleitung „DORA“</li>
+          <li>Projektleitung „RiMaGo“ (2022) und „RiMaGo Next Level“ (2024)</li>
+          <li>Projektleitung „7. MaRisk-Novelle EBA-Kredit“</li>
+          <li>Leitung Task-Force „Corona Kredit“</li>
+          <li>Projektleitung „(Teil-)Automatisierte Kreditvergabe“</li>
+        </ul>
+      </div>
+      <div class="box">
+        <h3>Ausbildung &amp; Zertifikate</h3>
+        <ul>
+          <li>Master of Science Wirtschaftsinformatik<small>Hochschule Wismar, 2017 · Thesis zu den Auswirkungen von FinTechs auf das Retail Banking</small></li>
+          <li>Bachelor of Science Wirtschaftsinformatik<small>Berufsakademie Kiel, 2013</small></li>
+          <li>GPM-Projektmanagement Level D<small>IPMA, 2013</small></li>
+          <li>Bankkaufmann IHK<small>Sparkasse Holstein, 2010</small></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <p class="kicker">Wie ich arbeite</p>
+    <h2>Was mich ausmacht</h2>
+    <div class="tags">
+      <span>Teamplayer mit Empathie</span>
+      <span>Ruhe in Stresssituationen</span>
+      <span>Lösungsorientiert und verbindlich</span>
+      <span>Agiles Projektmanagement</span>
+      <span>Führung in Projekt und Linie</span>
+      <span>Verständnis für die ganze Wertschöpfungskette einer Sparkasse</span>
+    </div>
+  </section>
+
+  <div class="contact" id="kontakt">
+    <p class="kicker">Kontakt</p>
+    <h2>Lass uns sprechen</h2>
+    <p>Du willst über Prozesse, Organisation oder KI in Sparkassen sprechen? Schreib mir gern.</p>
+    <div class="btns">
+      <a class="btn" href="mailto:jan.vollmann@gmail.com">jan.vollmann@gmail.com</a>
+      <a class="btn ghost" href="https://www.linkedin.com/in/jan-vollmann-48819855" target="_blank" rel="noopener">LinkedIn</a>
+    </div>
+  </div>
+</div>
+
+<footer><a href="./">Startseite</a>·<a href="impressum.html">Impressum</a>·<a href="datenschutz.html">Datenschutz</a></footer>
 </body>
 </html>

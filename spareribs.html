@@ -5,9 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Perfekte Spareribs</title>
 <meta name="description" content="Jan Vollmanns Rezept für perfekte Spareribs nach der 3-2-1-Methode, plus Grillabende und Kurse auf Anfrage.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Nunito+Sans:opsz,wght@6..12,400;6..12,600;6..12,700&display=swap" rel="stylesheet">
+<link href="fonts/fonts.css" rel="stylesheet">
 <style>
 :root{--bg:#F7F3EF;--surface:#FFFFFF;--ink:#2A211C;--muted:#6E625A;--line:#E6DCD3;--accent:#E8590C;--accent-ink:#B23D00;--soft:#FDE8DA;
   --hero-from:#2A1A12;--hero-to:#5A2410;--hero-ink:#FFF4EC;
@@ -223,14 +221,14 @@ footer a{font-weight:700;text-decoration:none}
       <div class="f"><label for="f-date">Wunschtermin <small>(optional)</small></label><input id="f-date" name="wunschtermin" type="date"></div>
       <div class="f"><label for="f-pers">Personen <small>(optional)</small></label><input id="f-pers" name="personen" type="number" min="1" max="500" inputmode="numeric"></div>
       <div class="f full"><label for="f-msg">Nachricht</label><textarea id="f-msg" name="message" required placeholder="Wo, wann, für wen und was du dir vorstellst."></textarea></div>
-      <p class="note">Deine Angaben werden über den Formulardienst Web3Forms per E-Mail an Jan übermittelt und nur zur Bearbeitung deiner Anfrage verwendet.</p>
+      <p class="note">Deine Angaben werden über den Formulardienst Web3Forms per E-Mail an Jan übermittelt und nur zur Bearbeitung deiner Anfrage verwendet. Mehr dazu in der <a href="datenschutz.html">Datenschutzerklärung</a>.</p>
       <button class="cta" type="submit">Anfrage senden</button>
       <p class="status" role="status" aria-live="polite"></p>
     </form>
   </section>
 </main>
 
-<footer><a href="./">← Zurück zur Startseite</a></footer>
+<footer><a href="./">← Zurück zur Startseite</a> · <a href="impressum.html">Impressum</a> · <a href="datenschutz.html">Datenschutz</a></footer>
 <script>
 (function(){
   var form=document.getElementById('anfrage');
