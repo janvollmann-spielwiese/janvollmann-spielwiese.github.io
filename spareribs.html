@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Perfekte Spareribs</title>
+<meta name="description" content="Jan Vollmanns Rezept für perfekte Spareribs nach der 3-2-1-Methode, plus Grillabende und Kurse auf Anfrage.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Nunito+Sans:opsz,wght@6..12,400;6..12,600;6..12,700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F7F3EF;--surface:#FFFFFF;--ink:#2A211C;--muted:#6E625A;--line:#E6DCD3;--accent:#E8590C;--accent-ink:#B23D00;--soft:#FDE8DA;
+  --hero-from:#2A1A12;--hero-to:#5A2410;--hero-ink:#FFF4EC;
+  --display:"Outfit","Futura","Avenir Next","Segoe UI",system-ui,sans-serif;--body:"Nunito Sans","Segoe UI",system-ui,sans-serif}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1C1714;--surface:#29211D;--ink:#F5EDE7;--muted:#BDAEA4;--line:#43362F;--accent-ink:#FF9A5C;--soft:#3D2519;--hero-from:#140D09;--hero-to:#43190A}}
+:root[data-theme="dark"]{--bg:#1C1714;--surface:#29211D;--ink:#F5EDE7;--muted:#BDAEA4;--line:#43362F;--accent-ink:#FF9A5C;--soft:#3D2519;--hero-from:#140D09;--hero-to:#43190A}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+:focus-visible{outline:3px solid var(--accent);outline-offset:4px}
+a{color:var(--accent-ink)}
+.wrap{max-width:960px;margin:0 auto;padding:0 16px}
+h1,h2,h3{font-family:var(--display);line-height:1.1;letter-spacing:-.01em}
+
+/* Hero */
+.hero{position:relative;overflow:hidden;color:var(--hero-ink);background:linear-gradient(135deg,var(--hero-from),var(--hero-to));padding:20px 0 clamp(56px,10vw,104px)}
+.hero::before{content:"";position:absolute;inset:auto -10% -40% -10%;height:70%;background:radial-gradient(ellipse at 50% 100%,rgba(255,120,30,.55),transparent 65%);pointer-events:none}
+.hero .wrap{position:relative}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:clamp(40px,8vw,80px)}
+.top a{color:var(--hero-ink);opacity:.85;text-decoration:none;font-family:var(--display);font-weight:600}
+.top a:hover{opacity:1;text-decoration:underline;text-underline-offset:4px}
+.badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);border-radius:999px;padding:6px 14px;font-weight:700;font-size:.85rem}
+.hero h1{font-weight:800;font-size:clamp(2.6rem,8vw,5rem);margin:18px 0 16px;max-width:12ch}
+.hero h1 em{font-style:normal;color:#FFB27A}
+.hero p{font-size:clamp(1.05rem,2.4vw,1.25rem);max-width:56ch;margin:0 0 28px;opacity:.9}
+.cta{display:inline-block;background:var(--accent);color:#fff;font-family:var(--display);font-weight:700;padding:14px 24px;border-radius:999px;text-decoration:none;transition:transform .15s,box-shadow .15s}
+.cta:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(232,89,12,.4)}
+.cta.ghost{background:transparent;border:2px solid rgba(255,255,255,.5);margin-left:8px}
+
+/* Stats */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,150px),1fr));gap:12px;margin:-36px auto 0;position:relative}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px 18px;box-shadow:0 8px 24px rgba(0,0,0,.06)}
+.stat b{display:block;font-family:var(--display);font-size:1.5rem;font-weight:800;color:var(--accent-ink)}
+.stat span{color:var(--muted);font-size:.9rem;font-weight:600}
+
+section{padding:clamp(48px,8vw,80px) 0 0}
+.kicker{font-family:var(--display);font-weight:700;color:var(--muted);margin:0 0 6px}
+.kicker::before{content:"\\";color:var(--accent);font-weight:800;margin-right:8px;font-size:1.25em}
+h2{font-size:clamp(1.8rem,4.5vw,2.6rem);font-weight:800;margin:0 0 24px}
+
+/* Zutaten */
+.ingr{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:16px}
+.box{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:22px 24px}
+.box h3{font-size:1.2rem;margin:0 0 12px}
+.box ul{list-style:none;margin:0;padding:0}
+.box li{display:flex;gap:10px;padding:6px 0;border-bottom:1px dashed var(--line)}
+.box li:last-child{border-bottom:0}
+.box li b{min-width:5.5em;font-weight:700;color:var(--accent-ink)}
+
+/* Schritte */
+.steps{list-style:none;margin:0;padding:0;counter-reset:s;display:grid;gap:14px}
+.steps li{counter-increment:s;display:grid;grid-template-columns:52px minmax(0,1fr);gap:16px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px 22px}
+.steps li::before{content:counter(s);width:52px;height:52px;border-radius:50%;background:var(--soft);color:var(--accent-ink);display:grid;place-items:center;font-family:var(--display);font-weight:800;font-size:1.4rem}
+.steps h3{margin:4px 0 6px;font-size:1.2rem}
+.steps p{margin:0;color:var(--muted)}
+.steps .t{display:inline-block;margin-left:6px;background:var(--soft);color:var(--accent-ink);border-radius:6px;padding:0 8px;font-size:.8rem;font-weight:700;font-family:var(--body);vertical-align:middle}
+.alt{margin-top:16px;border-left:6px solid var(--accent);background:var(--soft);border-radius:8px;padding:16px 20px}
+.alt p{margin:0}
+
+/* Tipps */
+.tips{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:16px}
+.tip{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:22px}
+.tip .i{font-size:1.8rem}
+.tip h3{margin:10px 0 6px;font-size:1.15rem}
+.tip p{margin:0;color:var(--muted)}
+
+/* Angebot */
+.offer{margin-top:clamp(48px,8vw,80px);color:var(--hero-ink);background:linear-gradient(135deg,var(--hero-from),var(--hero-to));border-radius:20px;padding:clamp(28px,5vw,48px)}
+.offer .kicker{color:rgba(255,244,236,.75)}
+.offer h2{margin-bottom:12px}
+.offer>p{max-width:60ch;opacity:.9;margin:0 0 28px}
+.plans{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:14px;margin-bottom:28px}
+.plan{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);border-radius:14px;padding:20px}
+.plan h3{margin:0 0 6px;font-size:1.15rem}
+.plan p{margin:0;opacity:.85;font-size:.95rem}
+.ask{margin:0;font-family:var(--display);font-weight:700;font-size:1.15rem}
+.plan .p{display:block;margin-top:12px;font-family:var(--display);font-weight:700;color:#FFB27A}
+
+footer{text-align:center;color:var(--muted);font-size:.85rem;padding:48px 16px calc(32px + env(safe-area-inset-bottom,0px))}
+footer a{font-weight:700;text-decoration:none}
+@media (max-width:480px){.cta.ghost{margin:10px 0 0}}
+@media (prefers-reduced-motion:reduce){.cta{transition:none}.cta:hover{transform:none}}
+@media print{.hero,.offer{background:none;color:#000}.hero::before,.cta,.top,.offer{display:none}}
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="wrap">
+    <nav class="top"><a href="./">← Startseite</a><a href="jan-vollmann.html">Über Jan</a></nav>
+    <span class="badge">🔥 Rezept von Jan Vollmann</span>
+    <h1>Die <em>perfekten</em> Spareribs</h1>
+    <p>Zart vom Knochen, rauchig, mit glänzender Glasur. Jan Vollmann ist der beste Spareribs-Koch, den du kennen kannst, und verrät hier sein Rezept. Zu faul zum Selbermachen? Dann buch ihn einfach.</p>
+    <a class="cta" href="#rezept">Zum Rezept</a><a class="cta ghost" href="#buchen">Jan buchen</a>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="stats" aria-label="Eckdaten">
+    <div class="stat"><b>4</b><span>Personen</span></div>
+    <div class="stat"><b>20 Min</b><span>Vorbereitung</span></div>
+    <div class="stat"><b>6 Std</b><span>Garzeit</span></div>
+    <div class="stat"><b>110 °C</b><span>Grilltemperatur</span></div>
+  </div>
+
+  <section id="rezept">
+    <p class="kicker">Einkaufszettel</p>
+    <h2>Zutaten</h2>
+    <div class="ingr">
+      <div class="box">
+        <h3>Ribs</h3>
+        <ul>
+          <li><b>2 Leiter</b>Schweinerippchen (Spareribs, je ca. 1,2 kg)</li>
+          <li><b>2 EL</b>mittelscharfer Senf als Bindemittel</li>
+          <li><b>200 ml</b>Apfelsaft zum Besprühen</li>
+          <li><b>40 g</b>Butter</li>
+          <li><b>3 EL</b>Honig</li>
+        </ul>
+      </div>
+      <div class="box">
+        <h3>Rub</h3>
+        <ul>
+          <li><b>3 EL</b>brauner Zucker</li>
+          <li><b>2 EL</b>Paprika edelsüß</li>
+          <li><b>1 EL</b>Rauchpaprika</li>
+          <li><b>1 EL</b>grobes Salz</li>
+          <li><b>1 TL</b>schwarzer Pfeffer, grob</li>
+          <li><b>1 TL</b>Knoblauchpulver</li>
+          <li><b>1 TL</b>Zwiebelpulver</li>
+          <li><b>1 TL</b>Senfpulver</li>
+          <li><b>½ TL</b>Cayennepfeffer</li>
+        </ul>
+      </div>
+      <div class="box">
+        <h3>BBQ-Glasur</h3>
+        <ul>
+          <li><b>200 ml</b>Ketchup</li>
+          <li><b>3 EL</b>brauner Zucker</li>
+          <li><b>2 EL</b>Apfelessig</li>
+          <li><b>2 EL</b>Honig</li>
+          <li><b>1 EL</b>Worcestershiresauce</li>
+          <li><b>1 EL</b>Senf</li>
+          <li><b>1 TL</b>Rauchpaprika</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <p class="kicker">Die 3-2-1-Methode</p>
+    <h2>Zubereitung</h2>
+    <ol class="steps">
+      <li><div><h3>Ribs vorbereiten</h3><p>Die Silberhaut auf der Knochenseite mit einem Messer anheben, mit Küchenpapier greifen und in einem Zug abziehen. Überstehendes Fett und lose Fleischstücke abschneiden.</p></div></li>
+      <li><div><h3>Würzen <span class="t">1 Std ruhen</span></h3><p>Alle Rub-Zutaten mischen. Ribs dünn mit Senf einstreichen, damit der Rub haftet, dann von allen Seiten großzügig würzen. Mindestens 1 Stunde ruhen lassen, gern über Nacht im Kühlschrank.</p></div></li>
+      <li><div><h3>Räuchern <span class="t">3 Std</span></h3><p>Smoker oder Kugelgrill für indirekte Hitze auf 110 °C bringen, Räucherholz (Kirsche, Apfel oder Hickory) dazugeben. Ribs mit der Knochenseite nach unten auflegen. Ab der zweiten Stunde etwa alle 45 Minuten mit Apfelsaft besprühen.</p></div></li>
+      <li><div><h3>Einpacken <span class="t">2 Std</span></h3><p>Jede Leiter mit der Fleischseite nach unten auf doppelte Alufolie legen. Je die Hälfte von Butter und Honig sowie einen Schuss Apfelsaft dazu, fest einschlagen und zurück auf den Grill.</p></div></li>
+      <li><div><h3>Glasieren <span class="t">1 Std</span></h3><p>Glasur-Zutaten kurz aufkochen. Ribs auspacken, ohne Folie weitergaren und in den letzten 30 Minuten zweimal mit Glasur bestreichen, bis sie klebrig glänzt.</p></div></li>
+      <li><div><h3>Fertig-Check und servieren</h3><p>Biegetest: Hebt man die Leiter mit der Zange in der Mitte an, biegt sie sich deutlich und die Oberfläche reißt leicht ein. Die Kerntemperatur zwischen den Knochen liegt dann bei etwa 92–95 °C. 10 Minuten ruhen lassen, zwischen den Knochen schneiden, fertig.</p></div></li>
+    </ol>
+    <div class="alt"><p><strong>Kein Smoker?</strong> Ribs gewürzt und in Folie verpackt bei 140 °C Ober-/Unterhitze etwa 3 Stunden im Backofen garen. Dann auspacken, glasieren und bei 220 °C Grillfunktion oder direkt über der Glut 10–15 Minuten karamellisieren lassen.</p></div>
+  </section>
+
+  <section>
+    <p class="kicker">Was den Unterschied macht</p>
+    <h2>Jans Geheimtipps</h2>
+    <div class="tips">
+      <div class="tip"><div class="i" aria-hidden="true">⏳</div><h3>Geduld schlägt Hitze</h3><p>Niedrige, gleichmäßige Temperatur ist alles. Wer die Hitze hochdreht, bekommt zähe Ribs.</p></div>
+      <div class="tip"><div class="i" aria-hidden="true">🍯</div><h3>Glasur erst am Schluss</h3><p>Zucker verbrennt. Die Glasur kommt erst in der letzten halben Stunde aufs Fleisch.</p></div>
+      <div class="tip"><div class="i" aria-hidden="true">🚫</div><h3>Nicht ständig nachschauen</h3><p>Jedes Öffnen des Deckels kostet Temperatur und Rauch. Nur zum Besprühen aufmachen.</p></div>
+    </div>
+  </section>
+
+  <section class="offer" id="buchen">
+    <p class="kicker">Lieber Jan machen lassen?</p>
+    <h2>Spareribs vom Profi, bei dir</h2>
+    <p>Das beste Rezept nützt wenig ohne die Erfahrung dahinter. Jan bringt beides mit: als Grillmeister für deinen Abend oder als Lehrer, der dir seine Kniffe zeigt.</p>
+    <div class="plans">
+      <div class="plan"><h3>🔥 Grillabend</h3><p>Jan grillt bei dir zu Hause oder auf deiner Feier. Du lehnst dich zurück.</p><span class="p">Preis auf Anfrage</span></div>
+      <div class="plan"><h3>👨‍🍳 Ribs-Kurs</h3><p>Ein Nachmittag mit Jan am Grill: von der Silberhaut bis zur Glasur, Schritt für Schritt.</p><span class="p">Preis auf Anfrage</span></div>
+      <div class="plan"><h3>📦 Rub &amp; Glasur</h3><p>Jans Gewürzmischung und Glasur, frisch angesetzt zum Mitnehmen.</p><span class="p">Preis auf Anfrage</span></div>
+    </div>
+    <!-- Kontakt ergänzen, z. B.: <a class="cta" href="mailto:deine@adresse.de">Jan anfragen</a> -->
+    <p class="ask">Interesse? Sprich Jan einfach direkt an.</p>
+  </section>
+</main>
+
+<footer><a href="./">← Zurück zur Startseite</a></footer>
+</body>
+</html>
