@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hechtangeln: die besten Tipps</title>
+<meta name="description" content="Hechtangeln für Einsteiger und Profis: Spots, Ausrüstung, Köder, Jahreszeiten, schonender Umgang und Regeln in Schleswig-Holstein.">
+<link href="fonts/fonts.css" rel="stylesheet">
+<style>
+:root{--bg:#F2F5F3;--surface:#FFFFFF;--ink:#1D2A26;--muted:#5C6B66;--line:#D8E1DD;--accent:#2E8B57;--accent-ink:#1F6B41;--soft:#E1F1E7;
+  --warn:#B45309;--warn-soft:#FDF0DF;
+  --hero-from:#0E2A26;--hero-to:#1F5145;--hero-ink:#EEF7F2;
+  --display:"Outfit","Futura","Avenir Next","Segoe UI",system-ui,sans-serif;--body:"Nunito Sans","Segoe UI",system-ui,sans-serif}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#121A18;--surface:#1B2623;--ink:#E8F1ED;--muted:#A3B5AE;--line:#2E3D39;--accent-ink:#7FD3A2;--soft:#1E3A2E;--warn:#F2B567;--warn-soft:#3A2A15;--hero-from:#081613;--hero-to:#163B32}}
+:root[data-theme="dark"]{--bg:#121A18;--surface:#1B2623;--ink:#E8F1ED;--muted:#A3B5AE;--line:#2E3D39;--accent-ink:#7FD3A2;--soft:#1E3A2E;--warn:#F2B567;--warn-soft:#3A2A15;--hero-from:#081613;--hero-to:#163B32}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+:focus-visible{outline:3px solid var(--accent);outline-offset:4px}
+a{color:var(--accent-ink)}
+.wrap{max-width:960px;margin:0 auto;padding:0 16px}
+h1,h2,h3{font-family:var(--display);line-height:1.1;letter-spacing:-.01em}
+
+/* Hero */
+.hero{position:relative;overflow:hidden;color:var(--hero-ink);background:linear-gradient(160deg,var(--hero-from),var(--hero-to));padding:20px 0 clamp(64px,10vw,110px)}
+.hero::after{content:"";position:absolute;left:-5%;right:-5%;bottom:-1px;height:60px;background:var(--bg);
+  -webkit-mask:radial-gradient(40px 22px at 50% 0,transparent 98%,#000) 0 0/80px 60px repeat-x;mask:radial-gradient(40px 22px at 50% 0,transparent 98%,#000) 0 0/80px 60px repeat-x}
+.hero .wrap{position:relative}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:clamp(36px,7vw,72px)}
+.top a{color:var(--hero-ink);opacity:.85;text-decoration:none;font-family:var(--display);font-weight:600}
+.top a:hover{opacity:1;text-decoration:underline;text-underline-offset:4px}
+.badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);border-radius:999px;padding:6px 14px;font-weight:700;font-size:.85rem}
+.hero h1{font-weight:800;font-size:clamp(2.6rem,8vw,4.8rem);margin:18px 0 16px;max-width:14ch}
+.hero h1 em{font-style:normal;color:#8FE3B3}
+.hero p{font-size:clamp(1.05rem,2.4vw,1.22rem);max-width:58ch;margin:0 0 26px;opacity:.9}
+.jump{display:flex;flex-wrap:wrap;gap:8px}
+.jump a{color:var(--hero-ink);text-decoration:none;font-weight:700;font-size:.92rem;border:1px solid rgba(255,255,255,.3);border-radius:999px;padding:6px 14px}
+.jump a:hover{background:rgba(255,255,255,.12)}
+
+section{padding:clamp(44px,7vw,72px) 0 0;scroll-margin-top:16px}
+.kicker{font-family:var(--display);font-weight:700;color:var(--muted);margin:0 0 6px}
+.kicker::before{content:"\\";color:var(--accent);font-weight:800;margin-right:8px;font-size:1.25em}
+h2{font-size:clamp(1.8rem,4.5vw,2.5rem);font-weight:800;margin:0 0 12px}
+.intro{color:var(--muted);max-width:62ch;margin:0 0 24px}
+
+/* Steckbrief */
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:12px}
+.fact{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px 20px}
+.fact .i{font-size:1.5rem}
+.fact h3{margin:6px 0 4px;font-size:1.08rem}
+.fact p{margin:0;color:var(--muted);font-size:.94rem}
+
+/* Filter + Tipps */
+.filter{display:inline-flex;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:4px;margin:0 0 20px;gap:4px;flex-wrap:wrap}
+.filter button{font:inherit;font-family:var(--display);font-weight:700;font-size:.95rem;border:0;background:transparent;color:var(--muted);padding:8px 16px;border-radius:999px;cursor:pointer}
+.filter button[aria-pressed="true"]{background:var(--accent);color:#fff}
+.tips{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:14px}
+.tip{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px 22px;display:flex;flex-direction:column;gap:6px}
+.tip[hidden]{display:none}
+.lvl{align-self:flex-start;font-size:.75rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;border-radius:6px;padding:2px 8px}
+.lvl.e{background:var(--soft);color:var(--accent-ink)}
+.lvl.p{background:var(--hero-to);color:#DFF5E8}
+.tip h3{margin:4px 0 0;font-size:1.12rem}
+.tip p{margin:0;color:var(--muted);font-size:.96rem}
+
+/* Jahreszeiten */
+.seasons{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,210px),1fr));gap:14px}
+.season{background:var(--surface);border:1px solid var(--line);border-top:6px solid var(--c);border-radius:14px;padding:20px}
+.season h3{margin:0 0 2px;font-size:1.2rem}
+.season .when{font-size:.85rem;font-weight:700;color:var(--muted)}
+.season ul{margin:10px 0 0;padding-left:1.1em;color:var(--muted);font-size:.95rem}
+.season li{margin-bottom:4px}
+.rule{margin-top:16px;background:var(--soft);border-radius:12px;padding:16px 20px;font-weight:700}
+.rule span{font-weight:600;color:var(--muted)}
+
+/* Ausrüstung / Köder */
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:16px}
+.box{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:22px 24px}
+.box h3{margin:0 0 12px;font-size:1.2rem}
+.box ul{list-style:none;margin:0;padding:0}
+.box li{padding:8px 0;border-bottom:1px dashed var(--line)}
+.box li:last-child{border-bottom:0}
+.box li b{display:block}
+.box li span{color:var(--muted);font-size:.93rem}
+.table{width:100%;border-collapse:collapse;background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden;font-size:.95rem}
+.tscroll{overflow-x:auto;border-radius:14px}
+.table th,.table td{text-align:left;padding:12px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+.table th{font-family:var(--display);background:var(--soft);color:var(--accent-ink)}
+.table tr:last-child td{border-bottom:0}
+.table td:first-child{font-weight:700;white-space:nowrap}
+@media (max-width:600px){
+  .table thead{display:none}
+  .table,.table tbody,.table tr,.table td{display:block;width:100%}
+  .table tr{padding:14px 16px;border-bottom:1px solid var(--line)}
+  .table tr:last-child{border-bottom:0}
+  .table td{padding:2px 0;border:0}
+  .table td:first-child{font-family:var(--display);font-size:1.1rem;color:var(--accent-ink);margin-bottom:4px}
+  .table td:nth-child(2)::before{content:"Stärke: ";font-weight:700;color:var(--ink)}
+  .table td:nth-child(3)::before{content:"Ideal für: ";font-weight:700;color:var(--ink)}
+}
+
+/* Release */
+.steps{list-style:none;margin:0;padding:0;counter-reset:s;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:14px}
+.steps li{counter-increment:s;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px 22px 20px 70px;position:relative}
+.steps li::before{content:counter(s);position:absolute;left:20px;top:18px;width:36px;height:36px;border-radius:50%;background:var(--soft);color:var(--accent-ink);display:grid;place-items:center;font-family:var(--display);font-weight:800}
+.steps h3{margin:0 0 4px;font-size:1.08rem}
+.steps p{margin:0;color:var(--muted);font-size:.95rem}
+
+/* Regeln */
+.law{background:var(--warn-soft);border:1px solid var(--line);border-left:6px solid var(--warn);border-radius:14px;padding:clamp(20px,4vw,30px)}
+.law .big{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:12px;margin:8px 0 18px}
+.law .big div{background:var(--surface);border-radius:12px;padding:14px 16px}
+.law .big b{display:block;font-family:var(--display);font-size:1.5rem;color:var(--warn)}
+.law .big span{color:var(--muted);font-size:.9rem;font-weight:600}
+.law ul{margin:0;padding-left:1.1em}
+.law li{margin-bottom:6px}
+.law .src{margin:14px 0 0;font-size:.88rem;color:var(--muted)}
+
+.sources{font-size:.9rem;color:var(--muted)}
+.sources ul{padding-left:1.1em}
+footer{text-align:center;color:var(--muted);font-size:.88rem;padding:48px 16px calc(32px + env(safe-area-inset-bottom,0px))}
+footer a{color:var(--muted);font-weight:700;text-decoration:none;margin:0 8px}
+footer a:hover{color:var(--accent-ink)}
+@media print{.hero{background:none;color:#000}.hero::after,.top,.jump,.filter{display:none}}
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="wrap">
+    <nav class="top"><a href="./">← Startseite</a><a href="#regeln">Regeln</a></nav>
+    <span class="badge">🐟 Ratgeber für Einsteiger und Profis</span>
+    <h1>Hechtangeln: die <em>besten</em> Tipps</h1>
+    <p>Der Hecht ist ein Lauerjäger mit einem Maul voller Zähne und einer Vorliebe für Verstecke. Wer weiß, wo er steht und wann er frisst, fängt ihn. Hier findest du das Wichtigste vom ersten Wurf bis zum Großhecht.</p>
+    <nav class="jump" aria-label="Inhalt">
+      <a href="#tipps">Tipps</a><a href="#jahreszeiten">Jahreszeiten</a><a href="#ausruestung">Ausrüstung</a><a href="#koeder">Köder</a><a href="#release">Schonender Umgang</a><a href="#regeln">Regeln</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <section id="steckbrief" style="padding-top:8px">
+    <p class="kicker">Kenne deinen Gegner</p>
+    <h2>Der Hecht in vier Sätzen</h2>
+    <div class="facts">
+      <div class="fact"><div class="i" aria-hidden="true">🌿</div><h3>Lauerjäger</h3><p>Er steht still an Kraut, Schilf, Seerosen, Totholz und Kanten und schießt aus dem Versteck auf seine Beute.</p></div>
+      <div class="fact"><div class="i" aria-hidden="true">🦷</div><h3>Scharfe Zähne</h3><p>Ohne bissfestes Vorfach aus Stahl oder Titan schneidet er die Schnur durch. Das ist Pflicht, nicht Kür.</p></div>
+      <div class="fact"><div class="i" aria-hidden="true">👀</div><h3>Augenjäger</h3><p>Er jagt vor allem mit den Augen und dem Seitenlinienorgan. Druckwelle und Kontrast machen Köder fängig.</p></div>
+      <div class="fact"><div class="i" aria-hidden="true">🌡️</div><h3>Kaltwasserfisch</h3><p>Er beißt das ganze Jahr. Im sehr warmen Sommerwasser wird er träge, im Herbst frisst er sich Reserven an.</p></div>
+    </div>
+  </section>
+
+  <section id="tipps">
+    <p class="kicker">Was wirklich fängt</p>
+    <h2>Die besten Tipps</h2>
+    <p class="intro">Filtere nach deinem Stand. Einsteiger-Tipps bringen schnell die ersten Hechte, Profi-Tipps helfen, wenn es um die großen geht.</p>
+    <div class="filter" role="group" aria-label="Tipps filtern">
+      <button type="button" data-f="alle" aria-pressed="true">Alle</button>
+      <button type="button" data-f="e" aria-pressed="false">Einsteiger</button>
+      <button type="button" data-f="p" aria-pressed="false">Profi</button>
+    </div>
+    <div class="tips">
+      <article class="tip" data-l="e"><span class="lvl e">Einsteiger</span><h3>Kanten statt Wasserfläche</h3><p>Befische Krautkanten, Schilfgürtel, Seerosenfelder, Stege und Abbruchkanten. Die freie Seemitte ist für den Anfang fast immer die schlechtere Wahl.</p></article>
+      <article class="tip" data-l="e"><span class="lvl e">Einsteiger</span><h3>Im Fächer werfen</h3><p>Vom Standplatz aus fächerförmig werfen, dann ein paar Meter weitergehen. Hechte kommen selten zu dir, du musst sie finden.</p></article>
+      <article class="tip" data-l="e"><span class="lvl e">Einsteiger</span><h3>Mit dem Gummifisch starten</h3><p>Ein 10–15 cm langer Gummifisch am Jigkopf fängt fast überall und in jeder Tiefe. Gewicht so wählen, dass er nach dem Absinken sicher den Grund berührt.</p></article>
+      <article class="tip" data-l="e"><span class="lvl e">Einsteiger</span><h3>Kräftiger Anhieb</h3><p>Das Hechtmaul ist hart. Bei einem Biss sofort und entschlossen anschlagen, dann mit gespannter Schnur zügig drillen.</p></article>
+      <article class="tip" data-l="e"><span class="lvl e">Einsteiger</span><h3>Bremse richtig einstellen</h3><p>So fest, dass der Anhieb sitzt, aber so, dass ein kräftiger Fluchtversuch noch Schnur nehmen kann. Vor dem ersten Wurf mit der Hand testen.</p></article>
+      <article class="tip" data-l="e"><span class="lvl e">Einsteiger</span><h3>Graue Tage nutzen</h3><p>Bedeckter Himmel, leichter Wind und die Stunden um Sonnenauf- und -untergang sind oft die besten Beißzeiten.</p></article>
+      <article class="tip" data-l="p"><span class="lvl p">Profi</span><h3>Jerkbait mit langen Pausen</h3><p>Gerade in kaltem Wasser kommen die meisten Bisse in der Pause, wenn der Köder steht oder langsam aufsteigt. Je kälter, desto länger warten.</p></article>
+      <article class="tip" data-l="p"><span class="lvl p">Profi</span><h3>Farbe nach Sichttiefe</h3><p>Klares Wasser: natürliche, durchscheinende Dekore. Trübes Wasser oder wenig Licht: grelle Farben und starker Kontrast, dazu mehr Druckwelle.</p></article>
+      <article class="tip" data-l="p"><span class="lvl p">Profi</span><h3>Futterfisch finden</h3><p>Im Herbst und Winter stehen große Hechte dort, wo sich Weißfischschwärme sammeln. Das Echolot zeigt die Schwärme, die Hechte sind nicht weit.</p></article>
+      <article class="tip" data-l="p"><span class="lvl p">Profi</span><h3>Vertikal im Winter</h3><p>Vom Boot aus Gummifisch oder Köderfisch-Montage langsam direkt unter dem Boot an tiefen Kanten anbieten. Minimale Bewegung reicht.</p></article>
+      <article class="tip" data-l="p"><span class="lvl p">Profi</span><h3>Topwater im Sommer</h3><p>Morgens und abends über flachem Kraut: Oberflächenköder bringen spektakuläre Bisse. Erst anschlagen, wenn du das Gewicht spürst.</p></article>
+      <article class="tip" data-l="p"><span class="lvl p">Profi</span><h3>Große Köder für große Fische</h3><p>Im Herbst dürfen es 20–30 cm sein. Ein Großköder sortiert kleine Hechte aus und spricht kapitale Weibchen an. Ausrüstung entsprechend kräftig wählen.</p></article>
+    </div>
+  </section>
+
+  <section id="jahreszeiten">
+    <p class="kicker">Hechtkalender</p>
+    <h2>Die vier Jahreszeiten</h2>
+    <div class="seasons">
+      <div class="season" style="--c:#7CB342"><h3>🌱 Frühjahr</h3><span class="when">nach der Schonzeit</span><ul><li>Hechte stehen nach dem Laichen flach, wo sich das Wasser zuerst erwärmt.</li><li>Junges Kraut und Schilfkanten absuchen.</li><li>Kleinere Köder, eher langsam geführt.</li></ul></div>
+      <div class="season" style="--c:#F4B400"><h3>☀️ Sommer</h3><span class="when">Juni – August</span><ul><li>Früh morgens und abends angeln, mittags tiefer suchen.</li><li>Krautkanten, Krautlöcher und schattige Stellen.</li><li>Spinner, Spinnerbait, Topwater, schnellere Führung.</li></ul></div>
+      <div class="season" style="--c:#E8590C"><h3>🍂 Herbst</h3><span class="when">September – November</span><ul><li>Die beste Zeit für große Hechte.</li><li>Futterfischschwärme suchen, das Kraut stirbt ab.</li><li>Große Gummifische, Jerkbaits und Swimbaits.</li></ul></div>
+      <div class="season" style="--c:#4A90C2"><h3>❄️ Winter</h3><span class="when">Dezember – Februar</span><ul><li>Hechte stehen tiefer und bewegen sich weniger.</li><li>Tiefe Kanten und Winterlager der Weißfische.</li><li>Sehr langsam, grundnah oder vertikal angeln, Köderfisch an der Pose.</li></ul></div>
+    </div>
+    <p class="rule">Faustregel: Je kälter das Wasser, desto langsamer, tiefer und größer. <span>Je wärmer, desto schneller, flacher und aggressiver darf es sein.</span></p>
+  </section>
+
+  <section id="ausruestung">
+    <p class="kicker">Gut gerüstet</p>
+    <h2>Ausrüstung</h2>
+    <div class="cols">
+      <div class="box">
+        <h3>🎣 Grundausstattung</h3>
+        <ul>
+          <li><b>Spinnrute 2,40–2,70 m</b><span>Wurfgewicht etwa 20–80 g als Allrounder; für Großköder deutlich kräftiger.</span></li>
+          <li><b>Stationärrolle Größe 3000–4000</b><span>Mit sauber laufender Bremse.</span></li>
+          <li><b>Geflochtene Schnur, ca. 0,15–0,20 mm</b><span>Kaum Dehnung, guter Köderkontakt und sicherer Anhieb.</span></li>
+          <li><b>Vorfach aus Stahl oder Titan, 30–60 cm</b><span>Immer! Tragkraft über der Hauptschnur, mit stabilem Wirbel und Karabiner.</span></li>
+        </ul>
+      </div>
+      <div class="box">
+        <h3>🧰 Ans Wasser gehört auch</h3>
+        <ul>
+          <li><b>Lange Lösezange und Seitenschneider</b><span>Damit sich Haken schnell lösen oder notfalls abknipsen lassen.</span></li>
+          <li><b>Großer, gummierter Kescher</b><span>Schont Schleimhaut und Flossen, kein Verhaken der Drillinge.</span></li>
+          <li><b>Abhakmatte</b><span>Feuchte, weiche Unterlage statt Steg, Steine oder Gras.</span></li>
+          <li><b>Maßband und Fischereipapiere</b><span>Mindestmaß prüfen, Schein und Erlaubnis dabeihaben.</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="koeder">
+    <p class="kicker">Die Köderbox</p>
+    <h2>Welcher Köder wann?</h2>
+    <div class="tscroll">
+      <table class="table">
+        <thead><tr><th>Köder</th><th>Stärke</th><th>Ideal für</th></tr></thead>
+        <tbody>
+          <tr><td>Gummifisch</td><td>Vielseitig, jede Tiefe, viele Größen</td><td>Einsteiger, ganzjährig</td></tr>
+          <tr><td>Spinner &amp; Spinnerbait</td><td>Starke Druckwelle, leicht zu führen, Spinnerbait wenig hängeranfällig</td><td>Flaches Wasser, Kraut, trübes Wasser</td></tr>
+          <tr><td>Blinker</td><td>Weit werfen, viel Flash</td><td>Große Flächen absuchen</td></tr>
+          <tr><td>Wobbler</td><td>Feste Lauftiefe, einfach einkurbeln</td><td>Gezielte Tiefen, Schleppen wo erlaubt</td></tr>
+          <tr><td>Jerkbait</td><td>Ausbrechende Bewegungen, Pausen</td><td>Profis, kaltes Wasser, große Hechte</td></tr>
+          <tr><td>Swimbait</td><td>Sehr natürliches Schwimmbild</td><td>Klares Wasser, Herbst</td></tr>
+          <tr><td>Topwater</td><td>Bisse an der Oberfläche</td><td>Sommer, flaches Kraut, Dämmerung</td></tr>
+          <tr><td>Toter Köderfisch</td><td>Duft und Natürlichkeit, langsam angeboten</td><td>Winter, träge Fische. Lebende Köderfische sind in Deutschland verboten.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="release">
+    <p class="kicker">Respekt vor dem Fisch</p>
+    <h2>Schonender Umgang</h2>
+    <p class="intro">Untermaßige Hechte und Fänge in der Schonzeit müssen zurück ins Wasser. Damit sie das gut überstehen, zählt jede Sekunde.</p>
+    <ol class="steps">
+      <li><h3>Zügig drillen</h3><p>Lange Drills erschöpfen den Fisch. Kräftiges Gerät hilft, den Hecht schnell zu landen.</p></li>
+      <li><h3>Sicher landen</h3><p>Mit großem, gummiertem Kescher oder, wenn du es sicher beherrschst, per Kiemendeckelgriff: Finger von unten unter den Kiemendeckel, nie in die Kiemen.</p></li>
+      <li><h3>Nass und flach ablegen</h3><p>Nur auf eine feuchte Abhakmatte, nie auf trockenen Boden. Mit nassen Händen anfassen, die Schleimhaut schützt den Fisch.</p></li>
+      <li><h3>Haken schnell lösen</h3><p>Lange Lösezange nutzen. Sitzt ein Haken tief, lieber mit dem Seitenschneider abknipsen als lange zu operieren. Angedrückte Widerhaken erleichtern das enorm.</p></li>
+      <li><h3>Foto in Sekunden</h3><p>Den Hecht waagerecht halten und mit einer Hand unter dem Bauch stützen. Große Hechte nie senkrecht nur am Kiemendeckel hochhalten.</p></li>
+      <li><h3>Erst loslassen, wenn er schwimmt</h3><p>Im Wasser halten, bis er sich aufrichtet und selbst davonschwimmt. Nicht hin- und herziehen.</p></li>
+    </ol>
+  </section>
+
+  <section id="regeln">
+    <p class="kicker">Bevor du losgehst</p>
+    <h2>Regeln in Schleswig-Holstein</h2>
+    <div class="law">
+      <div class="big">
+        <div><b>45 cm</b><span>Mindestmaß Hecht</span></div>
+        <div><b>15.02. – 15.04.</b><span>Schonzeit Binnengewässer</span></div>
+        <div><b>15.02. – 30.04.</b><span>Schonzeit Küstengewässer</span></div>
+      </div>
+      <ul>
+        <li>Du brauchst einen gültigen Fischereischein mit bezahlter Fischereiabgabe und eine Angelerlaubnis für das jeweilige Gewässer.</li>
+        <li>Vereine und Gewässerbesitzer legen oft strengere Regeln fest, etwa höhere Mindestmaße, Entnahmefenster oder Kunstköderverbote in der Schonzeit. Die Gewässerordnung geht vor.</li>
+        <li>Lebende Köderfische sind in Deutschland verboten.</li>
+        <li>Einen maßigen Hecht, den du mitnimmst, sofort waidgerecht betäuben und töten.</li>
+      </ul>
+      <p class="src">Angaben laut Tabelle des Landesanglerverbands Schleswig-Holstein, Stand 28.03.2025. Regeln ändern sich: Prüfe vor dem Angeln die aktuelle Binnen- bzw. Küstenfischereiverordnung und die Bedingungen auf deinem Erlaubnisschein. In anderen Bundesländern gelten abweichende Werte.</p>
+    </div>
+  </section>
+
+  <section class="sources">
+    <p class="kicker">Quellen</p>
+    <ul>
+      <li><a href="https://lav-sh.de/wp-content/uploads/2025/03/Mindestmass_SH_28.03.2025.pdf" target="_blank" rel="noopener">Landesanglerverband Schleswig-Holstein: Mindestmaße und Schonzeiten (Stand 28.03.2025)</a></li>
+      <li><a href="https://www.barsch-alarm.de/news/dhc-tipps-zum-schonenden-zurcksetzen-von-hechten/" target="_blank" rel="noopener">Deutscher Hechtangler-Club: Tipps zum schonenden Zurücksetzen von Hechten</a></li>
+      <li><a href="https://outdoorcanada.ca/?p=4911" target="_blank" rel="noopener">Outdoor Canada: Jerkbaits für Hecht in kaltem Wasser</a></li>
+    </ul>
+  </section>
+</main>
+
+<footer><a href="./">Startseite</a>·<a href="impressum.html">Impressum</a>·<a href="datenschutz.html">Datenschutz</a></footer>
+<script>
+(function(){
+  var btns=document.querySelectorAll('.filter button'), tips=document.querySelectorAll('.tip');
+  btns.forEach(function(b){
+    b.addEventListener('click',function(){
+      var f=b.getAttribute('data-f');
+      btns.forEach(function(x){x.setAttribute('aria-pressed',String(x===b));});
+      tips.forEach(function(t){t.hidden=!(f==='alle'||t.getAttribute('data-l')===f);});
+    });
+  });
+})();
+</script>
+</body>
+</html>
