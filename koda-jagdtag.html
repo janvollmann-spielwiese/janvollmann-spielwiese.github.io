@@ -280,15 +280,15 @@ var LEVELS=[
   {name:'Stockenten',place:'am Teich',icon:'🦆',type:'duck',pts:10,R:6,mode:'slider',hide:-1,water:true,
    max:3,spawn:[1.3,2.3],speed:[80,130],depth:[22,78],
    text:'Gemächliche Stockenten über dem Teich. Getroffene Enten schwimmen gut sichtbar, Koda muss trotzdem wissen, wohin. Zum Warmwerden.'},
-  {name:'Fasane',place:'über dem Feld',icon:'🐓',type:'pheasant',pts:15,R:5,mode:'slider',hide:1.2,
+  {name:'Fasane',place:'über dem Feld',icon:'🐓',type:'pheasant',pts:15,R:5,mode:'slider',hide:-1,
    max:3,spawn:[1.1,1.9],speed:[150,210],depth:[18,70],
-   text:'Fasane steigen aus dem Feld auf und hauen schnell ab. Wer fällt, verschwindet im hohen Korn. Merk dir die Stelle!'},
-  {name:'Gänse',place:'über der Herbstwiese',icon:'🪿',type:'goose',pts:20,R:4.5,mode:'swing',swingA:2.4,swingD:2.6,hide:3,
+   text:'Fasane steigen aus dem Feld auf und hauen schnell ab. Getroffene landen weiter draußen im Feld.'},
+  {name:'Gänse',place:'über der Herbstwiese',icon:'🪿',type:'goose',pts:20,R:4.5,mode:'swing',swingA:5.2,swingD:5.6,hide:-1,
    max:10,spawn:[2.8,4.2],speed:[100,140],depth:[45,95],
    text:'Graugänse ziehen in Keilformation hoch und weit draußen. Ab jetzt pendeln die Zeiger: im richtigen Moment stoppen.'},
-  {name:'Krähen',place:'in der Abenddämmerung',icon:'🐦‍⬛',type:'crow',pts:25,R:4,mode:'swing',swingA:1.7,swingD:1.9,hide:.8,
+  {name:'Krähen',place:'in der Abenddämmerung',icon:'🐦‍⬛',type:'crow',pts:25,R:4,mode:'swing',swingA:3.6,swingD:4.0,hide:-1,
    max:4,spawn:[.8,1.4],speed:[180,250],depth:[22,85],
-   text:'Krähen fliegen Haken und lachen dich aus. Sie sind klein, schnell und nach dem Fall sofort weg. Meisterklasse.'}
+   text:'Krähen fliegen Haken und lachen dich aus. Klein, schnell und schwer zu treffen. Meisterklasse.'}
 ];
 var TIME=90,MAG=8,BS=54;
 
@@ -370,7 +370,7 @@ function updateBirds(dt){
   G.birds.forEach(function(b){
     b.t+=dt;
     if(b.dead){
-      if(!b.landed){b.vy+=900*dt;b.y+=b.vy*dt;b.x+=b.vx*.2*dt;b.rot+=dt*8*b.dir;
+      if(!b.landed){b.vy+=900*dt;b.y+=b.vy*dt;b.x=clamp(b.x+b.vx*.2*dt,40,W-40);b.rot+=dt*8*b.dir;
         if(b.y>=b.gyY){b.y=b.gyY;b.landed=true;b.landT=0;b.gx=(b.x-CX)*(b.gy+Z0)/F;if(L.water)sfx.splash();for(var i=0;i<10;i++)G.feathers.push(feather(b.x,b.y-6));}}
       return;
     }
@@ -418,7 +418,7 @@ function shoot(x,y){
     if(dx*dx+dy*dy<=1.25&&(!hit||b.sf>hit.sf))hit=b;
   });
   if(hit){
-    hit.dead=true;hit.rot=0;hit.vy=-60;hit.gyY=groundY(hit.gy);hit.gx=(hit.x-CX)*(hit.gy+Z0)/F;
+    hit.dead=true;hit.rot=0;hit.x=clamp(hit.x,40,W-40);hit.vy=-60;hit.gyY=groundY(hit.gy);hit.gx=(hit.x-CX)*(hit.gy+Z0)/F;
     G.hits++;G.totalHits++;sfx.hit();
     for(var i=0;i<14;i++)G.feathers.push(feather(hit.x,hit.y));
     G.fallen.push(hit);
@@ -467,7 +467,7 @@ function updateFetch(dt){
   var f=G.fetch;if(!f)return;
   f.t+=dt;
   if(f.phase==='set'&&G.L.mode==='swing'){
-    var per=f.step===0?G.L.swingA:G.L.swingD,v=(Math.sin(f.t*2*Math.PI/per-Math.PI/2)+1)/2;
+    var per=f.step===0?G.L.swingA:G.L.swingD,v=(Math.sin(f.t*2*Math.PI/per)+1)/2;
     if(f.step===0)f.angle=-60+v*120;else f.dist=v*100;
     showVal();
   }
