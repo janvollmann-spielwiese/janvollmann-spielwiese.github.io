@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kodas Rechenspiel</title>
+<meta name="description" content="Rechenspiel für Kinder mit Labrador Koda: Zählen bis 10, Plus und Minus bis 20 und das kleine Einmaleins.">
+<link href="fonts/fonts.css" rel="stylesheet">
+<style>
+:root{--bg:#F4EFE6;--surface:#FFFFFF;--ink:#2B2420;--muted:#6E625A;--line:#E3D8CB;--accent:#C2621F;--accent-ink:#9A4A12;--soft:#FBE7D3;
+  --ok:#2F8F46;--ok-soft:#DFF3E3;--no:#C0392B;--no-soft:#FBE3E0;
+  --display:"Outfit","Futura","Avenir Next","Segoe UI",system-ui,sans-serif;--body:"Nunito Sans","Segoe UI",system-ui,sans-serif}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1D1916;--surface:#29231F;--ink:#F4ECE4;--muted:#BCAEA3;--line:#433A33;--accent-ink:#F2A26A;--soft:#3E2A1C;--ok:#7BD67F;--ok-soft:#1F3A25;--no:#FF8A80;--no-soft:#3E2220}}
+:root[data-theme="dark"]{--bg:#1D1916;--surface:#29231F;--ink:#F4ECE4;--muted:#BCAEA3;--line:#433A33;--accent-ink:#F2A26A;--soft:#3E2A1C;--ok:#7BD67F;--ok-soft:#1F3A25;--no:#FF8A80;--no-soft:#3E2220}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.5;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+.wrap{max-width:760px;margin:0 auto;padding:0 12px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 4px}
+.top a{font-family:var(--display);font-weight:700;text-decoration:none;color:var(--muted)}
+.top a:hover{color:var(--accent-ink)}
+@media (max-width:480px){.top .t{display:none}.top a{font-size:1.4rem}}
+.top h1{font-family:var(--display);font-weight:800;font-size:clamp(1.15rem,4vw,1.6rem);margin:0;text-align:center}
+.ibtn{flex:none;width:44px;height:44px;border-radius:50%;border:2px solid var(--line);background:var(--surface);font-size:1.2rem;cursor:pointer;display:grid;place-items:center;color:var(--ink)}
+.ibtn:hover{border-color:var(--accent)}
+.card{background:var(--surface);border:3px solid var(--line);border-radius:22px;padding:clamp(14px,3vw,24px);position:relative}
+.scene{display:block;width:100%;height:auto;aspect-ratio:480/220;border-radius:14px;background:linear-gradient(#CDEBF5,#EAF6E4)}
+.btn{font:inherit;font-family:var(--display);font-weight:800;border:0;border-radius:16px;cursor:pointer;background:var(--accent);color:#fff;box-shadow:0 5px 0 #8A410F;transition:transform .08s}
+.btn:active{transform:translateY(4px);box-shadow:0 1px 0 #8A410F}
+.btn.ghost{background:var(--soft);color:var(--accent-ink);box-shadow:none}
+
+/* Start */
+.levels{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:12px;margin-top:16px}
+.lvl{padding:16px;text-align:left;display:flex;flex-direction:column;gap:2px;font-size:1.25rem}
+.lvl small{font-family:var(--body);font-weight:700;font-size:.9rem;opacity:.92}
+.lvl .e{font-size:1.8rem;line-height:1}
+.lvl.g{background:#4E8F3A;box-shadow:0 5px 0 #2F5E22}
+.lvl.b{background:#3A78B5;box-shadow:0 5px 0 #24507D}
+.intro h2{font-family:var(--display);font-weight:800;font-size:clamp(1.6rem,5vw,2.3rem);margin:14px 0 4px;text-align:center}
+.intro p{margin:0;color:var(--muted);text-align:center}
+.best{margin:12px 0 0;text-align:center;color:var(--muted);font-size:.9rem}
+
+/* Aufgabe */
+.paws{display:flex;justify-content:center;gap:6px;margin:12px 0 4px;flex-wrap:wrap}
+.paws span{font-size:1.25rem;filter:grayscale(1);opacity:.3;transition:all .2s}
+.paws span.done{filter:none;opacity:1}
+.paws span.now{opacity:.8;transform:scale(1.25)}
+.q{font-family:var(--display);font-weight:800;text-align:center;font-size:clamp(2.4rem,10vw,4rem);line-height:1.1;margin:8px 0 4px;letter-spacing:.02em}
+.q .gap{display:inline-block;min-width:1.3em;border-bottom:6px solid var(--accent);color:var(--accent-ink)}
+.prompt{text-align:center;color:var(--muted);font-weight:700;margin:0 0 8px;font-size:1.1rem}
+.bones{display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:4px 14px;min-height:46px;margin:6px 0 10px}
+.grp{display:grid;gap:2px 4px}
+.grp span{font-size:clamp(1.5rem,6vw,2.1rem);line-height:1.1}
+.op{font-family:var(--display);font-weight:800;font-size:2rem;color:var(--muted)}
+.answers{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:8px}
+@media (max-width:520px){.answers{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.answers.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+.ans{font-size:clamp(2rem,8vw,2.8rem);padding:14px 8px;min-height:84px}
+.ans.right{background:var(--ok);box-shadow:0 5px 0 #1E5E2D}
+.ans.wrong{background:var(--no-soft);color:var(--no);box-shadow:none;cursor:default}
+.feedback{text-align:center;font-family:var(--display);font-weight:800;font-size:1.3rem;min-height:2em;margin:10px 0 0}
+.feedback.ok{color:var(--ok)}.feedback.no{color:var(--no)}
+
+/* Ende */
+.end{text-align:center}
+.end h2{font-family:var(--display);font-weight:800;font-size:clamp(1.8rem,6vw,2.6rem);margin:12px 0 0}
+.stars{font-size:clamp(2.6rem,10vw,3.6rem);letter-spacing:6px;margin:6px 0}
+.stars .off{opacity:.2;filter:grayscale(1)}
+.end p{color:var(--muted);margin:0 0 16px}
+.row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.row .btn{padding:14px 22px;font-size:1.1rem;text-decoration:none}
+[hidden]{display:none!important}
+footer{text-align:center;color:var(--muted);font-size:.85rem;padding:28px 16px calc(24px + env(safe-area-inset-bottom,0px))}
+footer a{color:var(--muted);font-weight:700;text-decoration:none;margin:0 8px}
+@media (prefers-reduced-motion:reduce){.btn{transition:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav class="top"><a href="fun-games.html" aria-label="Zurück zu Fun-Games">←<span class="t"> Fun-Games</span></a><h1>🦴 Kodas Rechenspiel</h1><button class="ibtn" id="soundBtn" type="button" aria-label="Ton und Vorlesen einschalten" title="Ton und Vorlesen">🔇</button></nav>
+
+  <div class="card">
+    <canvas class="scene" id="scene" width="480" height="220" aria-hidden="true"></canvas>
+
+    <section class="intro" id="intro">
+      <h2>Hilf Koda beim Rechnen!</h2>
+      <p>Für jede richtige Antwort bekommt Koda einen Knochen in seinen Napf. Wähle dein Spiel:</p>
+      <div class="levels">
+        <button class="btn lvl g" type="button" data-level="count"><span class="e" aria-hidden="true">🐾</span>Zählen<small>bis 10 · Kindergarten</small></button>
+        <button class="btn lvl" type="button" data-level="plus"><span class="e" aria-hidden="true">➕</span>Plus &amp; Minus<small>bis 20 · Schule</small></button>
+        <button class="btn lvl b" type="button" data-level="times"><span class="e" aria-hidden="true">✖️</span>Einmaleins<small>kleines 1×1 · Schule</small></button>
+      </div>
+      <p class="best" id="best"></p>
+    </section>
+
+    <section id="play" hidden>
+      <div class="paws" id="paws" aria-hidden="true"></div>
+      <p class="prompt" id="prompt"></p>
+      <div class="q" id="q" aria-live="polite"></div>
+      <div class="bones" id="bones" aria-hidden="true"></div>
+      <div class="answers" id="answers"></div>
+      <p class="feedback" id="feedback" role="status"></p>
+    </section>
+
+    <section class="end" id="end" hidden>
+      <h2 id="endTitle">Super gemacht!</h2>
+      <div class="stars" id="stars"></div>
+      <p id="endText"></p>
+      <div class="row"><button class="btn" type="button" id="again">🔁 Nochmal</button><button class="btn ghost" type="button" id="menu">Anderes Spiel</button></div>
+    </section>
+  </div>
+</div>
+<footer><a href="fun-games.html">Fun-Games</a>·<a href="./">Startseite</a>·<a href="impressum.html">Impressum</a></footer>
+
+<script>
+(function(){
+'use strict';
+var $=function(id){return document.getElementById(id);};
+var cv=$('scene'),ctx=cv.getContext('2d'),W=480,H=220,GROUND=196;
+function rr(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
+function ell(x,y,rx,ry,rot){ctx.beginPath();ctx.ellipse(x,y,rx,ry,rot||0,0,Math.PI*2);}
+function star(x,y,r){ctx.beginPath();for(var i=0;i<10;i++){var a=i*Math.PI/5-Math.PI/2,rad=i%2?r*.45:r;ctx.lineTo(x+Math.cos(a)*rad,y+Math.sin(a)*rad);}ctx.closePath();ctx.fill();}
+/* Koda-Zeichnung, identisch mit Kodas Waldlauf */
+var FUR='#C0652A',FUR_L='#D27E3F',FUR_D='#9A4D1C',EAR='#8E451A',NOSE='#4A2C22',COLLAR='#4E3424';
+function frontLeg(px,py,ang,col){
+  // Vorderlauf: Oberarm, gerader Unterarm, Pfote
+  ctx.save();ctx.translate(px,py);ctx.rotate(ang);
+  ctx.fillStyle=col;
+  ctx.beginPath();ctx.moveTo(-8,-6);ctx.quadraticCurveTo(-9,14,-5,24);ctx.lineTo(5,24);ctx.quadraticCurveTo(9,10,8,-6);ctx.closePath();ctx.fill();
+  ctx.translate(0,22);ctx.rotate(-ang*.6);
+  rr(-5,0,10,22,5);ctx.fill();
+  ell(3,22,8,4.5);ctx.fill();
+  ctx.restore();
+}
+function hindLeg(px,py,ang,col){
+  // Hinterlauf: kräftiger Oberschenkel, schräger Unterschenkel, Sprunggelenk, Pfote
+  ctx.save();ctx.translate(px,py);ctx.rotate(ang);
+  ctx.fillStyle=col;
+  ctx.beginPath();ctx.moveTo(-14,-10);ctx.quadraticCurveTo(-18,12,-4,22);ctx.lineTo(8,18);ctx.quadraticCurveTo(14,0,12,-10);ctx.closePath();ctx.fill();
+  ctx.translate(2,18);ctx.rotate(.55-ang*.4);
+  rr(-5,0,10,20,5);ctx.fill();
+  ctx.translate(0,18);ctx.rotate(-.55);
+  rr(-4.5,0,9,14,4.5);ctx.fill();
+  ell(4,14,8,4.5);ctx.fill();
+  ctx.restore();
+}
+function drawKoda(x,y,run,air,state){
+  // x = Mitte, y = Pfoten-Grundlinie, Blick nach rechts
+  var s=run,sw=air?0:Math.sin(s),sw2=air?0:Math.sin(s+Math.PI);
+  var bob=air?0:-Math.abs(Math.sin(s))*3;
+  ctx.save();ctx.translate(x,y+bob);
+  if(state.stumble>0)ctx.rotate(-.16*Math.sin(state.stumble*12));
+  if(state.blink)ctx.globalAlpha=.55;
+  // Schatten
+  ctx.save();ctx.translate(0,-bob-(air?state.y:0));ctx.fillStyle='rgba(0,0,0,'+(air?.1:.18)+')';ell(4,2,50,6);ctx.fill();ctx.restore();
+  // Rute (dicke Otterrute)
+  var wag=Math.sin(state.wag)*.3;
+  ctx.save();ctx.translate(-52,-62);ctx.rotate(-.35+wag);
+  ctx.fillStyle=FUR;ctx.beginPath();ctx.moveTo(4,-7);ctx.quadraticCurveTo(-22,-12,-42,0);ctx.quadraticCurveTo(-22,2,4,8);ctx.closePath();ctx.fill();
+  ctx.restore();
+  // ferne Läufe
+  hindLeg(-36,-50,air?-.6:sw2*.5,FUR_D);
+  frontLeg(36,-50,air?.9:sw*.55,FUR_D);
+  // Körper als eine Form: Rücken, Hals, Brust, Bauch, Keule
+  ctx.fillStyle=FUR;ctx.beginPath();
+  ctx.moveTo(-54,-60);
+  ctx.bezierCurveTo(-30,-76,6,-72,30,-76);
+  ctx.quadraticCurveTo(38,-90,46,-106);
+  ctx.lineTo(70,-94);
+  ctx.quadraticCurveTo(68,-70,56,-58);
+  ctx.quadraticCurveTo(50,-38,32,-36);
+  ctx.bezierCurveTo(12,-38,-10,-46,-26,-44);
+  ctx.quadraticCurveTo(-46,-34,-58,-46);
+  ctx.quadraticCurveTo(-62,-54,-54,-60);
+  ctx.closePath();ctx.fill();
+  // Licht auf dem Rücken, Schatten am Bauch
+  ctx.fillStyle=FUR_L;ctx.beginPath();ctx.moveTo(-46,-64);ctx.bezierCurveTo(-24,-75,6,-71,28,-74);ctx.quadraticCurveTo(4,-66,-46,-60);ctx.closePath();ctx.fill();
+  ctx.fillStyle='rgba(120,50,15,.18)';ell(-2,-44,30,5,-.05);ctx.fill();
+  // heller Brustfleck
+  ctx.fillStyle='#E9A877';ell(53,-47,3,5,-.4);ctx.fill();
+  // nahe Läufe
+  hindLeg(-42,-50,air?-.8:sw*.55,FUR);
+  frontLeg(30,-48,air?1.05:sw2*.6,FUR);
+  // Halsband
+  ctx.strokeStyle=COLLAR;ctx.lineWidth=6;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(46,-96);ctx.quadraticCurveTo(56,-86,62,-78);ctx.stroke();
+  ctx.fillStyle='#C9A24A';ell(58,-82,3,3);ctx.fill();
+  // Kopf: breiter Schädel, deutlicher Stopp, Schnauze
+  ctx.fillStyle=FUR;
+  ctx.beginPath();ctx.moveTo(48,-104);
+  ctx.quadraticCurveTo(52,-124,70,-122);
+  ctx.quadraticCurveTo(80,-121,82,-114);
+  ctx.quadraticCurveTo(96,-114,100,-106);
+  ctx.quadraticCurveTo(102,-96,94,-94);
+  ctx.quadraticCurveTo(84,-90,72,-92);
+  ctx.quadraticCurveTo(62,-88,56,-94);
+  ctx.closePath();ctx.fill();
+  ctx.fillStyle=FUR_L;ell(66,-116,11,4,-.2);ctx.fill();
+  // Nase
+  ctx.fillStyle=NOSE;ell(99,-107,5,4.2);ctx.fill();
+  ctx.fillStyle='rgba(255,255,255,.35)';ell(98,-108.5,1.6,1);ctx.fill();
+  // Maul, Zunge oder Ball
+  ctx.strokeStyle=NOSE;ctx.lineWidth=1.6;ctx.beginPath();ctx.moveTo(97,-98);ctx.quadraticCurveTo(86,-93,76,-95);ctx.stroke();
+  if(state.ball){ctx.fillStyle='#D7F25A';ell(95,-94,8,8);ctx.fill();ctx.strokeStyle='#fff';ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(88,-94,7,-.8,.8);ctx.stroke();}
+  else if(!(state.stumble>0)){ctx.fillStyle='#E46A7A';rr(81,-96,9,14+Math.sin(s*2)*2,5);ctx.fill();ctx.strokeStyle='#C24E60';ctx.beginPath();ctx.moveTo(85.5,-94);ctx.lineTo(85.5,-85);ctx.stroke();}
+  // Auge mit Braue
+  if(state.stumble>0){ctx.strokeStyle='#2A1A12';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(72,-114);ctx.lineTo(78,-109);ctx.moveTo(78,-114);ctx.lineTo(72,-109);ctx.stroke();}
+  else{ctx.fillStyle='#3A2216';ell(75,-112,3.4,3.6);ctx.fill();ctx.fillStyle='#fff';ell(76,-113.3,1.2,1.2);ctx.fill();
+    ctx.strokeStyle=FUR_D;ctx.lineWidth=1.6;ctx.beginPath();ctx.moveTo(70,-118);ctx.quadraticCurveTo(75,-120,80,-117);ctx.stroke();}
+  // Schlappohr, etwas dunkler
+  var flap=air?-.45:Math.sin(s*2)*.12;
+  ctx.save();ctx.translate(60,-118);ctx.rotate(.1+flap);
+  ctx.fillStyle=EAR;ctx.beginPath();ctx.moveTo(-6,0);ctx.quadraticCurveTo(-16,12,-12,28);ctx.quadraticCurveTo(-5,35,4,27);ctx.quadraticCurveTo(9,10,7,0);ctx.closePath();ctx.fill();
+  ctx.restore();
+  // Schwindelsterne
+  if(state.stumble>0){for(var k=0;k<3;k++){var a=state.wag*2+k*2.1;ctx.fillStyle='#FFD54A';star(70+Math.cos(a)*22,-136+Math.sin(a)*6,6);}}
+  ctx.restore();
+}
+
+/* ---------- Ton und Vorlesen (standardmäßig aus) ---------- */
+var sound=false,actx=null,voice=null;
+function pickVoice(){try{var v=speechSynthesis.getVoices();voice=v.find(function(x){return /^de/i.test(x.lang);})||null;}catch(e){}}
+if('speechSynthesis' in window){pickVoice();speechSynthesis.onvoiceschanged=pickVoice;}
+function say(t){
+  if(!sound||!('speechSynthesis' in window))return;
+  try{speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.lang='de-DE';if(voice)u.voice=voice;u.rate=.95;u.pitch=1.1;speechSynthesis.speak(u);}catch(e){}
+}
+function tone(f1,f2,dur,type,vol){
+  if(!sound)return;
+  try{actx=actx||new (window.AudioContext||window.webkitAudioContext)();var o=actx.createOscillator(),g=actx.createGain(),t=actx.currentTime;
+    o.type=type||'sine';o.frequency.setValueAtTime(f1,t);o.frequency.exponentialRampToValueAtTime(f2,t+dur);
+    g.gain.setValueAtTime(vol||.12,t);g.gain.exponentialRampToValueAtTime(.001,t+dur);o.connect(g);g.connect(actx.destination);o.start(t);o.stop(t+dur);}catch(e){}
+}
+$('soundBtn').addEventListener('click',function(){
+  sound=!sound;this.textContent=sound?'🔊':'🔇';this.setAttribute('aria-label',sound?'Ton und Vorlesen ausschalten':'Ton und Vorlesen einschalten');
+  if(sound){tone(260,140,.12,'sawtooth',.1);if(R&&!$('play').hidden)say(R.task.speak);}else{try{speechSynthesis.cancel();}catch(e){}}
+});
+
+/* ---------- Aufgaben ---------- */
+function ri(a,b){return a+Math.floor(Math.random()*(b-a+1));}
+function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t;}return a;}
+var NUMW=['null','eins','zwei','drei','vier','fünf','sechs','sieben','acht','neun','zehn'];
+var LEVELS={
+  count:{label:'Zählen',n:3,make:function(){
+    var n=ri(1,10);
+    return {q:'',prompt:'Wie viele Knochen siehst du?',speak:'Wie viele Knochen siehst du?',a:n,bones:[n],min:1,max:10};
+  }},
+  plus:{label:'Plus & Minus',n:4,make:function(prev){
+    var t;
+    if(Math.random()<.55){var a=ri(1,15),b=ri(1,20-a);t={q:a+' + '+b+' = ?',speak:a+' plus '+b,a:a+b,bones:a+b<=10?[a,'+',b]:null};}
+    else{var c=ri(3,20),d=ri(1,c-1);t={q:c+' − '+d+' = ?',speak:c+' minus '+d,a:c-d,bones:c<=10?[{n:c,minus:d}]:null};}
+    t.prompt='Rechne aus:';t.min=0;t.max=20;return t;
+  }},
+  times:{label:'Einmaleins',n:4,make:function(){
+    var a=ri(1,10),b=ri(2,10);
+    return {q:a+' × '+b+' = ?',prompt:'Rechne aus:',speak:a+' mal '+b,a:a*b,bones:null,min:0,max:100,times:[a,b]};
+  }}
+};
+function options(t,n){
+  var set={},out=[t.a];set[t.a]=1;
+  var cands=[t.a+1,t.a-1,t.a+2,t.a-2,t.a+10,t.a-10];
+  if(t.times){cands=[t.times[0]*(t.times[1]+1),t.times[0]*(t.times[1]-1),(t.times[0]+1)*t.times[1],(t.times[0]-1)*t.times[1],t.a+1,t.a-1,t.a+2];}
+  shuffle(cands);
+  for(var i=0;i<cands.length&&out.length<n;i++){var c=cands[i];if(c>=t.min&&c<=t.max&&!set[c]){set[c]=1;out.push(c);}}
+  while(out.length<n){var r=ri(t.min,t.max);if(!set[r]){set[r]=1;out.push(r);}}
+  return out.sort(function(x,y){return x-y;});
+}
+
+/* ---------- Runde ---------- */
+var ROUND=10,R=null;
+function start(level){
+  R={level:level,L:LEVELS[level],i:0,first:0,tries:0,bowl:0,task:null,locked:false,seen:{}};
+  $('intro').hidden=true;$('end').hidden=true;$('play').hidden=false;
+  next();
+}
+function next(){
+  if(R.i>=ROUND){finish();return;}
+  var t,guard=0;
+  do{t=R.L.make();guard++;}while(R.seen[t.q+t.a+(t.bones?JSON.stringify(t.bones):'')]&&guard<20);
+  R.seen[t.q+t.a+(t.bones?JSON.stringify(t.bones):'')]=1;
+  R.task=t;R.tries=0;R.locked=false;
+  var paws='';for(var i=0;i<ROUND;i++)paws+='<span class="'+(i<R.i?'done':i===R.i?'now':'')+'">🐾</span>';
+  $('paws').innerHTML=paws;
+  $('prompt').textContent=t.prompt;
+  $('q').innerHTML=t.q?t.q.replace('?','<span class="gap">?</span>'):'';
+  $('q').hidden=!t.q;
+  renderBones(t.bones);
+  var box=$('answers');box.innerHTML='';box.classList.toggle('three',R.L.n===3);
+  options(t,R.L.n).forEach(function(v){
+    var b=document.createElement('button');b.type='button';b.className='btn ans';b.textContent=v;
+    b.addEventListener('click',function(){answer(v,b);});box.appendChild(b);
+  });
+  $('feedback').textContent='';$('feedback').className='feedback';
+  say(t.speak);
+}
+function renderBones(spec){
+  var el=$('bones');el.innerHTML='';
+  if(!spec)return;
+  spec.forEach(function(p){
+    if(p==='+'){var o=document.createElement('span');o.className='op';o.textContent='+';el.appendChild(o);return;}
+    var g=document.createElement('div');g.className='grp';
+    var n=typeof p==='number'?p:p.n,m=typeof p==='number'?0:p.minus;
+    g.style.gridTemplateColumns='repeat('+Math.min(n,5)+',auto)';
+    for(var i=0;i<n;i++){var s=document.createElement('span');s.textContent='🦴';if(i>=n-m){s.style.opacity='.25';}g.appendChild(s);}
+    el.appendChild(g);
+  });
+}
+var PRAISE=['Super!','Richtig!','Wau, toll!','Genau!','Klasse!','Prima!'];
+var ENCOURAGE=['Fast! Versuch es nochmal.','Knapp daneben, probier noch eins.','Nicht ganz, du schaffst das!'];
+function answer(v,b){
+  if(R.locked||b.classList.contains('wrong'))return;
+  if(v===R.task.a){
+    R.locked=true;b.classList.add('right');
+    if(R.tries===0)R.first++;
+    R.i++;R.bowl++;
+    var p=PRAISE[Math.floor(Math.random()*PRAISE.length)];
+    $('feedback').textContent='🦴 '+p;$('feedback').className='feedback ok';
+    tone(660,990,.12,'triangle',.12);setTimeout(function(){tone(880,1320,.15,'triangle',.1);},110);
+    say(p+(R.task.speak&&R.level!=='count'?' '+R.task.speak+' ist '+R.task.a:' Es sind '+(NUMW[R.task.a]||R.task.a)));
+    happy();
+    setTimeout(next,1300);
+  }else{
+    R.tries++;b.classList.add('wrong');b.setAttribute('aria-disabled','true');
+    var e=ENCOURAGE[Math.floor(Math.random()*ENCOURAGE.length)];
+    $('feedback').textContent=e;$('feedback').className='feedback no';
+    tone(220,160,.18,'sine',.08);say(e);oops();
+  }
+}
+function finish(){
+  $('play').hidden=true;$('end').hidden=false;
+  var s=R.first>=9?3:R.first>=6?2:1;
+  var h='';for(var i=0;i<3;i++)h+=i<s?'⭐':'<span class="off">⭐</span>';$('stars').innerHTML=h;
+  $('endTitle').textContent=['Gut gemacht!','Super gemacht!','Wau, perfekt!'][s-1];
+  $('endText').textContent='Kodas Napf ist voll: 10 Knochen! '+R.first+' von 10 Aufgaben hast du gleich beim ersten Versuch gelöst.';
+  say($('endTitle').textContent+' Kodas Napf ist voll.');
+  var b=loadBest();if(!b[R.level]||s>b[R.level]){b[R.level]=s;saveBest(b);}
+  celebrate=3;$('again').focus();
+}
+$('again').addEventListener('click',function(){start(R.level);});
+$('menu').addEventListener('click',showMenu);
+document.querySelectorAll('[data-level]').forEach(function(b){b.addEventListener('click',function(){start(b.getAttribute('data-level'));});});
+document.addEventListener('keydown',function(e){
+  if($('play').hidden||!R)return;
+  var n=parseInt(e.key,10);if(isNaN(n))return;
+  // Zifferntasten wählen die passende Antwort, falls eindeutig
+  var btns=[].slice.call(document.querySelectorAll('.ans'));
+  var hit=btns.filter(function(b){return b.textContent===String(n);});
+  if(hit.length===1)hit[0].click();
+});
+function loadBest(){try{return JSON.parse(localStorage.getItem('koda-rechnen-best')||'{}');}catch(e){return {};}}
+function saveBest(b){try{localStorage.setItem('koda-rechnen-best',JSON.stringify(b));}catch(e){}}
+function showMenu(){
+  $('end').hidden=true;$('play').hidden=true;$('intro').hidden=false;R=null;
+  var b=loadBest(),names={count:'Zählen',plus:'Plus & Minus',times:'Einmaleins'},parts=[];
+  Object.keys(names).forEach(function(k){if(b[k])parts.push(names[k]+' '+'⭐'.repeat(b[k]));});
+  $('best').textContent=parts.length?'Deine besten Runden · '+parts.join(' · '):'';
+}
+
+/* ---------- Szene: Koda und sein Napf ---------- */
+var kY=0,kV=0,wag=0,shake=0,celebrate=0,flying=[],hearts=[];
+function happy(){kV=-380;flying.push({t:0});for(var i=0;i<4;i++)hearts.push({x:150+Math.random()*80,y:70+Math.random()*30,life:1.2});}
+function oops(){shake=.5;}
+function drawScene(dt,t){
+  ctx.setTransform(cv.width/W,0,0,cv.height/H,0,0);
+  var g=ctx.createLinearGradient(0,0,0,H);g.addColorStop(0,'#BFE3F2');g.addColorStop(1,'#EAF6E4');ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+  ctx.fillStyle='rgba(255,236,170,.9)';ell(420,40,22,22);ctx.fill();
+  ctx.fillStyle='rgba(255,255,255,.85)';ell(90,40,30,11);ctx.fill();ell(112,32,22,11);ctx.fill();
+  ctx.fillStyle='#B9D9A6';ctx.beginPath();ctx.moveTo(0,GROUND);for(var x=0;x<=W;x+=12)ctx.lineTo(x,GROUND-34-Math.sin(x*.012+1)*14);ctx.lineTo(W,GROUND);ctx.fill();
+  ctx.fillStyle='#8BBF5E';ctx.fillRect(0,GROUND,W,H-GROUND);
+  // Napf mit Knochen
+  var bx=380,by=GROUND;
+  var n=R?R.bowl:0;
+  for(var i=0;i<Math.min(n,10);i++){var px=bx-26+(i%5)*13,py=by-26-Math.floor(i/5)*9;bone(px,py,.55,(i%2?-.4:.4));}
+  ctx.fillStyle='#C2621F';ctx.beginPath();ctx.moveTo(bx-42,by-24);ctx.lineTo(bx+42,by-24);ctx.lineTo(bx+34,by);ctx.lineTo(bx-34,by);ctx.closePath();ctx.fill();
+  ctx.fillStyle='#E07B35';rr(bx-44,by-28,88,8,4);ctx.fill();
+  ctx.fillStyle='#fff';ctx.font='800 13px Outfit, sans-serif';ctx.textAlign='center';ctx.fillText('KODA',bx,by-8);
+  // fliegende Knochen zum Napf
+  for(var f=flying.length-1;f>=0;f--){var o=flying[f];o.t+=dt*1.6;var k=Math.min(1,o.t),fx=230+(bx-230)*k,fy=110-Math.sin(k*Math.PI)*70+(by-30-110)*k;bone(fx,fy,.8,o.t*8);if(o.t>=1)flying.splice(f,1);}
+  // Koda (Physik)
+  kV+=1500*dt;kY+=kV*dt;if(kY>0){kY=0;kV=0;}
+  if(celebrate>0){celebrate-=dt;if(kY===0&&Math.random()<dt*3)kV=-380;if(Math.random()<dt*5)hearts.push({x:120+Math.random()*240,y:90+Math.random()*40,life:1.4});}
+  wag+=dt*(kY<0||celebrate>0?20:7);
+  if(shake>0)shake-=dt;
+  ctx.save();
+  ctx.translate(150+(shake>0?Math.sin(shake*40)*4:0),GROUND+kY);ctx.scale(.95,.95);
+  drawKoda(0,0,kY<0?0:Math.sin(t*1.5)*.2,kY<0,{stumble:0,wag:wag,y:kY,ball:false,blink:false});
+  ctx.restore();
+  // Herzchen
+  for(var h=hearts.length-1;h>=0;h--){var p=hearts[h];p.life-=dt;p.y-=40*dt;ctx.globalAlpha=Math.max(0,Math.min(1,p.life));heart(p.x,p.y,8);ctx.globalAlpha=1;if(p.life<=0)hearts.splice(h,1);}
+}
+function bone(x,y,s,rot){
+  ctx.save();ctx.translate(x,y);ctx.rotate(rot||0);ctx.scale(s,s);
+  ctx.fillStyle='#FFF6E3';ctx.strokeStyle='#C9A982';ctx.lineWidth=2;
+  rr(-13,-4,26,8,4);ctx.fill();ctx.stroke();
+  [[-13,-5],[-13,5],[13,-5],[13,5]].forEach(function(p){ell(p[0],p[1],5.5,5.5);ctx.fill();ctx.stroke();});
+  rr(-12,-3,24,6,3);ctx.fill();ctx.restore();
+}
+function heart(x,y,r){ctx.fillStyle='#E84A6A';ctx.beginPath();ctx.moveTo(x,y+r*.6);ctx.bezierCurveTo(x-r*1.4,y-r*.4,x-r*.6,y-r*1.4,x,y-r*.5);ctx.bezierCurveTo(x+r*.6,y-r*1.4,x+r*1.4,y-r*.4,x,y+r*.6);ctx.fill();}
+function resize(){var r=cv.getBoundingClientRect(),d=Math.min(window.devicePixelRatio||1,2),w=Math.round(r.width*d),h=Math.round(r.width*H/W*d);if(w>0&&(cv.width!==w||cv.height!==h)){cv.width=w;cv.height=h;}}
+window.addEventListener('resize',resize);
+var last=performance.now();
+function loop(now){var dt=Math.min(.05,(now-last)/1000);last=now;drawScene(dt,now/1000);requestAnimationFrame(loop);}
+resize();showMenu();requestAnimationFrame(loop);
+window.KodaRechnen={get round(){return R;},start:start};
+})();
+</script>
+</body>
+</html>
