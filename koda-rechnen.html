@@ -58,6 +58,10 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font
 .ans{font-size:clamp(2rem,8vw,2.8rem);padding:14px 8px;min-height:84px}
 .ans.right{background:var(--ok);box-shadow:0 5px 0 #1E5E2D}
 .ans.wrong{background:var(--no-soft);color:var(--no);box-shadow:none;cursor:default}
+.roundinfo{text-align:center;font-family:var(--display);font-weight:800;color:var(--accent-ink);background:var(--soft);border-radius:999px;padding:4px 14px;margin:12px auto 0;width:fit-content;max-width:100%}
+.mood{display:flex;justify-content:center;gap:6px;font-size:clamp(1.6rem,7vw,2.4rem);margin:6px 0 4px;min-height:1.2em}
+.mood span{opacity:.25;filter:grayscale(1);transition:all .3s}
+.mood span.on{opacity:1;filter:none;transform:scale(1.35)}
 .feedback{text-align:center;font-family:var(--display);font-weight:800;font-size:1.3rem;min-height:2em;margin:10px 0 0}
 .feedback.ok{color:var(--ok)}.feedback.no{color:var(--no)}
 
@@ -84,22 +88,30 @@ footer a{color:var(--muted);font-weight:700;text-decoration:none;margin:0 8px}
 
     <section class="intro" id="intro">
       <h2>Hilf Koda beim Rechnen!</h2>
-      <p>Für jede richtige Antwort bekommt Koda einen Knochen in seinen Napf. Wähle dein Spiel:</p>
+      <p>Für jede Aufgabe, die du gleich beim ersten Versuch löst, bekommt Koda einen Knochen. Nach 10 Aufgaben futtert er seinen Napf leer. Wähle dein Spiel:</p>
       <div class="levels">
         <button class="btn lvl g" type="button" data-level="count"><span class="e" aria-hidden="true">🐾</span>Zählen<small>bis 10 · Kindergarten</small></button>
-        <button class="btn lvl" type="button" data-level="plus"><span class="e" aria-hidden="true">➕</span>Plus &amp; Minus<small>bis 20 · Schule</small></button>
+        <button class="btn lvl" type="button" data-level="plus"><span class="e" aria-hidden="true">➕</span>Plus &amp; Minus<small>4 Runden bis 20 · Schule</small></button>
         <button class="btn lvl b" type="button" data-level="times"><span class="e" aria-hidden="true">✖️</span>Einmaleins<small>kleines 1×1 · Schule</small></button>
       </div>
       <p class="best" id="best"></p>
     </section>
 
     <section id="play" hidden>
+      <p class="roundinfo" id="roundInfo"></p>
       <div class="paws" id="paws" aria-hidden="true"></div>
       <p class="prompt" id="prompt"></p>
       <div class="q" id="q" aria-live="polite"></div>
       <div class="bones" id="bones" aria-hidden="true"></div>
       <div class="answers" id="answers"></div>
       <p class="feedback" id="feedback" role="status"></p>
+    </section>
+
+    <section class="end" id="feed" hidden>
+      <h2 id="feedTitle">Koda futtert …</h2>
+      <div class="mood" id="mood" aria-hidden="true"></div>
+      <p id="feedText" aria-live="polite"></p>
+      <div class="row"><button class="btn" type="button" id="feedNext" hidden>Weiter</button></div>
     </section>
 
     <section class="end" id="end" hidden>
@@ -165,9 +177,12 @@ function drawKoda(x,y,run,air,state){
   ctx.fillStyle=FUR;ctx.beginPath();
   ctx.moveTo(-54,-60);
   ctx.bezierCurveTo(-30,-76,6,-72,30,-76);
-  ctx.quadraticCurveTo(38,-90,46,-106);
-  ctx.lineTo(70,-94);
-  ctx.quadraticCurveTo(68,-70,56,-58);
+  var hd=state.head||0,PX=48,PY=-62;
+  function rp(x,y){var dx=x-PX,dy=y-PY,c=Math.cos(hd),s=Math.sin(hd);return [PX+dx*c-dy*s,PY+dx*s+dy*c];}
+  var n1=rp(38,-90),n2=rp(46,-106),n3=rp(70,-94),n4=rp(68,-70);
+  ctx.quadraticCurveTo(n1[0],n1[1],n2[0],n2[1]);
+  ctx.lineTo(n3[0],n3[1]);
+  ctx.quadraticCurveTo(n4[0],n4[1],56,-58);
   ctx.quadraticCurveTo(50,-38,32,-36);
   ctx.bezierCurveTo(12,-38,-10,-46,-26,-44);
   ctx.quadraticCurveTo(-46,-34,-58,-46);
@@ -181,6 +196,8 @@ function drawKoda(x,y,run,air,state){
   // nahe Läufe
   hindLeg(-42,-50,air?-.8:sw*.55,FUR);
   frontLeg(30,-48,air?1.05:sw2*.6,FUR);
+  // Kopf, Halsband und Ohr drehen sich beim Fressen mit
+  ctx.save();ctx.translate(PX,PY);ctx.rotate(hd);ctx.translate(-PX,-PY);
   // Halsband
   ctx.strokeStyle=COLLAR;ctx.lineWidth=6;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(46,-96);ctx.quadraticCurveTo(56,-86,62,-78);ctx.stroke();
   ctx.fillStyle='#C9A24A';ell(58,-82,3,3);ctx.fill();
@@ -211,6 +228,7 @@ function drawKoda(x,y,run,air,state){
   ctx.save();ctx.translate(60,-118);ctx.rotate(.1+flap);
   ctx.fillStyle=EAR;ctx.beginPath();ctx.moveTo(-6,0);ctx.quadraticCurveTo(-16,12,-12,28);ctx.quadraticCurveTo(-5,35,4,27);ctx.quadraticCurveTo(9,10,7,0);ctx.closePath();ctx.fill();
   ctx.restore();
+  ctx.restore();
   // Schwindelsterne
   if(state.stumble>0){for(var k=0;k<3;k++){var a=state.wag*2+k*2.1;ctx.fillStyle='#FFD54A';star(70+Math.cos(a)*22,-136+Math.sin(a)*6,6);}}
   ctx.restore();
@@ -239,18 +257,42 @@ $('soundBtn').addEventListener('click',function(){
 function ri(a,b){return a+Math.floor(Math.random()*(b-a+1));}
 function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t;}return a;}
 var NUMW=['null','eins','zwei','drei','vier','fünf','sechs','sieben','acht','neun','zehn'];
+function plusTask(a,b){return {q:a+' + '+b+' = ?',speak:a+' plus '+b,a:a+b};}
+function minusTask(c,d){return {q:c+' − '+d+' = ?',speak:c+' minus '+d,a:c-d};}
 var LEVELS={
-  count:{label:'Zählen',n:3,make:function(){
+  count:{label:'Zählen',n:3,rounds:[{sub:'Zählen bis 10'}],make:function(){
     var n=ri(1,10);
     return {q:'',prompt:'Wie viele Knochen siehst du?',speak:'Wie viele Knochen siehst du?',a:n,bones:[n],min:1,max:10};
   }},
-  plus:{label:'Plus & Minus',n:4,make:function(prev){
-    var t;
-    if(Math.random()<.55){var a=ri(1,15),b=ri(1,20-a);t={q:a+' + '+b+' = ?',speak:a+' plus '+b,a:a+b,bones:a+b<=10?[a,'+',b]:null};}
-    else{var c=ri(3,20),d=ri(1,c-1);t={q:c+' − '+d+' = ?',speak:c+' minus '+d,a:c-d,bones:c<=10?[{n:c,minus:d}]:null};}
-    t.prompt='Rechne aus:';t.min=0;t.max=20;return t;
+  plus:{label:'Plus & Minus',n:4,rounds:[
+      {sub:'Plus und Minus bis 10'},
+      {sub:'Bis 20, ohne über die 10 zu springen'},
+      {sub:'Bis 20, mit Sprung über die 10'},
+      {sub:'Finde die fehlende Zahl'}],
+    make:function(r){
+      var t,plus=Math.random()<.5;
+      if(r===0){
+        if(plus){var a=ri(1,9),b=ri(1,10-a);t=plusTask(a,b);t.bones=[a,'+',b];}
+        else{var c=ri(2,10),d=ri(1,c-1);t=minusTask(c,d);t.bones=[{n:c,minus:d}];}
+      }else if(r===1){
+        // Zehner bleibt gleich, z. B. 13 + 4 oder 17 − 5
+        if(plus){var a1=ri(11,18),b1=ri(1,9-a1%10);t=plusTask(a1,b1);}
+        else{var c1=ri(12,19),d1=ri(1,c1%10);t=minusTask(c1,d1);}
+      }else if(r===2){
+        // Zehnerübergang, z. B. 8 + 5 oder 14 − 6
+        if(plus){var a2=ri(2,9),b2=ri(11-a2,9);t=plusTask(a2,b2);}
+        else{var c2=ri(11,18),d2=ri(c2%10+1,9);t=minusTask(c2,d2);}
+      }else{
+        // Platzhalteraufgaben bis 20
+        var k=ri(0,3),s,x,y;
+        if(k===0){s=ri(11,20);x=ri(2,s-2);t={q:x+' + ? = '+s,speak:x+' plus wie viel ist '+s,a:s-x};}
+        else if(k===1){s=ri(11,20);y=ri(2,s-2);t={q:'? + '+y+' = '+s,speak:'Wie viel plus '+y+' ist '+s,a:s-y};}
+        else if(k===2){s=ri(11,20);y=ri(2,s-2);t={q:s+' − ? = '+(s-y),speak:s+' minus wie viel ist '+(s-y),a:y};}
+        else{y=ri(2,9);s=ri(Math.max(1,11-y),20-y);t={q:'? − '+y+' = '+s,speak:'Wie viel minus '+y+' ist '+s,a:s+y};}
+      }
+      t.prompt=r===3?'Welche Zahl fehlt?':'Rechne aus:';t.min=0;t.max=20;t.bones=t.bones||null;return t;
   }},
-  times:{label:'Einmaleins',n:4,make:function(){
+  times:{label:'Einmaleins',n:4,rounds:[{sub:'Kleines Einmaleins'}],make:function(){
     var a=ri(1,10),b=ri(2,10);
     return {q:a+' × '+b+' = ?',prompt:'Rechne aus:',speak:a+' mal '+b,a:a*b,bones:null,min:0,max:100,times:[a,b]};
   }}
@@ -265,18 +307,27 @@ function options(t,n){
   return out.sort(function(x,y){return x-y;});
 }
 
-/* ---------- Runde ---------- */
+/* ---------- Ablauf: Runden zu je 10 Aufgaben, danach futtert Koda ---------- */
 var ROUND=10,R=null;
+function show(id){['intro','play','feed','end'].forEach(function(s){$(s).hidden=s!==id;});}
 function start(level){
-  R={level:level,L:LEVELS[level],i:0,first:0,tries:0,bowl:0,task:null,locked:false,seen:{}};
-  $('intro').hidden=true;$('end').hidden=true;$('play').hidden=false;
-  next();
+  var L=LEVELS[level];
+  R={level:level,L:L,round:0,rounds:L.rounds.length,i:0,tries:0,bowl:0,eatenTotal:0,task:null,locked:false,seen:{}};
+  startRound();
 }
-function next(){
-  if(R.i>=ROUND){finish();return;}
-  var t,guard=0;
-  do{t=R.L.make();guard++;}while(R.seen[t.q+t.a+(t.bones?JSON.stringify(t.bones):'')]&&guard<20);
-  R.seen[t.q+t.a+(t.bones?JSON.stringify(t.bones):'')]=1;
+function startRound(){
+  R.i=0;R.bowl=0;R.seen={};
+  show('play');
+  var info=R.rounds>1?'Runde '+(R.round+1)+' von '+R.rounds+' · '+R.L.rounds[R.round].sub:R.L.rounds[0].sub;
+  $('roundInfo').textContent=info;
+  if(R.rounds>1)say('Runde '+(R.round+1)+'. '+R.L.rounds[R.round].sub);
+  next(R.rounds>1);
+}
+function next(quiet){
+  if(R.i>=ROUND){feedKoda();return;}
+  var t,guard=0,key;
+  do{t=R.L.make(R.round);key=t.q+'|'+t.a+'|'+(t.bones?JSON.stringify(t.bones):'');guard++;}while(R.seen[key]&&guard<30);
+  R.seen[key]=1;
   R.task=t;R.tries=0;R.locked=false;
   var paws='';for(var i=0;i<ROUND;i++)paws+='<span class="'+(i<R.i?'done':i===R.i?'now':'')+'">🐾</span>';
   $('paws').innerHTML=paws;
@@ -290,7 +341,7 @@ function next(){
     b.addEventListener('click',function(){answer(v,b);});box.appendChild(b);
   });
   $('feedback').textContent='';$('feedback').className='feedback';
-  say(t.speak);
+  if(quiet)setTimeout(function(){say(t.speak);},1800);else say(t.speak);
 }
 function renderBones(spec){
   var el=$('bones');el.innerHTML='';
@@ -310,14 +361,16 @@ function answer(v,b){
   if(R.locked||b.classList.contains('wrong'))return;
   if(v===R.task.a){
     R.locked=true;b.classList.add('right');
-    if(R.tries===0)R.first++;
-    R.i++;R.bowl++;
+    var first=R.tries===0;
+    R.i++;
     var p=PRAISE[Math.floor(Math.random()*PRAISE.length)];
-    $('feedback').textContent='🦴 '+p;$('feedback').className='feedback ok';
+    if(first){R.bowl++;$('feedback').textContent='🦴 '+p+' Ein Knochen für Koda.';happy(true);}
+    else{$('feedback').textContent=p+' Beim ersten Versuch gibt es einen Knochen.';happy(false);}
+    $('feedback').className='feedback ok';
     tone(660,990,.12,'triangle',.12);setTimeout(function(){tone(880,1320,.15,'triangle',.1);},110);
-    say(p+(R.task.speak&&R.level!=='count'?' '+R.task.speak+' ist '+R.task.a:' Es sind '+(NUMW[R.task.a]||R.task.a)));
-    happy();
-    setTimeout(next,1300);
+    var sol=R.level==='count'?' Es sind '+(NUMW[R.task.a]||R.task.a)+'.':'';
+    say(p+sol);
+    setTimeout(function(){next(false);},1400);
   }else{
     R.tries++;b.classList.add('wrong');b.setAttribute('aria-disabled','true');
     var e=ENCOURAGE[Math.floor(Math.random()*ENCOURAGE.length)];
@@ -325,13 +378,46 @@ function answer(v,b){
     tone(220,160,.18,'sine',.08);say(e);oops();
   }
 }
+/* Stimmung nach dem Fressen: je mehr Knochen, desto glücklicher */
+var MOODS=[
+  {min:0,face:'🥺',title:'Leerer Napf',text:'Koda schnuppert im leeren Napf. Beim nächsten Mal gibt es bestimmt Knochen!',jumps:0,hearts:0},
+  {min:1,face:'🙂',title:'Ein kleiner Snack',text:'Koda kaut zufrieden. Da geht noch mehr!',jumps:1,hearts:2},
+  {min:4,face:'😊',title:'Lecker!',text:'Koda wedelt fröhlich mit dem Schwanz.',jumps:2,hearts:5},
+  {min:7,face:'😄',title:'Mmmh, richtig gut!',text:'Koda macht Freudensprünge!',jumps:4,hearts:10},
+  {min:10,face:'🤩',title:'Ein voller Napf!',text:'Koda ist kugelrund satt und überglücklich!',jumps:7,hearts:24}
+];
+function moodFor(n){var m=MOODS[0];MOODS.forEach(function(x){if(n>=x.min)m=x;});return m;}
+function feedKoda(){
+  show('feed');
+  var n=R.bowl;R.eatenTotal+=n;R.lastEaten=n;
+  $('feedTitle').textContent=n?'Koda futtert …':'Koda schaut in den Napf …';
+  $('mood').innerHTML='';$('feedText').textContent='';$('feedNext').hidden=true;
+  feed={phase:'walk',t:0,eaten:0,n:n};
+  say(n?'Koda futtert seine Knochen.':'Koda schaut in den Napf.');
+}
+function feedDone(){
+  var n=feed.n,m=moodFor(n);
+  var faces='';MOODS.forEach(function(x){faces+='<span class="'+(x===m?'on':'')+'">'+x.face+'</span>';});
+  $('mood').innerHTML=faces;
+  $('feedTitle').textContent=m.title;
+  $('feedText').textContent=n+' von 10 Knochen gefuttert. '+m.text;
+  var last=R.round+1>=R.rounds;
+  var btn=$('feedNext');btn.hidden=false;
+  btn.textContent=last?'⭐ Zum Ergebnis':'▶️ Weiter mit Runde '+(R.round+2);
+  btn.focus();
+  say(m.title+' '+m.text);
+}
+$('feedNext').addEventListener('click',function(){
+  if(R.round+1<R.rounds){R.round++;startRound();}else finish();
+});
 function finish(){
-  $('play').hidden=true;$('end').hidden=false;
-  var s=R.first>=9?3:R.first>=6?2:1;
+  show('end');
+  var total=R.rounds*ROUND,r=R.eatenTotal/total;
+  var s=r>=.9?3:r>=.6?2:1;
   var h='';for(var i=0;i<3;i++)h+=i<s?'⭐':'<span class="off">⭐</span>';$('stars').innerHTML=h;
   $('endTitle').textContent=['Gut gemacht!','Super gemacht!','Wau, perfekt!'][s-1];
-  $('endText').textContent='Kodas Napf ist voll: 10 Knochen! '+R.first+' von 10 Aufgaben hast du gleich beim ersten Versuch gelöst.';
-  say($('endTitle').textContent+' Kodas Napf ist voll.');
+  $('endText').textContent=(R.rounds>1?'Alle '+R.rounds+' Runden geschafft! ':'')+'Koda hat '+R.eatenTotal+' von '+total+' Knochen gefuttert.';
+  say($('endTitle').textContent+' '+$('endText').textContent);
   var b=loadBest();if(!b[R.level]||s>b[R.level]){b[R.level]=s;saveBest(b);}
   celebrate=3;$('again').focus();
 }
@@ -349,16 +435,41 @@ document.addEventListener('keydown',function(e){
 function loadBest(){try{return JSON.parse(localStorage.getItem('koda-rechnen-best')||'{}');}catch(e){return {};}}
 function saveBest(b){try{localStorage.setItem('koda-rechnen-best',JSON.stringify(b));}catch(e){}}
 function showMenu(){
-  $('end').hidden=true;$('play').hidden=true;$('intro').hidden=false;R=null;
+  show('intro');R=null;feed=null;kX=HOME;
   var b=loadBest(),names={count:'Zählen',plus:'Plus & Minus',times:'Einmaleins'},parts=[];
   Object.keys(names).forEach(function(k){if(b[k])parts.push(names[k]+' '+'⭐'.repeat(b[k]));});
-  $('best').textContent=parts.length?'Deine besten Runden · '+parts.join(' · '):'';
+  $('best').textContent=parts.length?'Deine besten Spiele · '+parts.join(' · '):'';
 }
 
 /* ---------- Szene: Koda und sein Napf ---------- */
-var kY=0,kV=0,wag=0,shake=0,celebrate=0,flying=[],hearts=[];
-function happy(){kV=-380;flying.push({t:0});for(var i=0;i<4;i++)hearts.push({x:150+Math.random()*80,y:70+Math.random()*30,life:1.2});}
+var HOME=150,EAT=262,kX=HOME,kY=0,kV=0,wag=0,shake=0,celebrate=0,flying=[],hearts=[],crumbs=[],feed=null,dip=0,run=0;
+function happy(withBone){kV=-380;if(withBone)flying.push({t:0});for(var i=0;i<4;i++)hearts.push({x:kX+Math.random()*80,y:70+Math.random()*30,life:1.2});}
 function oops(){shake=.5;}
+function updateFeed(dt){
+  if(!feed)return;
+  feed.t+=dt;
+  if(feed.phase==='walk'){
+    kX=Math.min(EAT,kX+120*dt);run+=dt*9;
+    if(kX>=EAT){feed.phase='eat';feed.t=0;}
+  }else if(feed.phase==='eat'){
+    dip=Math.min(1,dip+dt*4);
+    if(feed.n===0){if(feed.t>1.4){feed.phase='react';feed.t=0;}}
+    else if(feed.t>.42&&R.bowl>0){
+      feed.t=0;R.bowl--;feed.eaten++;
+      tone(140+Math.random()*60,90,.07,'square',.05);
+      for(var i=0;i<5;i++)crumbs.push({x:380+(Math.random()-.5)*30,y:GROUND-30,vx:(Math.random()-.5)*90,vy:-60-Math.random()*60,life:.6});
+    }else if(R.bowl===0&&feed.t>.5){feed.phase='react';feed.t=0;}
+  }else if(feed.phase==='react'){
+    dip=Math.max(0,dip-dt*4);
+    var m=moodFor(feed.n);
+    if(!feed.reacted){feed.reacted=true;feed.jumps=m.jumps;for(var h=0;h<m.hearts;h++)hearts.push({x:kX-40+Math.random()*220,y:60+Math.random()*80,life:1.2+Math.random()*1.4});feedDone();}
+    if(feed.jumps>0&&kY===0&&feed.t>.15){kV=-300-feed.n*12;feed.jumps--;feed.t=0;}
+    if(feed.jumps===0&&kY===0&&feed.t>.6){feed.phase='back';}
+  }else if(feed.phase==='back'){
+    kX=Math.max(HOME,kX-120*dt);run+=dt*9;
+    if(kX<=HOME){feed=null;run=0;}
+  }
+}
 function drawScene(dt,t){
   ctx.setTransform(cv.width/W,0,0,cv.height/H,0,0);
   var g=ctx.createLinearGradient(0,0,0,H);g.addColorStop(0,'#BFE3F2');g.addColorStop(1,'#EAF6E4');ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
@@ -366,6 +477,7 @@ function drawScene(dt,t){
   ctx.fillStyle='rgba(255,255,255,.85)';ell(90,40,30,11);ctx.fill();ell(112,32,22,11);ctx.fill();
   ctx.fillStyle='#B9D9A6';ctx.beginPath();ctx.moveTo(0,GROUND);for(var x=0;x<=W;x+=12)ctx.lineTo(x,GROUND-34-Math.sin(x*.012+1)*14);ctx.lineTo(W,GROUND);ctx.fill();
   ctx.fillStyle='#8BBF5E';ctx.fillRect(0,GROUND,W,H-GROUND);
+  updateFeed(dt);
   // Napf mit Knochen
   var bx=380,by=GROUND;
   var n=R?R.bowl:0;
@@ -378,12 +490,19 @@ function drawScene(dt,t){
   // Koda (Physik)
   kV+=1500*dt;kY+=kV*dt;if(kY>0){kY=0;kV=0;}
   if(celebrate>0){celebrate-=dt;if(kY===0&&Math.random()<dt*3)kV=-380;if(Math.random()<dt*5)hearts.push({x:120+Math.random()*240,y:90+Math.random()*40,life:1.4});}
-  wag+=dt*(kY<0||celebrate>0?20:7);
+  wag+=dt*(kY<0||celebrate>0||(feed&&feed.phase!=='walk')?20:7);
   if(shake>0)shake-=dt;
+  if(!feed&&dip>0)dip=Math.max(0,dip-dt*4);
+  var walking=feed&&(feed.phase==='walk'||feed.phase==='back');
   ctx.save();
-  ctx.translate(150+(shake>0?Math.sin(shake*40)*4:0),GROUND+kY);ctx.scale(.95,.95);
-  drawKoda(0,0,kY<0?0:Math.sin(t*1.5)*.2,kY<0,{stumble:0,wag:wag,y:kY,ball:false,blink:false});
+  ctx.translate(kX+(shake>0?Math.sin(shake*40)*4:0),GROUND+kY);
+  if(feed&&feed.phase==='back')ctx.scale(-1,1);
+  ctx.scale(.95,.95);
+  // beim Fressen den Kopf zum Napf senken
+  drawKoda(0,0,walking?run:(kY<0?0:Math.sin(t*1.5)*.2),kY<0,{stumble:0,wag:wag,y:kY,ball:false,blink:false,head:dip*1.2+(feed&&feed.phase==='eat'&&feed.n?Math.sin(t*18)*.08:0)});
   ctx.restore();
+  // Krümel
+  for(var c=crumbs.length-1;c>=0;c--){var q=crumbs[c];q.life-=dt;q.x+=q.vx*dt;q.y+=q.vy*dt;q.vy+=400*dt;ctx.fillStyle='rgba(240,225,195,'+Math.max(0,q.life*1.6)+')';ell(q.x,q.y,2.5,2.5);ctx.fill();if(q.life<=0)crumbs.splice(c,1);}
   // Herzchen
   for(var h=hearts.length-1;h>=0;h--){var p=hearts[h];p.life-=dt;p.y-=40*dt;ctx.globalAlpha=Math.max(0,Math.min(1,p.life));heart(p.x,p.y,8);ctx.globalAlpha=1;if(p.life<=0)hearts.splice(h,1);}
 }
