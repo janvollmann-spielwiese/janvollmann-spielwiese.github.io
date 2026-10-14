@@ -508,7 +508,11 @@ function update(dt){
   G.feathers.forEach(function(p){p.life-=dt;p.x+=p.vx*dt;p.y+=p.vy*dt;p.vy+=60*dt;p.r+=dt*3;});
   G.feathers=G.feathers.filter(function(p){return p.life>0;});
   if(G.mode==='play'||G.mode==='fetch')G.birds.forEach(function(b){if(b.dead&&b.landed)b.landT+=dt;});
-  if(G.mode==='fetch'){updateFetch(dt);return;}
+  if(G.mode==='fetch'){
+    // Die Uhr läuft beim Apportieren weiter
+    if(G.time>0){G.time=Math.max(0,G.time-dt);if(Math.ceil(G.time)!==G.lastSec){G.lastSec=Math.ceil(G.time);updateHud();}}
+    updateFetch(dt);return;
+  }
   if(G.mode!=='play')return;
   if(G.flash>0)G.flash-=dt;if(G.shake>0)G.shake-=dt;
   if(G.reload>0){G.reload-=dt;if(G.reload<=0){G.reload=0;G.ammo=MAG;updateHud();}}
