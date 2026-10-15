@@ -89,8 +89,7 @@ footer a{color:var(--muted);font-weight:700;text-decoration:none;margin:0 8px}
         <h2>Kodas Waldlauf</h2>
         <p>Koda rennt von <b>Blocksdorf</b> nach <b>Groß Vollstedt</b>. Dort holt er <b>Helene</b> vom Kindergarten und <b>Mathilda</b> von der Schule ab. Hilf ihm über Stämme und Steine und sammle Knochen!</p>
         <div class="choices">
-          <button class="btn alt" type="button" data-level="easy">🐢 Gemütlich<small>für Kleine</small></button>
-          <button class="btn" type="button" data-level="fast">🐇 Flott<small>für Große</small></button>
+          <button class="btn" type="button" data-level="fast">🐕 Los geht’s!</button>
         </div>
         <p class="best" id="bestLine"></p>
       </div>
@@ -130,7 +129,6 @@ var $=function(id){return document.getElementById(id);};
 
 /* ---------- Einstellungen ---------- */
 var LEVELS={
-  easy:{speed:250,gapMin:520,gapMax:820,secLen:7600,label:'Gemütlich'},
   fast:{speed:340,gapMin:420,gapMax:700,secLen:9600,label:'Flott'}
 };
 var SECTIONS=[
@@ -170,7 +168,7 @@ var sfx={
 };
 
 /* ---------- Spielzustand ---------- */
-var S,level='easy';
+var S,level='fast';
 function newGame(lv){
   level=lv;var L=LEVELS[lv];
   S={
@@ -258,9 +256,7 @@ function loadBest(){try{return JSON.parse(localStorage.getItem('koda-best')||'{}
 function saveBest(b){try{localStorage.setItem('koda-best',JSON.stringify(b));}catch(e){}}
 function showStart(){
   var b=loadBest(),parts=[];
-  if(b.easy)parts.push('Gemütlich: '+'⭐'.repeat(b.easy));
-  if(b.fast)parts.push('Flott: '+'⭐'.repeat(b.fast));
-  $('bestLine').textContent=parts.length?'Deine besten Läufe · '+parts.join(' · '):'';
+  $('bestLine').textContent=b.fast?'Dein bester Lauf: '+'⭐'.repeat(b.fast):'';
   $('startScreen').hidden=false;
 }
 
