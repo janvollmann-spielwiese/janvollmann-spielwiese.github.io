@@ -87,7 +87,8 @@ footer a{color:var(--muted);font-weight:700;text-decoration:none;margin:0 8px}
         <p>Such dir ein Bild aus und zieh die Teile an ihren Platz. Passende Teile rasten ein.</p>
         <div class="pics" id="pics"></div>
         <div class="diff">
-          <button class="dbtn" type="button" data-diff="normal" aria-pressed="true">Normal<small>12 Teile · mit Vorlage im Hintergrund</small></button>
+          <button class="dbtn" type="button" data-diff="easy" aria-pressed="true">Leicht<small>12 Teile · mit Vorlage</small></button>
+          <button class="dbtn" type="button" data-diff="normal" aria-pressed="false">Normal<small>12 Teile · ohne Vorlage</small></button>
           <button class="dbtn" type="button" data-diff="hard" aria-pressed="false">Schwer<small>35 Teile · ohne Vorlage</small></button>
         </div>
         <button class="btn" type="button" id="startBtn">Puzzeln!</button>
@@ -313,8 +314,10 @@ var SCENES=[
 var images=SCENES.map(function(sc){var c=document.createElement('canvas');c.width=IW;c.height=IH;ctx=c.getContext('2d');sc.draw();return c;});
 
 /* ---------- Auswahl ---------- */
-var BEST={};try{BEST=JSON.parse(localStorage.getItem('koda-puzzle-best')||'{}');}catch(e){}
-var picSel=0,diff='normal';
+var BEST={};try{BEST=JSON.parse(localStorage.getItem('koda-puzzle-best')||'{}');
+  if(!BEST.v){Object.keys(BEST).forEach(function(k){if(/-normal$/.test(k)){BEST[k.replace(/-normal$/,'-easy')]=BEST[k];delete BEST[k];}});BEST.v=2;localStorage.setItem('koda-puzzle-best',JSON.stringify(BEST));}}catch(e){}
+var picSel=0,diff='easy';
+var DIFF_NAME={easy:'Leicht',normal:'Normal',hard:'Schwer'};
 function fmt(s){s=Math.floor(s);return Math.floor(s/60)+':'+String(s%60).padStart(2,'0');}
 function buildMenu(){
   var el=$('pics');el.innerHTML='';
@@ -322,7 +325,7 @@ function buildMenu(){
     var b=document.createElement('button');b.type='button';b.className='pic';b.setAttribute('aria-pressed',String(i===picSel));b.setAttribute('aria-label',sc.name);
     var im=document.createElement('img');im.alt='';im.src=images[i].toDataURL('image/jpeg',.8);b.appendChild(im);
     var t=document.createElement('span');t.textContent=sc.name;b.appendChild(t);
-    var k1=BEST[i+'-normal'],k2=BEST[i+'-hard'];
+    var k1=BEST[i+'-easy']||BEST[i+'-normal'],k2=BEST[i+'-hard'];
     if(k1||k2){var d=document.createElement('i');d.className='done';d.textContent=(k2?'🏆':'✓');b.appendChild(d);}
     b.addEventListener('click',function(){picSel=i;el.querySelectorAll('.pic').forEach(function(x,j){x.setAttribute('aria-pressed',String(j===i));});});
     el.appendChild(b);
@@ -383,7 +386,7 @@ function start(pic,df){
   hearts=[];
   P={pic:pic,diff:df,cols:cols,rows:rows,pw:pw,ph:ph,m:m,B:B,tray:L.tray,pieces:pieces,placed:0,t0:performance.now(),time:0,running:true,peek:false,glow:[]};
   $('menu').hidden=true;$('done').hidden=true;
-  $('hPic').textContent=SCENES[pic].name+' · '+(df==='hard'?'Schwer':'Normal');updateHud();
+  $('hPic').textContent=SCENES[pic].name+' · '+DIFF_NAME[df];updateHud();
 }
 function scatter(pieces,T,pw,ph){
   var order=pieces.slice().sort(function(){return Math.random()-.5;});
@@ -419,7 +422,7 @@ cv.addEventListener('pointermove',function(e){if(!drag||e.pointerId!==drag.id)re
 function drop(e){
   if(!drag||(e&&e.pointerId!==drag.id))return;
   var q=drag.q;drag=null;
-  var tol=Math.min(P.pw,P.ph)*(P.diff==='hard'?.22:.32);
+  var tol=Math.min(P.pw,P.ph)*({easy:.32,normal:.27,hard:.22}[P.diff]);
   if(Math.hypot(q.x-q.tx,q.y-q.ty)<tol){
     q.x=q.tx;q.y=q.ty;q.locked=true;P.placed++;
     // eingerastete Teile nach hinten
@@ -467,7 +470,7 @@ function draw(dt){
   // Brett
   mctx.fillStyle='rgba(0,0,0,.12)';rr(B.x-8,B.y-8,B.w+16,B.h+16,14);mctx.fill();
   mctx.fillStyle='#FFFDF8';rr(B.x-4,B.y-4,B.w+8,B.h+8,10);mctx.fill();
-  if(P.diff==='normal'||P.peek){mctx.globalAlpha=P.peek?1:.22;mctx.drawImage(images[P.pic],B.x,B.y,B.w,B.h);mctx.globalAlpha=1;}
+  if(P.diff==='easy'||P.peek){mctx.globalAlpha=P.peek?1:.22;mctx.drawImage(images[P.pic],B.x,B.y,B.w,B.h);mctx.globalAlpha=1;}
   if(!P.peek){mctx.strokeStyle='rgba(120,100,80,.18)';mctx.lineWidth=1;for(var c=1;c<P.cols;c++){mctx.beginPath();mctx.moveTo(B.x+c*P.pw,B.y);mctx.lineTo(B.x+c*P.pw,B.y+B.h);mctx.stroke();}for(var r=1;r<P.rows;r++){mctx.beginPath();mctx.moveTo(B.x,B.y+r*P.ph);mctx.lineTo(B.x+B.w,B.y+r*P.ph);mctx.stroke();}}
   // Teile
   if(!P.peek)P.pieces.forEach(function(q){

@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link rel="icon" type="image/png" sizes="64x64" href="icons/favicon-64.png">
+<link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
+<link rel="manifest" href="fun-games.webmanifest">
+<meta name="theme-color" content="#C2621F">
+<meta name="apple-mobile-web-app-title" content="Fun-Games">
+<title>Kodas Hindernis-Parcours</title>
+<meta name="description" content="Agility mit Labrador Koda: Hürden, Reifen, Tunnel und Slalom in drei Parcours.">
+<link href="fonts/fonts.css" rel="stylesheet">
+<style>
+:root{--bg:#EEF2F6;--surface:#FFFFFF;--ink:#22272E;--muted:#5F6875;--line:#D5DCE4;--accent:#C2621F;--accent-ink:#9A4A12;--soft:#FBE7D3;
+  --display:"Outfit","Futura","Avenir Next","Segoe UI",system-ui,sans-serif;--body:"Nunito Sans","Segoe UI",system-ui,sans-serif}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#15191E;--surface:#20262D;--ink:#EDF1F5;--muted:#A9B3BF;--line:#36404A;--accent-ink:#F2A26A;--soft:#3E2A1C}}
+:root[data-theme="dark"]{--bg:#15191E;--surface:#20262D;--ink:#EDF1F5;--muted:#A9B3BF;--line:#36404A;--accent-ink:#F2A26A;--soft:#3E2A1C}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.5;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+.wrap{max-width:1000px;margin:0 auto;padding:0 12px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 4px}
+.top a{font-family:var(--display);font-weight:700;text-decoration:none;color:var(--muted)}
+.top a:hover{color:var(--accent-ink)}
+.top h1{font-family:var(--display);font-weight:800;font-size:clamp(1.1rem,4vw,1.6rem);margin:0;text-align:center}
+@media (max-width:480px){.top .t{display:none}.top a{font-size:1.4rem}}
+.hud{display:flex;align-items:center;gap:8px;margin:0 0 8px;flex-wrap:wrap}
+.pill{font-family:var(--display);font-weight:800;font-size:1rem;background:var(--surface);border:2px solid var(--line);border-radius:999px;padding:4px 12px;white-space:nowrap}
+.pill.bad{color:#C0392B}
+.sp{flex:1}
+.ibtn{flex:none;height:40px;min-width:40px;border-radius:999px;border:2px solid var(--line);background:var(--surface);font:inherit;font-family:var(--display);font-weight:800;font-size:1rem;cursor:pointer;color:var(--ink);padding:0 10px}
+.ibtn:hover{border-color:var(--accent)}
+.stage{position:relative;border-radius:18px;overflow:hidden;border:3px solid var(--line);background:#BFE3F2;user-select:none;-webkit-user-select:none;touch-action:manipulation}
+canvas{display:block;width:100%;height:auto;aspect-ratio:960/420}
+.overlay{position:absolute;inset:0;display:grid;place-items:center;padding:12px;background:rgba(15,20,30,.45);overflow:auto}
+.overlay[hidden]{display:none}
+.panel{background:var(--surface);color:var(--ink);border-radius:18px;padding:clamp(16px,3vw,28px);max-width:620px;width:100%;text-align:center;box-shadow:0 18px 40px rgba(0,0,0,.3)}
+.panel h2{font-family:var(--display);font-weight:800;font-size:clamp(1.5rem,4.5vw,2.2rem);margin:0 0 6px;line-height:1.1}
+.panel p{margin:0 0 12px;color:var(--muted)}
+.legend{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:6px 0 14px}
+.legend div{background:var(--soft);border-radius:12px;padding:8px 6px;font-size:.85rem;color:var(--muted)}
+.legend b{display:block;font-size:1.5rem;line-height:1.2;color:var(--ink)}
+@media (max-width:520px){.legend{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.courses{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.btn{font:inherit;font-family:var(--display);font-weight:800;font-size:1.1rem;border:0;border-radius:14px;padding:12px 20px;cursor:pointer;background:var(--accent);color:#fff;box-shadow:0 4px 0 #8A410F;text-decoration:none;display:inline-block;min-width:150px}
+.btn small{display:block;font-size:.8rem;font-weight:600;opacity:.9}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 #8A410F}
+.btn.g{background:#4E8F3A;box-shadow:0 4px 0 #2F5E22}.btn.b{background:#3A78B5;box-shadow:0 4px 0 #24507D}
+.btn.ghost{background:var(--soft);color:var(--accent-ink);box-shadow:none}
+.medal{font-size:clamp(3rem,10vw,4.5rem);line-height:1;margin:6px 0}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:6px 0 14px}
+.stats div{background:var(--soft);border-radius:12px;padding:8px}
+.stats b{display:block;font-family:var(--display);font-size:1.4rem;color:var(--accent-ink)}
+.stats span{font-size:.8rem;font-weight:700;color:var(--muted)}
+.best{margin:12px 0 0;font-size:.9rem;color:var(--muted)}
+/* Steuerknöpfe */
+.pad{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:10px 0 0}
+.pad button{font:inherit;font-family:var(--display);font-weight:800;font-size:clamp(1rem,3.5vw,1.3rem);border:0;border-radius:16px;padding:16px 6px;background:var(--surface);color:var(--ink);border:3px solid var(--line);cursor:pointer;touch-action:none;-webkit-user-select:none;user-select:none}
+.pad button span{display:block;font-size:clamp(1.6rem,6vw,2.2rem);line-height:1}
+.pad button.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+.help{display:flex;flex-wrap:wrap;gap:6px 18px;justify-content:center;color:var(--muted);font-size:.9rem;margin:12px 0 0}
+.help b{color:var(--ink)}
+@media (max-height:560px){.panel{padding:12px 16px}.panel p{font-size:.9rem;margin-bottom:8px}.legend{margin:4px 0 8px}}
+footer{text-align:center;color:var(--muted);font-size:.85rem;padding:28px 16px calc(24px + env(safe-area-inset-bottom,0px))}
+footer a{color:var(--muted);font-weight:700;text-decoration:none;margin:0 8px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav class="top"><a href="fun-games.html" aria-label="Zurück zu Fun-Games">←<span class="t"> Fun-Games</span></a><h1>🏅 Kodas Hindernis-Parcours</h1><a href="./" aria-label="Startseite"><span class="t">Start</span></a></nav>
+  <div class="hud">
+    <span class="pill" id="hCourse">Parcours</span>
+    <span class="pill" id="hTime">⏱ 0,0 s</span>
+    <span class="pill" id="hFaults">0 Fehler</span>
+    <span class="sp"></span>
+    <button class="ibtn" id="soundBtn" type="button" aria-label="Ton und Musik einschalten" title="Ton und Musik">🔇</button>
+    <button class="ibtn" id="pauseBtn" type="button" aria-label="Pause" title="Pause (P)">⏸️</button>
+  </div>
+  <div class="stage">
+    <canvas id="game" width="960" height="420" aria-label="Agility-Parcours"></canvas>
+    <div class="overlay" id="startScreen">
+      <div class="panel">
+        <h2>Kodas Hindernis-Parcours</h2>
+        <p>Koda läuft von allein. Du gibst im richtigen Moment das Kommando für jedes Hindernis. Ziel ist ein Null-Fehler-Lauf!</p>
+        <div class="legend">
+          <div><b>🚧</b>Hürde<br>⬆️ Springen</div>
+          <div><b>⭕</b>Reifen<br>⬆️ Springen, genau zielen</div>
+          <div><b>🟦</b>Tunnel<br>⬇️ gedrückt halten</div>
+          <div><b>🚩</b>Slalom<br>⬅️ ➡️ abwechselnd</div>
+        </div>
+        <div class="courses">
+          <button class="btn g" type="button" data-course="0">Anfänger<small>7 Hindernisse</small></button>
+          <button class="btn" type="button" data-course="1">Fortgeschritten<small>10 Hindernisse</small></button>
+          <button class="btn b" type="button" data-course="2">Profi<small>13 Hindernisse</small></button>
+        </div>
+        <p class="best" id="bestLine"></p>
+      </div>
+    </div>
+    <div class="overlay" id="pauseScreen" hidden><div class="panel"><h2>Pause</h2><p>Koda wartet brav an der Leine.</p><div class="courses"><button class="btn" type="button" id="resumeBtn">▶️ Weiter</button><button class="btn ghost" type="button" id="quitBtn">Abbrechen</button></div></div></div>
+    <div class="overlay" id="endScreen" hidden>
+      <div class="panel">
+        <div class="medal" id="medal">🥇</div>
+        <h2 id="endTitle">Null-Fehler-Lauf!</h2>
+        <div class="stats">
+          <div><b id="eTime">0,0 s</b><span>Laufzeit</span></div>
+          <div><b id="eFaults">0</b><span>Fehler</span></div>
+          <div><b id="eTotal">0,0 s</b><span>Ergebnis</span></div>
+        </div>
+        <p id="endText"></p>
+        <div class="courses"><button class="btn" type="button" id="againBtn">🔁 Nochmal</button><button class="btn ghost" type="button" id="menuBtn">Anderer Parcours</button></div>
+      </div>
+    </div>
+  </div>
+  <div class="pad" id="pad">
+    <button type="button" data-act="left" aria-label="Links"><span>⬅️</span>Links</button>
+    <button type="button" data-act="jump" aria-label="Springen"><span>⬆️</span>Hopp</button>
+    <button type="button" data-act="duck" aria-label="Ducken"><span>⬇️</span>Tunnel</button>
+    <button type="button" data-act="right" aria-label="Rechts"><span>➡️</span>Rechts</button>
+  </div>
+  <div class="help"><span><b>Tastatur:</b> ⬆️ / Leertaste springen, ⬇️ halten Tunnel, ⬅️ ➡️ Slalom</span><span><b>P</b> Pause</span><span>Jeder Fehler: +5 Sekunden</span></div>
+</div>
+<footer><a href="fun-games.html">Fun-Games</a>·<a href="./">Startseite</a>·<a href="impressum.html">Impressum</a></footer>
+<script src="fun-music.js"></script>
+<script>
+(function(){
+'use strict';
+var $=function(id){return document.getElementById(id);};
+var cv=$('game'),ctx=cv.getContext('2d'),W=960,H=420,GROUND=350,KX=210;
+function rr(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
+function ell(x,y,rx,ry,rot){ctx.beginPath();ctx.ellipse(x,y,rx,ry,rot||0,0,Math.PI*2);}
+function star(x,y,r){ctx.beginPath();for(var i=0;i<10;i++){var a=i*Math.PI/5-Math.PI/2,rad=i%2?r*.45:r;ctx.lineTo(x+Math.cos(a)*rad,y+Math.sin(a)*rad);}ctx.closePath();ctx.fill();}
+function clamp(v,a,b){return v<a?a:v>b?b:v;}
+/* Koda-Zeichnung, identisch mit den anderen Koda-Spielen */
+var FUR='#C0652A',FUR_L='#D27E3F',FUR_D='#9A4D1C',EAR='#8E451A',NOSE='#4A2C22',COLLAR='#4E3424';
+function frontLeg(px,py,ang,col){
+  // Vorderlauf: Oberarm, gerader Unterarm, Pfote
+  ctx.save();ctx.translate(px,py);ctx.rotate(ang);
+  ctx.fillStyle=col;
+  ctx.beginPath();ctx.moveTo(-8,-6);ctx.quadraticCurveTo(-9,14,-5,24);ctx.lineTo(5,24);ctx.quadraticCurveTo(9,10,8,-6);ctx.closePath();ctx.fill();
+  ctx.translate(0,22);ctx.rotate(-ang*.6);
+  rr(-5,0,10,22,5);ctx.fill();
+  ell(3,22,8,4.5);ctx.fill();
+  ctx.restore();
+}
+function hindLeg(px,py,ang,col){
+  // Hinterlauf: kräftiger Oberschenkel, schräger Unterschenkel, Sprunggelenk, Pfote
+  ctx.save();ctx.translate(px,py);ctx.rotate(ang);
+  ctx.fillStyle=col;
+  ctx.beginPath();ctx.moveTo(-14,-10);ctx.quadraticCurveTo(-18,12,-4,22);ctx.lineTo(8,18);ctx.quadraticCurveTo(14,0,12,-10);ctx.closePath();ctx.fill();
+  ctx.translate(2,18);ctx.rotate(.55-ang*.4);
+  rr(-5,0,10,20,5);ctx.fill();
+  ctx.translate(0,18);ctx.rotate(-.55);
+  rr(-4.5,0,9,14,4.5);ctx.fill();
+  ell(4,14,8,4.5);ctx.fill();
+  ctx.restore();
+}
+function drawKoda(x,y,run,air,state){
+  // x = Mitte, y = Pfoten-Grundlinie, Blick nach rechts
+  var s=run,sw=air?0:Math.sin(s),sw2=air?0:Math.sin(s+Math.PI);
+  var bob=air?0:-Math.abs(Math.sin(s))*3;
+  ctx.save();ctx.translate(x,y+bob);
+  if(state.stumble>0)ctx.rotate(-.16*Math.sin(state.stumble*12));
+  if(state.blink)ctx.globalAlpha=.55;
+  // Schatten
+  ctx.save();ctx.translate(0,-bob-(air?state.y:0));ctx.fillStyle='rgba(0,0,0,'+(air?.1:.18)+')';ell(4,2,50,6);ctx.fill();ctx.restore();
+  // Rute (dicke Otterrute)
+  var wag=Math.sin(state.wag)*.3;
+  ctx.save();ctx.translate(-52,-62);ctx.rotate(-.35+wag);
+  ctx.fillStyle=FUR;ctx.beginPath();ctx.moveTo(4,-7);ctx.quadraticCurveTo(-22,-12,-42,0);ctx.quadraticCurveTo(-22,2,4,8);ctx.closePath();ctx.fill();
+  ctx.restore();
+  // ferne Läufe
+  hindLeg(-36,-50,air?-.6:sw2*.5,FUR_D);
+  frontLeg(36,-50,air?.9:sw*.55,FUR_D);
+  // Körper als eine Form: Rücken, Hals, Brust, Bauch, Keule
+  ctx.fillStyle=FUR;ctx.beginPath();
+  ctx.moveTo(-54,-60);
+  ctx.bezierCurveTo(-30,-76,6,-72,30,-76);
+  var hd=state.head||0,PX=48,PY=-62;
+  function rp(x,y){var dx=x-PX,dy=y-PY,c=Math.cos(hd),s=Math.sin(hd);return [PX+dx*c-dy*s,PY+dx*s+dy*c];}
+  var n1=rp(38,-90),n2=rp(46,-106),n3=rp(70,-94),n4=rp(68,-70);
+  ctx.quadraticCurveTo(n1[0],n1[1],n2[0],n2[1]);
+  ctx.lineTo(n3[0],n3[1]);
+  ctx.quadraticCurveTo(n4[0],n4[1],56,-58);
+  ctx.quadraticCurveTo(50,-38,32,-36);
+  ctx.bezierCurveTo(12,-38,-10,-46,-26,-44);
+  ctx.quadraticCurveTo(-46,-34,-58,-46);
+  ctx.quadraticCurveTo(-62,-54,-54,-60);
+  ctx.closePath();ctx.fill();
+  // Licht auf dem Rücken, Schatten am Bauch
+  ctx.fillStyle=FUR_L;ctx.beginPath();ctx.moveTo(-46,-64);ctx.bezierCurveTo(-24,-75,6,-71,28,-74);ctx.quadraticCurveTo(4,-66,-46,-60);ctx.closePath();ctx.fill();
+  ctx.fillStyle='rgba(120,50,15,.18)';ell(-2,-44,30,5,-.05);ctx.fill();
+  // heller Brustfleck
+  ctx.fillStyle='#E9A877';ell(53,-47,3,5,-.4);ctx.fill();
+  // nahe Läufe
+  hindLeg(-42,-50,air?-.8:sw*.55,FUR);
+  frontLeg(30,-48,air?1.05:sw2*.6,FUR);
+  // Kopf, Halsband und Ohr drehen sich beim Fressen mit
+  ctx.save();ctx.translate(PX,PY);ctx.rotate(hd);ctx.translate(-PX,-PY);
+  // Halsband
+  ctx.strokeStyle=COLLAR;ctx.lineWidth=6;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(46,-96);ctx.quadraticCurveTo(56,-86,62,-78);ctx.stroke();
+  ctx.fillStyle='#C9A24A';ell(58,-82,3,3);ctx.fill();
+  // Kopf: breiter Schädel, deutlicher Stopp, Schnauze
+  ctx.fillStyle=FUR;
+  ctx.beginPath();ctx.moveTo(48,-104);
+  ctx.quadraticCurveTo(52,-124,70,-122);
+  ctx.quadraticCurveTo(80,-121,82,-114);
+  ctx.quadraticCurveTo(96,-114,100,-106);
+  ctx.quadraticCurveTo(102,-96,94,-94);
+  ctx.quadraticCurveTo(84,-90,72,-92);
+  ctx.quadraticCurveTo(62,-88,56,-94);
+  ctx.closePath();ctx.fill();
+  ctx.fillStyle=FUR_L;ell(66,-116,11,4,-.2);ctx.fill();
+  // Nase
+  ctx.fillStyle=NOSE;ell(99,-107,5,4.2);ctx.fill();
+  ctx.fillStyle='rgba(255,255,255,.35)';ell(98,-108.5,1.6,1);ctx.fill();
+  // Maul, Zunge oder Ball
+  ctx.strokeStyle=NOSE;ctx.lineWidth=1.6;ctx.beginPath();ctx.moveTo(97,-98);ctx.quadraticCurveTo(86,-93,76,-95);ctx.stroke();
+  if(state.ball){ctx.fillStyle='#D7F25A';ell(95,-94,8,8);ctx.fill();ctx.strokeStyle='#fff';ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(88,-94,7,-.8,.8);ctx.stroke();}
+  else if(!(state.stumble>0)){ctx.fillStyle='#E46A7A';rr(81,-96,9,14+Math.sin(s*2)*2,5);ctx.fill();ctx.strokeStyle='#C24E60';ctx.beginPath();ctx.moveTo(85.5,-94);ctx.lineTo(85.5,-85);ctx.stroke();}
+  // Auge mit Braue
+  if(state.stumble>0){ctx.strokeStyle='#2A1A12';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(72,-114);ctx.lineTo(78,-109);ctx.moveTo(78,-114);ctx.lineTo(72,-109);ctx.stroke();}
+  else{ctx.fillStyle='#3A2216';ell(75,-112,3.4,3.6);ctx.fill();ctx.fillStyle='#fff';ell(76,-113.3,1.2,1.2);ctx.fill();
+    ctx.strokeStyle=FUR_D;ctx.lineWidth=1.6;ctx.beginPath();ctx.moveTo(70,-118);ctx.quadraticCurveTo(75,-120,80,-117);ctx.stroke();}
+  // Schlappohr, etwas dunkler
+  var flap=air?-.45:Math.sin(s*2)*.12;
+  ctx.save();ctx.translate(60,-118);ctx.rotate(.1+flap);
+  ctx.fillStyle=EAR;ctx.beginPath();ctx.moveTo(-6,0);ctx.quadraticCurveTo(-16,12,-12,28);ctx.quadraticCurveTo(-5,35,4,27);ctx.quadraticCurveTo(9,10,7,0);ctx.closePath();ctx.fill();
+  ctx.restore();
+  ctx.restore();
+  // Schwindelsterne
+  if(state.stumble>0){for(var k=0;k<3;k++){var a=state.wag*2+k*2.1;ctx.fillStyle='#FFD54A';star(70+Math.cos(a)*22,-136+Math.sin(a)*6,6);}}
+  ctx.restore();
+}
+
+/* ---------- Parcours ---------- */
+var COURSES=[
+  {name:'Anfänger',speed:220,gap:520,items:['hurdle','hurdle','tunnel','hurdle','tyre','slalom4','hurdle']},
+  {name:'Fortgeschritten',speed:270,gap:450,items:['hurdle','tyre','tunnel','slalom6','hurdle','hurdle','tyre','tunnel','hurdle','slalom6']},
+  {name:'Profi',speed:320,gap:400,items:['hurdle','hurdle','tyre','tunnel','slalom8','hurdle','tyre','hurdle','tunnel','slalom8','hurdle','tyre','hurdle']}
+];
+var PENALTY=5;
+var S=null,courseIdx=0;
+function build(ci){
+  var C=COURSES[ci],x=700,obs=[];
+  C.items.forEach(function(it){
+    if(it.indexOf('slalom')===0){var n=+it.slice(6),poles=[];for(var i=0;i<n;i++)poles.push({x:x+i*70,need:i%2?'right':'left',done:false,ok:null});obs.push({type:'slalom',x:x,end:x+(n-1)*70,poles:poles});x+=(n-1)*70+C.gap;}
+    else if(it==='tunnel'){obs.push({type:'tunnel',x:x,end:x+220});x+=220+C.gap;}
+    else{obs.push({type:it,x:x,end:x});x+=C.gap;}
+  });
+  return {obs:obs,finish:x};
+}
+function start(ci){
+  courseIdx=ci;var C=COURSES[ci],B=build(ci);
+  S={C:C,obs:B.obs,finish:B.finish,dist:0,speed:C.speed,time:0,faults:0,mode:'play',y:0,vy:0,onGround:true,duck:false,duckHeld:false,
+     stop:0,msg:'',msgT:0,msgOk:false,wag:0,inTunnel:false,party:0,parts:[],count:3};
+  ['startScreen','endScreen','pauseScreen'].forEach(function(id){$(id).hidden=true;});
+  $('hCourse').textContent=C.name;hud();last=performance.now();
+}
+function hud(){if(!S)return;$('hTime').textContent='⏱ '+S.time.toFixed(1).replace('.',',')+' s';$('hFaults').textContent=S.faults+' Fehler';$('hFaults').classList.toggle('bad',S.faults>0);}
+function say(t,ok){S.msg=t;S.msgOk=!!ok;S.msgT=1.3;}
+function fault(t){S.faults++;say(t,false);sfx.bad();hud();}
+
+/* ---------- Eingabe ---------- */
+function act(a,down){
+  if(!S||S.mode!=='play'||S.count>0)return;
+  if(a==='duck'){S.duckHeld=down;return;}
+  if(!down)return;
+  if(a==='jump'){if(S.onGround&&!S.inTunnel&&S.stop<=0){S.vy=-760;S.onGround=false;sfx.jump();}return;}
+  // Slalom: Kommando für die nächste Stange
+  var o=S.obs.find(function(o){return o.type==='slalom'&&!o.passed;});
+  if(!o)return;
+  var p=o.poles.find(function(p){return !p.done;});
+  if(!p)return;
+  var dx=p.x-S.dist;
+  if(dx>180)return; // noch zu früh, nichts passiert
+  p.done=true;p.ok=(a===p.need);
+  if(p.ok){sfx.ok();S.parts.push({x:KX+dx+10,y:GROUND-90,t:.5,txt:'✓'});}else{fault('Falsche Seite!');}
+}
+var KEYS={ArrowUp:'jump',Space:'jump',KeyW:'jump',ArrowDown:'duck',KeyS:'duck',ArrowLeft:'left',KeyA:'left',ArrowRight:'right',KeyD:'right'};
+document.addEventListener('keydown',function(e){
+  if(e.code==='KeyP'||e.code==='Escape'){togglePause();return;}
+  var a=KEYS[e.code];if(!a||!S||S.mode!=='play')return;e.preventDefault();if(e.repeat&&a!=='duck')return;act(a,true);mark(a,true);
+});
+document.addEventListener('keyup',function(e){var a=KEYS[e.code];if(a){act(a,false);mark(a,false);}});
+function mark(a,on){var b=document.querySelector('[data-act="'+a+'"]');if(b)b.classList.toggle('on',on);}
+document.querySelectorAll('#pad button').forEach(function(b){
+  var a=b.getAttribute('data-act');
+  b.addEventListener('pointerdown',function(e){e.preventDefault();act(a,true);mark(a,true);});
+  ['pointerup','pointerleave','pointercancel'].forEach(function(ev){b.addEventListener(ev,function(){act(a,false);mark(a,false);});});
+  b.addEventListener('contextmenu',function(e){e.preventDefault();});
+});
+cv.addEventListener('pointerdown',function(e){e.preventDefault();act('jump',true);});
+
+document.querySelectorAll('[data-course]').forEach(function(b){b.addEventListener('click',function(){start(+b.getAttribute('data-course'));});});
+$('againBtn').addEventListener('click',function(){start(courseIdx);});
+$('menuBtn').addEventListener('click',showStart);
+$('resumeBtn').addEventListener('click',togglePause);
+$('quitBtn').addEventListener('click',function(){S=null;$('pauseScreen').hidden=true;showStart();});
+$('pauseBtn').addEventListener('click',togglePause);
+function togglePause(){if(!S)return;if(S.mode==='play'){S.mode='pause';$('pauseScreen').hidden=false;}else if(S.mode==='pause'){S.mode='play';$('pauseScreen').hidden=true;last=performance.now();}}
+document.addEventListener('visibilitychange',function(){if(document.hidden&&S&&S.mode==='play')togglePause();});
+
+/* ---------- Ton ---------- */
+var sound=false,actx=null;
+function tone(f1,f2,d,type,v){if(!sound)return;try{actx=actx||new (window.AudioContext||window.webkitAudioContext)();var o=actx.createOscillator(),g=actx.createGain(),t=actx.currentTime;o.type=type||'sine';o.frequency.setValueAtTime(f1,t);o.frequency.exponentialRampToValueAtTime(f2,t+d);g.gain.setValueAtTime(v||.1,t);g.gain.exponentialRampToValueAtTime(.001,t+d);o.connect(g);g.connect(actx.destination);o.start(t);o.stop(t+d);}catch(e){}}
+var sfx={jump:function(){tone(320,620,.16,'sine',.1);},ok:function(){tone(880,1320,.1,'triangle',.08);},bad:function(){tone(200,90,.25,'sawtooth',.07);},
+  go:function(){tone(660,660,.12,'square',.06);},start:function(){tone(990,990,.3,'square',.07);},cheer:function(){[523,659,784,1047].forEach(function(f,i){setTimeout(function(){tone(f,f,.22,'triangle',.1);},i*120);});}};
+$('soundBtn').addEventListener('click',function(){sound=!sound;this.textContent=sound?'🔊':'🔇';this.setAttribute('aria-label',sound?'Ton und Musik ausschalten':'Ton und Musik einschalten');if(sound){sfx.ok();FunMusic.start('sonnig');}else FunMusic.stop();});
+
+/* ---------- Bestwerte ---------- */
+function loadBest(){try{return JSON.parse(localStorage.getItem('koda-parcours-best')||'{}');}catch(e){return {};}}
+function showStart(){
+  var b=loadBest(),parts=[];COURSES.forEach(function(c,i){if(b[i]!=null)parts.push(c.name+' '+b[i].toFixed(1).replace('.',',')+' s');});
+  $('bestLine').textContent=parts.length?'Deine Bestzeiten · '+parts.join(' · '):'';
+  $('endScreen').hidden=true;$('startScreen').hidden=false;
+}
+
+/* ---------- Spielablauf ---------- */
+var last=performance.now();
+function update(dt){
+  if(!S)return;
+  S.wag+=dt*(S.mode==='end'?18:9);
+  S.parts=S.parts.filter(function(p){p.t-=dt;p.y-=30*dt;return p.t>0;});
+  if(S.msgT>0)S.msgT-=dt;
+  if(S.mode==='end'){S.party-=dt;return;}
+  if(S.mode!=='play')return;
+  if(S.count>0){var c0=Math.ceil(S.count);S.count-=dt;if(Math.ceil(S.count)!==c0){if(S.count>0)sfx.go();else sfx.start();}return;}
+  S.time+=dt;
+  // Bewegung (Verweigerung stoppt Koda kurz)
+  var v=S.stop>0?0:S.speed;if(S.stop>0)S.stop-=dt;
+  S.dist+=v*dt;
+  // Sprungphysik
+  if(!S.onGround){S.vy+=2400*dt;S.y+=S.vy*dt;if(S.y>=0){S.y=0;S.vy=0;S.onGround=true;}}
+  var feet=-S.y; // Höhe der Pfoten über dem Boden
+  S.inTunnel=false;
+  S.obs.forEach(function(o){
+    var rel=o.x-S.dist; // Abstand des Hindernisses zu Koda
+    if(o.type==='hurdle'&&!o.passed&&rel<=0){
+      o.passed=true;if(feet<46){o.knocked=true;fault('Stange gerissen!');}else{say('Sauber!',true);sfx.ok();}
+    }
+    if(o.type==='tyre'&&!o.passed&&rel<=0){
+      o.passed=true;if(feet>=66&&feet<=118){say('Durch den Reifen!',true);sfx.ok();}else{o.missed=true;fault(feet<66?'Unter dem Reifen durch!':'Über den Reifen drüber!');}
+    }
+    if(o.type==='tunnel'){
+      if(!o.entered&&rel<=12){
+        o.entered=true;
+        if(S.duckHeld&&S.onGround){say('Ab in den Tunnel!',true);sfx.ok();}
+        else{S.stop=.9;fault('Verweigerung!');}
+      }
+      if(o.entered&&o.end-S.dist>-20&&rel<=12)S.inTunnel=true;
+    }
+    if(o.type==='slalom'&&!o.passed){
+      o.poles.forEach(function(p){if(!p.done&&p.x-S.dist<-10){p.done=true;p.ok=false;fault('Stange ausgelassen!');}});
+      if(o.end-S.dist<-10)o.passed=true;
+    }
+  });
+  if(S.dist>=S.finish){finish();}
+  if(Math.floor(S.time*10)!==S.lastT){S.lastT=Math.floor(S.time*10);hud();}
+}
+function finish(){
+  S.mode='end';S.party=4;sfx.cheer();
+  var total=S.time+S.faults*PENALTY,medal=S.faults===0?'🥇':S.faults<=2?'🥈':'🥉';
+  var b=loadBest(),nb=b[courseIdx]==null||total<b[courseIdx];
+  if(nb){b[courseIdx]=Math.round(total*10)/10;try{localStorage.setItem('koda-parcours-best',JSON.stringify(b));}catch(e){}}
+  setTimeout(function(){
+    $('medal').textContent=medal;
+    $('endTitle').textContent=S.faults===0?'Null-Fehler-Lauf!':S.faults<=2?'Starker Lauf!':'Im Ziel!';
+    $('eTime').textContent=S.time.toFixed(1).replace('.',',')+' s';$('eFaults').textContent=S.faults;$('eTotal').textContent=total.toFixed(1).replace('.',',')+' s';
+    $('endText').textContent=(nb?'Neue Bestzeit im Parcours „'+S.C.name+'“! ':'')+(S.faults===0?'Koda hat jedes Hindernis perfekt genommen.':'Jeder Fehler zählt 5 Sekunden. Beim nächsten Mal klappt’s noch besser.');
+    $('endScreen').hidden=false;$('againBtn').focus();
+  },1400);
+}
+
+/* ---------- Zeichnen ---------- */
+function drawArena(d){
+  var g=ctx.createLinearGradient(0,0,0,GROUND);g.addColorStop(0,'#8CCBF0');g.addColorStop(1,'#E2F3FB');ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+  // Tribüne mit Publikum
+  var off=-(d*.25)%40;
+  ctx.fillStyle='#5B6B7A';ctx.fillRect(0,150,W,100);
+  for(var row=0;row<4;row++)for(var x=off-40;x<W+40;x+=20){var seed=Math.sin((Math.floor((x-off)/20)+row*31)*12.9898)*43758.5;seed-=Math.floor(seed);
+    var c=['#E53935','#FDD835','#43A047','#1E88E5','#FB8C00','#F5F5F5','#8E24AA'][Math.floor(seed*7)];
+    var jump=S&&S.mode==='end'?Math.abs(Math.sin(performance.now()/150+x))*6:0;
+    ctx.fillStyle=c;ell(x+row*7,170+row*22-jump,7,7);ctx.fill();ctx.fillStyle='#F2C9A0';ell(x+row*7,161+row*22-jump,5,5);ctx.fill();}
+  // Wimpelkette
+  ctx.strokeStyle='#fff';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(0,120);for(var wx=0;wx<=W;wx+=60)ctx.quadraticCurveTo(wx+30,138,wx+60,120);ctx.stroke();
+  for(var fx=10;fx<W;fx+=30){ctx.fillStyle=['#E53935','#FDD835','#1E88E5','#43A047'][Math.floor(fx/30)%4];var fy=120+Math.sin((fx%60)/60*Math.PI)*16;ctx.beginPath();ctx.moveTo(fx,fy);ctx.lineTo(fx+14,fy);ctx.lineTo(fx+7,fy+16);ctx.fill();}
+  // Bande
+  ctx.fillStyle='#FFFFFF';ctx.fillRect(0,250,W,28);ctx.fillStyle='#C2621F';ctx.font='800 16px Outfit, sans-serif';ctx.textAlign='left';
+  for(var bx=-(d*.6)%320;bx<W;bx+=320){ctx.fillText('KODA AGILITY CUP',bx+20,270);}
+  // Rasen
+  ctx.fillStyle='#6DB33F';ctx.fillRect(0,278,W,H-278);
+  ctx.fillStyle='rgba(255,255,255,.12)';for(var s=-(d%120);s<W;s+=120)ctx.fillRect(s,278,60,H-278);
+}
+function drawHurdle(o,x){
+  ctx.fillStyle='#F5F5F5';rr(x-24,GROUND-70,8,70,3);ctx.fill();rr(x+16,GROUND-70,8,70,3);ctx.fill();
+  if(o.knocked){ctx.save();ctx.translate(x,GROUND-6);ctx.rotate(.15);ctx.fillStyle='#E53935';rr(-30,-4,60,8,4);ctx.fill();ctx.restore();}
+  else{ctx.fillStyle='#E53935';rr(-30+x,GROUND-46,60,8,4);ctx.fill();ctx.fillStyle='#fff';ctx.fillRect(x-10,GROUND-46,8,8);ctx.fillRect(x+6,GROUND-46,8,8);}
+}
+function drawTyre(o,x,front){
+  var cy=GROUND-120;
+  if(!front){ctx.fillStyle='#7A7A7A';ctx.fillRect(x-40,cy-60,6,120+60);ctx.fillRect(x+34,cy-60,6,120+60);ctx.fillRect(x-40,cy-62,80,6);}
+  ctx.lineWidth=14;ctx.strokeStyle=o.missed?'#B0B0B0':'#FB8C00';
+  ctx.beginPath();if(front)ctx.arc(x,cy,40,Math.PI*.5,Math.PI*1.5);else ctx.arc(x,cy,40,-Math.PI*.5,Math.PI*.5);ctx.stroke();
+  ctx.lineWidth=4;ctx.strokeStyle='#fff';ctx.beginPath();if(front)ctx.arc(x,cy,40,Math.PI*.6,Math.PI*.8);ctx.stroke();
+}
+function drawTunnel(o,x){
+  var len=o.end-o.x;
+  ctx.fillStyle='#1E5FA8';rr(x,GROUND-78,len,78,30);ctx.fill();
+  ctx.strokeStyle='rgba(255,255,255,.35)';ctx.lineWidth=3;for(var i=20;i<len;i+=26){ctx.beginPath();ctx.moveTo(x+i,GROUND-74);ctx.lineTo(x+i,GROUND-4);ctx.stroke();}
+  ctx.fillStyle='#0F3D70';ell(x+6,GROUND-39,12,38);ctx.fill();
+}
+function drawPole(p,x){ctx.fillStyle='#fff';ctx.fillRect(x-3,GROUND-110,6,110);ctx.fillStyle=p.done?(p.ok?'#43A047':'#E53935'):'#1E88E5';for(var k=0;k<4;k++)ctx.fillRect(x-3,GROUND-110+k*28,6,14);ctx.fillStyle='#333';ell(x,GROUND,10,4);ctx.fill();}
+function prompt(x,y,txt,active){ctx.save();ctx.globalAlpha=active?1:.55;ctx.fillStyle='rgba(255,255,255,.92)';rr(x-30,y-30,60,48,14);ctx.fill();ctx.font='28px sans-serif';ctx.textAlign='center';ctx.fillText(txt,x,y+6);ctx.restore();}
+function draw(t){
+  ctx.setTransform(cv.width/W,0,0,cv.height/H,0,0);
+  var d=S?S.dist:t*80;
+  drawArena(d);
+  if(!S){ctx.save();ctx.translate(KX,GROUND);ctx.scale(.95,.95);drawKoda(0,0,t*9,false,{stumble:0,wag:t*8,y:0,ball:false,blink:false});ctx.restore();return;}
+  // Ziel
+  var fx=S.finish-d+KX;
+  if(fx<W+60){ctx.fillStyle='#333';ctx.fillRect(fx-4,GROUND-170,8,170);ctx.fillRect(fx+150,GROUND-170,8,170);for(var c=0;c<10;c++)for(var r=0;r<2;r++){ctx.fillStyle=(c+r)%2?'#fff':'#222';ctx.fillRect(fx-4+c*16.2,GROUND-190+r*12,16.2,12);}
+    ctx.fillStyle='#C2621F';ctx.font='800 22px Outfit, sans-serif';ctx.textAlign='center';ctx.fillText('ZIEL',fx+77,GROUND-198);}
+  // Hindernisse hinter Koda
+  var nextIdx=S.obs.findIndex(function(o){return !o.passed&&!(o.type==='tunnel'&&o.entered);});
+  S.obs.forEach(function(o,i){
+    var x=o.x-d+KX;if(x>W+260||o.end-d+KX<-260)return;
+    if(o.type==='hurdle')drawHurdle(o,x);
+    if(o.type==='tyre')drawTyre(o,x,false);
+    if(o.type==='slalom')o.poles.forEach(function(p,j){if(j%2===0)drawPole(p,p.x-d+KX);});
+    // Kommando-Hinweis
+    var near=x-KX<300&&x-KX>-20&&S.count<=0;
+    if(i===nextIdx&&x-KX<420){
+      if(o.type==='hurdle'||o.type==='tyre')prompt(x,GROUND-(o.type==='tyre'?200:110),'⬆️',near);
+      if(o.type==='tunnel')prompt(x+40,GROUND-120,'⬇️',near);
+    }
+    if(o.type==='slalom'&&!o.passed){var np=o.poles.find(function(p){return !p.done;});if(np){var px=np.x-d+KX;if(px-KX<300)prompt(px,GROUND-150,np.need==='left'?'⬅️':'➡️',px-KX<180);}}
+  });
+  // Koda
+  var duckNow=S.inTunnel||(S.duckHeld&&S.onGround);
+  if(!S.inTunnel){
+    ctx.save();ctx.translate(KX,GROUND+S.y);
+    var slal=S.obs.find(function(o){return o.type==='slalom'&&o.x-d<40&&o.end-d>-20;});
+    if(slal)ctx.translate(0,Math.sin(d*Math.PI/70)*6);
+    if(duckNow)ctx.scale(1,.72);
+    ctx.scale(.95,.95);
+    drawKoda(0,0,S.stop>0||S.count>0?0:d*.05,!S.onGround,{stumble:0,wag:S.wag,y:S.y,ball:false,blink:false});
+    ctx.restore();
+  }
+  // Hindernisse vor Koda (Reifen-Vorderseite, Slalom vordere Stangen, Tunnel)
+  S.obs.forEach(function(o){
+    var x=o.x-d+KX;if(x>W+260||o.end-d+KX<-260)return;
+    if(o.type==='tyre')drawTyre(o,x,true);
+    if(o.type==='slalom')o.poles.forEach(function(p,j){if(j%2===1)drawPole(p,p.x-d+KX);});
+    if(o.type==='tunnel')drawTunnel(o,x);
+  });
+  // Rückmeldungen
+  S.parts.forEach(function(p){ctx.globalAlpha=Math.min(1,p.t*2);ctx.fillStyle='#2F8F46';ctx.font='800 28px Outfit, sans-serif';ctx.textAlign='center';ctx.fillText(p.txt,p.x,p.y);ctx.globalAlpha=1;});
+  if(S.msgT>0){ctx.globalAlpha=Math.min(1,S.msgT*2);ctx.fillStyle=S.msgOk?'rgba(47,143,70,.92)':'rgba(192,57,43,.92)';rr(W/2-150,24,300,46,23);ctx.fill();ctx.fillStyle='#fff';ctx.font='800 22px Outfit, sans-serif';ctx.textAlign='center';ctx.fillText(S.msg,W/2,55);ctx.globalAlpha=1;}
+  if(S.count>0&&S.mode==='play'){ctx.fillStyle='rgba(255,255,255,.9)';ell(W/2,150,60,60);ctx.fill();ctx.fillStyle='#C2621F';ctx.font='800 64px Outfit, sans-serif';ctx.textAlign='center';ctx.fillText(Math.ceil(S.count),W/2,172);}
+  if(S.mode==='end'&&S.party>0){for(var k=0;k<6;k++){ctx.fillStyle=['#E53935','#FDD835','#1E88E5','#43A047'][k%4];var cx=(k*170+t*120)%W,cy=(t*200+k*90)%GROUND;ctx.fillRect(cx,cy,8,12);}}
+}
+function resize(){var r=cv.getBoundingClientRect(),dp=Math.min(window.devicePixelRatio||1,2),w=Math.round(r.width*dp),h=Math.round(r.width*H/W*dp);if(w>0&&(cv.width!==w||cv.height!==h)){cv.width=w;cv.height=h;}}
+window.addEventListener('resize',resize);
+function loop(now){var dt=Math.min(.05,(now-last)/1000);last=now;update(dt);draw(now/1000);requestAnimationFrame(loop);}
+resize();showStart();requestAnimationFrame(loop);
+window.KodaParcours={get state(){return S;},start:start,act:act};
+})();
+</script>
+</body>
+</html>
