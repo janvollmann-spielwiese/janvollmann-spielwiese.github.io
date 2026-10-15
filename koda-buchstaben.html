@@ -31,9 +31,10 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font
 .pic{font-size:clamp(2.4rem,8vw,3.2rem);line-height:1}
 .slots{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
 .slot{width:clamp(34px,7vw,52px);height:clamp(44px,9vw,62px);border-radius:10px;border:3px dashed var(--line);display:grid;place-items:center;font-family:var(--display);font-weight:800;font-size:clamp(1.4rem,4.5vw,2.2rem);color:var(--muted)}
-.slot.hint{color:rgba(110,98,90,.35)}
+.slot.hint{color:var(--muted);opacity:.6}
+.slot.hint.now{opacity:1;color:var(--accent-ink)}
 .slot.now{border-color:var(--accent);border-style:solid;background:var(--soft)}
-.slot.full{border-style:solid;border-color:var(--ok);color:var(--ink);background:#E5F4E8}
+.slot.full{border-style:solid;border-color:#1E6B34;color:#FFFFFF;background:#2E7D32;text-shadow:0 1px 0 rgba(0,0,0,.25)}
 .progress{font-family:var(--display);font-weight:800;color:var(--muted);font-size:.95rem;white-space:nowrap}
 .stage{position:relative;border-radius:18px;overflow:hidden;border:3px solid var(--line);background:#CDEBF5;touch-action:manipulation;user-select:none;-webkit-user-select:none}
 canvas{display:block;width:100%;height:auto;aspect-ratio:960/440;cursor:pointer}
