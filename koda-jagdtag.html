@@ -169,6 +169,7 @@ footer a{color:var(--muted);font-weight:700;text-decoration:none;margin:0 8px}
 </div>
 <footer><a href="fun-games.html">Fun-Games</a>·<a href="./">Startseite</a>·<a href="impressum.html">Impressum</a></footer>
 
+<script src="fun-music.js"></script>
 <script>
 (function(){
 'use strict';
@@ -332,7 +333,7 @@ $('againBtn').addEventListener('click',newGame);
 $('resumeBtn').addEventListener('click',togglePause);
 $('quitBtn').addEventListener('click',function(){G=null;hideAll();$('fetch').hidden=true;showStart();});
 $('pauseBtn').addEventListener('click',togglePause);
-$('soundBtn').addEventListener('click',function(){sound=!sound;this.textContent=sound?'🔊':'🔇';this.setAttribute('aria-label',sound?'Ton ausschalten':'Ton einschalten');if(sound)sfx.woof();});
+$('soundBtn').addEventListener('click',function(){sound=!sound;this.textContent=sound?'🔊':'🔇';this.setAttribute('aria-label',sound?'Ton ausschalten':'Ton einschalten');if(sound){sfx.woof();FunMusic.start('landpartie');}else FunMusic.stop();});
 function togglePause(){
   if(!G)return;
   if(G.mode==='play'||G.mode==='fetch'){G.paused=G.mode;G.mode='pause';$('pauseScreen').hidden=false;$('resumeBtn').focus();}

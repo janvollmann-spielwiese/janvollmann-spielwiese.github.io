@@ -73,6 +73,7 @@ footer a{color:var(--muted);font-weight:700;text-decoration:none;margin:0 8px}
     <span class="pill" id="hCount">0 / 0</span>
     <span class="pill" id="hTime">⏱ 0:00</span>
     <span class="sp"></span>
+    <button class="ibtn" id="soundBtn" type="button" aria-label="Ton und Musik einschalten" title="Ton und Musik">🔇</button>
     <button class="ibtn" id="peekBtn" type="button" aria-pressed="false" title="Vorlage kurz anzeigen">👁 Vorlage</button>
     <button class="ibtn" id="menuBtn" type="button" title="Anderes Bild">🖼 Bilder</button>
   </div>
@@ -110,6 +111,7 @@ footer a{color:var(--muted);font-weight:700;text-decoration:none;margin:0 8px}
 </div>
 <footer><a href="fun-games.html">Fun-Games</a>·<a href="./">Startseite</a>·<a href="impressum.html">Impressum</a></footer>
 
+<script src="fun-music.js"></script>
 <script>
 (function(){
 'use strict';
@@ -435,8 +437,9 @@ peekBtn.addEventListener('pointerdown',function(e){e.preventDefault();setPeek(tr
 peekBtn.addEventListener('keydown',function(e){if(e.code==='Space'||e.code==='Enter'){e.preventDefault();setPeek(true);}});
 peekBtn.addEventListener('keyup',function(){setPeek(false);});
 
-var actx=null;
-function click(){try{actx=actx||new (window.AudioContext||window.webkitAudioContext)();var o=actx.createOscillator(),g=actx.createGain(),t=actx.currentTime;o.type='triangle';o.frequency.setValueAtTime(700,t);o.frequency.exponentialRampToValueAtTime(1100,t+.08);g.gain.setValueAtTime(.06,t);g.gain.exponentialRampToValueAtTime(.001,t+.1);o.connect(g);g.connect(actx.destination);o.start(t);o.stop(t+.1);}catch(e){}}
+var actx=null,sound=false;
+$('soundBtn').addEventListener('click',function(){sound=!sound;this.textContent=sound?'🔊':'🔇';this.setAttribute('aria-label',sound?'Ton und Musik ausschalten':'Ton und Musik einschalten');if(sound){click();FunMusic.start('ruhig');}else FunMusic.stop();});
+function click(){if(!sound)return;try{actx=actx||new (window.AudioContext||window.webkitAudioContext)();var o=actx.createOscillator(),g=actx.createGain(),t=actx.currentTime;o.type='triangle';o.frequency.setValueAtTime(700,t);o.frequency.exponentialRampToValueAtTime(1100,t+.08);g.gain.setValueAtTime(.06,t);g.gain.exponentialRampToValueAtTime(.001,t+.1);o.connect(g);g.connect(actx.destination);o.start(t);o.stop(t+.1);}catch(e){}}
 
 function finish(){
   P.running=false;
