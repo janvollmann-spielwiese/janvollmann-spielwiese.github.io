@@ -236,9 +236,9 @@ function drawKoda(x,y,run,air,state){
 
 /* ---------- Parcours ---------- */
 var COURSES=[
-  {name:'Anfänger',speed:220,gap:520,items:['hurdle','hurdle','tunnel','hurdle','tyre','slalom4','hurdle']},
-  {name:'Fortgeschritten',speed:270,gap:450,items:['hurdle','tyre','tunnel','slalom6','hurdle','hurdle','tyre','tunnel','hurdle','slalom6']},
-  {name:'Profi',speed:320,gap:400,items:['hurdle','hurdle','tyre','tunnel','slalom8','hurdle','tyre','hurdle','tunnel','slalom8','hurdle','tyre','hurdle']}
+  {name:'Anfänger',speed:220,gap:560,jumpV:640,grav:1350,items:['hurdle','hurdle','tunnel','hurdle','tyre','slalom4','hurdle']},
+  {name:'Fortgeschritten',speed:270,gap:470,jumpV:700,grav:1850,items:['hurdle','tyre','tunnel','slalom6','hurdle','hurdle','tyre','tunnel','hurdle','slalom6']},
+  {name:'Profi',speed:320,gap:400,jumpV:760,grav:2400,items:['hurdle','hurdle','tyre','tunnel','slalom8','hurdle','tyre','hurdle','tunnel','slalom8','hurdle','tyre','hurdle']}
 ];
 var PENALTY=5;
 var S=null,courseIdx=0;
@@ -267,7 +267,7 @@ function act(a,down){
   if(!S||S.mode!=='play'||S.count>0)return;
   if(a==='duck'){S.duckHeld=down;return;}
   if(!down)return;
-  if(a==='jump'){if(S.onGround&&!S.inTunnel&&S.stop<=0){S.vy=-760;S.onGround=false;sfx.jump();}return;}
+  if(a==='jump'){if(S.onGround&&!S.inTunnel&&S.stop<=0){S.vy=-S.C.jumpV;S.onGround=false;sfx.jump();}return;}
   // Slalom: Kommando für die nächste Stange
   var o=S.obs.find(function(o){return o.type==='slalom'&&!o.passed;});
   if(!o)return;
@@ -329,10 +329,12 @@ function update(dt){
   if(S.count>0){var c0=Math.ceil(S.count);S.count-=dt;if(Math.ceil(S.count)!==c0){if(S.count>0)sfx.go();else sfx.start();}return;}
   S.time+=dt;
   // Bewegung (Verweigerung stoppt Koda kurz)
+  var inSlalom=S.obs.some(function(o){return o.type==='slalom'&&S.dist>o.x-140&&S.dist<o.end+30;});
+  var target=inSlalom?S.C.speed*.5:S.C.speed;S.speed+=(target-S.speed)*Math.min(1,dt*5);
   var v=S.stop>0?0:S.speed;if(S.stop>0)S.stop-=dt;
   S.dist+=v*dt;
   // Sprungphysik
-  if(!S.onGround){S.vy+=2400*dt;S.y+=S.vy*dt;if(S.y>=0){S.y=0;S.vy=0;S.onGround=true;}}
+  if(!S.onGround){S.vy+=S.C.grav*dt;S.y+=S.vy*dt;if(S.y>=0){S.y=0;S.vy=0;S.onGround=true;}}
   var feet=-S.y; // Höhe der Pfoten über dem Boden
   S.inTunnel=false;
   S.obs.forEach(function(o){
@@ -341,7 +343,7 @@ function update(dt){
       o.passed=true;if(feet<46){o.knocked=true;fault('Stange gerissen!');}else{say('Sauber!',true);sfx.ok();}
     }
     if(o.type==='tyre'&&!o.passed&&rel<=0){
-      o.passed=true;if(feet>=66&&feet<=118){say('Durch den Reifen!',true);sfx.ok();}else{o.missed=true;fault(feet<66?'Unter dem Reifen durch!':'Über den Reifen drüber!');}
+      o.passed=true;var top=S.C.jumpV*S.C.jumpV/(2*S.C.grav);if(feet>=top*.55&&feet<=top*.985){say('Durch den Reifen!',true);sfx.ok();}else{o.missed=true;fault(feet<top*.55?'Unter dem Reifen durch!':'Über den Reifen drüber!');}
     }
     if(o.type==='tunnel'){
       if(!o.entered&&rel<=12){
