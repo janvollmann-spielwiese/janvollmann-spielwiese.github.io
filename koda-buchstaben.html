@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link rel="icon" type="image/png" sizes="64x64" href="icons/favicon-64.png">
+<link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
+<link rel="manifest" href="fun-games.webmanifest">
+<meta name="theme-color" content="#C2621F">
+<meta name="apple-mobile-web-app-title" content="Fun-Games">
+<title>Kodas Buchstabenjagd</title>
+<meta name="description" content="Lesen lernen mit Labrador Koda: Buchstaben in der richtigen Reihenfolge einsammeln und Wörter bilden, in drei Stufen.">
+<link href="fonts/fonts.css" rel="stylesheet">
+<style>
+:root{--bg:#F4EFE6;--surface:#FFFFFF;--ink:#2B2420;--muted:#6E625A;--line:#E3D8CB;--accent:#C2621F;--accent-ink:#9A4A12;--soft:#FBE7D3;--ok:#2F8F46;--no:#C0392B;
+  --display:"Outfit","Futura","Avenir Next","Segoe UI",system-ui,sans-serif;--body:"Nunito Sans","Segoe UI",system-ui,sans-serif}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1D1916;--surface:#29231F;--ink:#F4ECE4;--muted:#BCAEA3;--line:#433A33;--accent-ink:#F2A26A;--soft:#3E2A1C;--ok:#7BD67F;--no:#FF8A80}}
+:root[data-theme="dark"]{--bg:#1D1916;--surface:#29231F;--ink:#F4ECE4;--muted:#BCAEA3;--line:#433A33;--accent-ink:#F2A26A;--soft:#3E2A1C;--ok:#7BD67F;--no:#FF8A80}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.5;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+.wrap{max-width:1000px;margin:0 auto;padding:0 12px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 4px}
+.top a{font-family:var(--display);font-weight:700;text-decoration:none;color:var(--muted)}
+.top a:hover{color:var(--accent-ink)}
+.top h1{font-family:var(--display);font-weight:800;font-size:clamp(1.1rem,4vw,1.6rem);margin:0}
+@media (max-width:480px){.top .t{display:none}.top a{font-size:1.4rem}}
+.ibtn{flex:none;width:44px;height:44px;border-radius:50%;border:2px solid var(--line);background:var(--surface);font-size:1.2rem;cursor:pointer;color:var(--ink)}
+.wordbar{display:flex;align-items:center;justify-content:center;gap:14px;background:var(--surface);border:3px solid var(--line);border-radius:18px;padding:10px 14px;margin:0 0 10px;flex-wrap:wrap;min-height:84px}
+.pic{font-size:clamp(2.4rem,8vw,3.2rem);line-height:1}
+.slots{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
+.slot{width:clamp(34px,7vw,52px);height:clamp(44px,9vw,62px);border-radius:10px;border:3px dashed var(--line);display:grid;place-items:center;font-family:var(--display);font-weight:800;font-size:clamp(1.4rem,4.5vw,2.2rem);color:var(--muted)}
+.slot.hint{color:rgba(110,98,90,.35)}
+.slot.now{border-color:var(--accent);border-style:solid;background:var(--soft)}
+.slot.full{border-style:solid;border-color:var(--ok);color:var(--ink);background:#E5F4E8}
+.progress{font-family:var(--display);font-weight:800;color:var(--muted);font-size:.95rem;white-space:nowrap}
+.stage{position:relative;border-radius:18px;overflow:hidden;border:3px solid var(--line);background:#CDEBF5;touch-action:manipulation;user-select:none;-webkit-user-select:none}
+canvas{display:block;width:100%;height:auto;aspect-ratio:960/440;cursor:pointer}
+.overlay{position:absolute;inset:0;display:grid;place-items:center;padding:12px;background:rgba(30,22,16,.4);overflow:auto}
+.overlay[hidden]{display:none}
+.panel{background:var(--surface);color:var(--ink);border-radius:18px;padding:clamp(16px,3vw,28px);max-width:600px;width:100%;text-align:center;box-shadow:0 18px 40px rgba(0,0,0,.25)}
+.panel h2{font-family:var(--display);font-weight:800;font-size:clamp(1.5rem,4.5vw,2.2rem);margin:0 0 6px;line-height:1.1}
+.panel p{margin:0 0 12px;color:var(--muted)}
+.levels{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:10px 0 6px}
+@media (max-width:560px){.levels{grid-template-columns:minmax(0,1fr)}}
+.btn{font:inherit;font-family:var(--display);font-weight:800;font-size:1.1rem;border:0;border-radius:14px;padding:12px 16px;cursor:pointer;background:var(--accent);color:#fff;box-shadow:0 4px 0 #8A410F}
+.btn small{display:block;font-size:.8rem;font-weight:600;opacity:.9}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 #8A410F}
+.btn.g{background:#4E8F3A;box-shadow:0 4px 0 #2F5E22}.btn.b{background:#3A78B5;box-shadow:0 4px 0 #24507D}
+.btn.ghost{background:var(--soft);color:var(--accent-ink);box-shadow:none}
+.stars{font-size:clamp(2.6rem,10vw,3.6rem);letter-spacing:6px;margin:6px 0}
+.stars .off{opacity:.2;filter:grayscale(1)}
+.words{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:0 0 14px}
+.words span{background:var(--soft);border-radius:999px;padding:3px 12px;font-family:var(--display);font-weight:800;color:var(--accent-ink)}
+.row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.best{margin:10px 0 0;color:var(--muted);font-size:.9rem}
+.help{display:flex;flex-wrap:wrap;gap:6px 18px;justify-content:center;color:var(--muted);font-size:.9rem;margin:12px 0 0}
+.help b{color:var(--ink)}
+@media (max-height:560px){.panel{padding:12px 16px}.panel p{font-size:.9rem;margin-bottom:8px}}
+footer{text-align:center;color:var(--muted);font-size:.85rem;padding:28px 16px calc(24px + env(safe-area-inset-bottom,0px))}
+footer a{color:var(--muted);font-weight:700;text-decoration:none;margin:0 8px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav class="top"><a href="fun-games.html" aria-label="Zurück zu Fun-Games">←<span class="t"> Fun-Games</span></a><h1>🔤 Kodas Buchstabenjagd</h1><button class="ibtn" id="soundBtn" type="button" aria-label="Ton und Musik einschalten" title="Ton und Musik">🔇</button></nav>
+
+  <div class="wordbar" id="wordbar">
+    <span class="pic" id="pic" aria-hidden="true">🐕</span>
+    <div class="slots" id="slots" aria-live="polite"></div>
+    <span class="progress" id="progress"></span>
+  </div>
+
+  <div class="stage">
+    <canvas id="game" width="960" height="440" aria-label="Garten mit Buchstaben-Ballons"></canvas>
+    <div class="overlay" id="startScreen">
+      <div class="panel">
+        <h2>Kodas Buchstabenjagd</h2>
+        <p>Im Garten schweben Buchstaben-Ballons. Tippe sie in der richtigen Reihenfolge an, dann holt Koda sie und baut das Wort zusammen.</p>
+        <div class="levels">
+          <button class="btn g" type="button" data-level="0">Kurze Wörter<small>3–4 Buchstaben · Wort als Hilfe</small></button>
+          <button class="btn" type="button" data-level="1">Lange Wörter<small>5–7 Buchstaben · Wort als Hilfe</small></button>
+          <button class="btn b" type="button" data-level="2">Profi<small>bis 10 Buchstaben · ohne Hilfe</small></button>
+        </div>
+        <p class="best" id="best"></p>
+      </div>
+    </div>
+    <div class="overlay" id="endScreen" hidden>
+      <div class="panel">
+        <h2 id="endTitle">Super gelesen!</h2>
+        <div class="stars" id="stars"></div>
+        <p id="endText"></p>
+        <div class="words" id="wordsDone"></div>
+        <div class="row"><button class="btn" type="button" id="again">🔁 Nochmal</button><button class="btn ghost" type="button" id="menu">Andere Stufe</button></div>
+      </div>
+    </div>
+  </div>
+  <div class="help"><span><b>Antippen:</b> den nächsten Buchstaben des Wortes</span><span>Falscher Buchstabe? Kein Problem, einfach weitersuchen.</span></div>
+</div>
+<footer><a href="fun-games.html">Fun-Games</a>·<a href="./">Startseite</a>·<a href="impressum.html">Impressum</a></footer>
+<script src="fun-music.js"></script>
+<script>
+(function(){
+'use strict';
+var $=function(id){return document.getElementById(id);};
+var cv=$('game'),ctx=cv.getContext('2d'),W=960,H=440,GROUND=420;
+function rr(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
+function ell(x,y,rx,ry,rot){ctx.beginPath();ctx.ellipse(x,y,rx,ry,rot||0,0,Math.PI*2);}
+function star(x,y,r){ctx.beginPath();for(var i=0;i<10;i++){var a=i*Math.PI/5-Math.PI/2,rad=i%2?r*.45:r;ctx.lineTo(x+Math.cos(a)*rad,y+Math.sin(a)*rad);}ctx.closePath();ctx.fill();}
+function rnd(a,b){return a+Math.random()*(b-a);}
+function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t;}return a;}
+/* Koda-Zeichnung, identisch mit den anderen Koda-Spielen */
+var FUR='#C0652A',FUR_L='#D27E3F',FUR_D='#9A4D1C',EAR='#8E451A',NOSE='#4A2C22',COLLAR='#4E3424';
+function frontLeg(px,py,ang,col){
+  // Vorderlauf: Oberarm, gerader Unterarm, Pfote
+  ctx.save();ctx.translate(px,py);ctx.rotate(ang);
+  ctx.fillStyle=col;
+  ctx.beginPath();ctx.moveTo(-8,-6);ctx.quadraticCurveTo(-9,14,-5,24);ctx.lineTo(5,24);ctx.quadraticCurveTo(9,10,8,-6);ctx.closePath();ctx.fill();
+  ctx.translate(0,22);ctx.rotate(-ang*.6);
+  rr(-5,0,10,22,5);ctx.fill();
+  ell(3,22,8,4.5);ctx.fill();
+  ctx.restore();
+}
+function hindLeg(px,py,ang,col){
+  // Hinterlauf: kräftiger Oberschenkel, schräger Unterschenkel, Sprunggelenk, Pfote
+  ctx.save();ctx.translate(px,py);ctx.rotate(ang);
+  ctx.fillStyle=col;
+  ctx.beginPath();ctx.moveTo(-14,-10);ctx.quadraticCurveTo(-18,12,-4,22);ctx.lineTo(8,18);ctx.quadraticCurveTo(14,0,12,-10);ctx.closePath();ctx.fill();
+  ctx.translate(2,18);ctx.rotate(.55-ang*.4);
+  rr(-5,0,10,20,5);ctx.fill();
+  ctx.translate(0,18);ctx.rotate(-.55);
+  rr(-4.5,0,9,14,4.5);ctx.fill();
+  ell(4,14,8,4.5);ctx.fill();
+  ctx.restore();
+}
+function drawKoda(x,y,run,air,state){
+  // x = Mitte, y = Pfoten-Grundlinie, Blick nach rechts
+  var s=run,sw=air?0:Math.sin(s),sw2=air?0:Math.sin(s+Math.PI);
+  var bob=air?0:-Math.abs(Math.sin(s))*3;
+  ctx.save();ctx.translate(x,y+bob);
+  if(state.stumble>0)ctx.rotate(-.16*Math.sin(state.stumble*12));
+  if(state.blink)ctx.globalAlpha=.55;
+  // Schatten
+  ctx.save();ctx.translate(0,-bob-(air?state.y:0));ctx.fillStyle='rgba(0,0,0,'+(air?.1:.18)+')';ell(4,2,50,6);ctx.fill();ctx.restore();
+  // Rute (dicke Otterrute)
+  var wag=Math.sin(state.wag)*.3;
+  ctx.save();ctx.translate(-52,-62);ctx.rotate(-.35+wag);
+  ctx.fillStyle=FUR;ctx.beginPath();ctx.moveTo(4,-7);ctx.quadraticCurveTo(-22,-12,-42,0);ctx.quadraticCurveTo(-22,2,4,8);ctx.closePath();ctx.fill();
+  ctx.restore();
+  // ferne Läufe
+  hindLeg(-36,-50,air?-.6:sw2*.5,FUR_D);
+  frontLeg(36,-50,air?.9:sw*.55,FUR_D);
+  // Körper als eine Form: Rücken, Hals, Brust, Bauch, Keule
+  ctx.fillStyle=FUR;ctx.beginPath();
+  ctx.moveTo(-54,-60);
+  ctx.bezierCurveTo(-30,-76,6,-72,30,-76);
+  var hd=state.head||0,PX=48,PY=-62;
+  function rp(x,y){var dx=x-PX,dy=y-PY,c=Math.cos(hd),s=Math.sin(hd);return [PX+dx*c-dy*s,PY+dx*s+dy*c];}
+  var n1=rp(38,-90),n2=rp(46,-106),n3=rp(70,-94),n4=rp(68,-70);
+  ctx.quadraticCurveTo(n1[0],n1[1],n2[0],n2[1]);
+  ctx.lineTo(n3[0],n3[1]);
+  ctx.quadraticCurveTo(n4[0],n4[1],56,-58);
+  ctx.quadraticCurveTo(50,-38,32,-36);
+  ctx.bezierCurveTo(12,-38,-10,-46,-26,-44);
+  ctx.quadraticCurveTo(-46,-34,-58,-46);
+  ctx.quadraticCurveTo(-62,-54,-54,-60);
+  ctx.closePath();ctx.fill();
+  // Licht auf dem Rücken, Schatten am Bauch
+  ctx.fillStyle=FUR_L;ctx.beginPath();ctx.moveTo(-46,-64);ctx.bezierCurveTo(-24,-75,6,-71,28,-74);ctx.quadraticCurveTo(4,-66,-46,-60);ctx.closePath();ctx.fill();
+  ctx.fillStyle='rgba(120,50,15,.18)';ell(-2,-44,30,5,-.05);ctx.fill();
+  // heller Brustfleck
+  ctx.fillStyle='#E9A877';ell(53,-47,3,5,-.4);ctx.fill();
+  // nahe Läufe
+  hindLeg(-42,-50,air?-.8:sw*.55,FUR);
+  frontLeg(30,-48,air?1.05:sw2*.6,FUR);
+  // Kopf, Halsband und Ohr drehen sich beim Fressen mit
+  ctx.save();ctx.translate(PX,PY);ctx.rotate(hd);ctx.translate(-PX,-PY);
+  // Halsband
+  ctx.strokeStyle=COLLAR;ctx.lineWidth=6;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(46,-96);ctx.quadraticCurveTo(56,-86,62,-78);ctx.stroke();
+  ctx.fillStyle='#C9A24A';ell(58,-82,3,3);ctx.fill();
+  // Kopf: breiter Schädel, deutlicher Stopp, Schnauze
+  ctx.fillStyle=FUR;
+  ctx.beginPath();ctx.moveTo(48,-104);
+  ctx.quadraticCurveTo(52,-124,70,-122);
+  ctx.quadraticCurveTo(80,-121,82,-114);
+  ctx.quadraticCurveTo(96,-114,100,-106);
+  ctx.quadraticCurveTo(102,-96,94,-94);
+  ctx.quadraticCurveTo(84,-90,72,-92);
+  ctx.quadraticCurveTo(62,-88,56,-94);
+  ctx.closePath();ctx.fill();
+  ctx.fillStyle=FUR_L;ell(66,-116,11,4,-.2);ctx.fill();
+  // Nase
+  ctx.fillStyle=NOSE;ell(99,-107,5,4.2);ctx.fill();
+  ctx.fillStyle='rgba(255,255,255,.35)';ell(98,-108.5,1.6,1);ctx.fill();
+  // Maul, Zunge oder Ball
+  ctx.strokeStyle=NOSE;ctx.lineWidth=1.6;ctx.beginPath();ctx.moveTo(97,-98);ctx.quadraticCurveTo(86,-93,76,-95);ctx.stroke();
+  if(state.ball){ctx.fillStyle='#D7F25A';ell(95,-94,8,8);ctx.fill();ctx.strokeStyle='#fff';ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(88,-94,7,-.8,.8);ctx.stroke();}
+  else if(!(state.stumble>0)){ctx.fillStyle='#E46A7A';rr(81,-96,9,14+Math.sin(s*2)*2,5);ctx.fill();ctx.strokeStyle='#C24E60';ctx.beginPath();ctx.moveTo(85.5,-94);ctx.lineTo(85.5,-85);ctx.stroke();}
+  // Auge mit Braue
+  if(state.stumble>0){ctx.strokeStyle='#2A1A12';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(72,-114);ctx.lineTo(78,-109);ctx.moveTo(78,-114);ctx.lineTo(72,-109);ctx.stroke();}
+  else{ctx.fillStyle='#3A2216';ell(75,-112,3.4,3.6);ctx.fill();ctx.fillStyle='#fff';ell(76,-113.3,1.2,1.2);ctx.fill();
+    ctx.strokeStyle=FUR_D;ctx.lineWidth=1.6;ctx.beginPath();ctx.moveTo(70,-118);ctx.quadraticCurveTo(75,-120,80,-117);ctx.stroke();}
+  // Schlappohr, etwas dunkler
+  var flap=air?-.45:Math.sin(s*2)*.12;
+  ctx.save();ctx.translate(60,-118);ctx.rotate(.1+flap);
+  ctx.fillStyle=EAR;ctx.beginPath();ctx.moveTo(-6,0);ctx.quadraticCurveTo(-16,12,-12,28);ctx.quadraticCurveTo(-5,35,4,27);ctx.quadraticCurveTo(9,10,7,0);ctx.closePath();ctx.fill();
+  ctx.restore();
+  ctx.restore();
+  // Schwindelsterne
+  if(state.stumble>0){for(var k=0;k<3;k++){var a=state.wag*2+k*2.1;ctx.fillStyle='#FFD54A';star(70+Math.cos(a)*22,-136+Math.sin(a)*6,6);}}
+  ctx.restore();
+}
+
+/* ---------- Wörter ---------- */
+var WORDS=[
+  [['HUND','🐕'],['BALL','🎾'],['NAPF','🥣'],['ENTE','🦆'],['BAUM','🌳'],['HAUS','🏠'],['MAUS','🐭'],['IGEL','🦔'],['EIS','🍦'],['ROSE','🌹'],['BOOT','⛵'],['AUTO','🚗'],['MOND','🌙'],['OMA','👵'],['OPA','👴'],['KUH','🐄']],
+  [['KNOCHEN','🦴'],['LEINE','🦮'],['SONNE','☀️'],['BLUME','🌼'],['APFEL','🍎'],['KATZE','🐱'],['VOGEL','🐦'],['FISCH','🐟'],['WOLKE','☁️'],['KUCHEN','🍰'],['TOMATE','🍅'],['BANANE','🍌'],['PFOTE','🐾'],['HAMSTER','🐹'],['PFERD','🐴']],
+  [['LABRADOR','🐕'],['GIRAFFE','🦒'],['ELEFANT','🐘'],['ERDBEERE','🍓'],['REGENBOGEN','🌈'],['SCHNEEMANN','⛄'],['TANNENBAUM','🎄'],['DINOSAURIER','🦕'],['PINGUIN','🐧'],['KROKODIL','🐊'],['DELFIN','🐬'],['RUTSCHE','🛝']]
+];
+var LEVELS=[{name:'Kurze Wörter',decoys:2,hint:true,drift:0},{name:'Lange Wörter',decoys:3,hint:true,drift:0},{name:'Profi',decoys:4,hint:false,drift:1}];
+var ROUND=6,ABC='ABCDEFGHIJKLMNOPRSTUVWZ';
+var COLORS=['#E53935','#FB8C00','#FDD835','#43A047','#1E88E5','#8E24AA','#EC407A','#00ACC1'];
+
+/* ---------- Zustand ---------- */
+var G=null;
+function start(li){
+  var L=LEVELS[li],pool=shuffle(WORDS[li].slice()).slice(0,ROUND);
+  G={li:li,L:L,words:pool,wi:0,mistakes:0,done:[],koda:{x:120,face:1,state:'idle',y:0,vy:0},carry:null,busy:false,party:0,hearts:[],wag:0};
+  $('startScreen').hidden=true;$('endScreen').hidden=true;
+  setupWord();
+}
+function setupWord(){
+  var w=G.words[G.wi],word=w[0],L=G.L;
+  G.word=word;G.emoji=w[1];G.pos=0;G.busy=false;
+  var letters=word.split('');
+  var dec=[];while(dec.length<L.decoys){var c=ABC[Math.floor(Math.random()*ABC.length)];if(word.indexOf(c)<0&&dec.indexOf(c)<0)dec.push(c);}
+  var all=shuffle(letters.concat(dec)),n=all.length;
+  // Ballons gleichmäßig im Himmel und über der Wiese verteilen
+  var cols=Math.ceil(n/2),toks=[];
+  all.forEach(function(ch,i){var row=i%2,col=Math.floor(i/2);
+    var x=110+(col+.5)*(W-200)/cols+rnd(-22,22),y=row?250+rnd(-18,18):120+rnd(-22,22);
+    toks.push({ch:ch,x:x,y:y,bx:x,by:y,c:COLORS[i%COLORS.length],t:Math.random()*6,gone:false,shake:0,ph:Math.random()*6});});
+  G.toks=toks;
+  $('pic').textContent=G.emoji;
+  $('progress').textContent='Wort '+(G.wi+1)+' / '+ROUND;
+  renderSlots();
+}
+function renderSlots(){
+  var html='';
+  for(var i=0;i<G.word.length;i++){
+    var full=i<G.pos,cls='slot'+(full?' full':i===G.pos?' now':'')+(!full&&G.L.hint?' hint':'');
+    html+='<span class="'+cls+'">'+(full||G.L.hint?G.word[i]:'')+'</span>';
+  }
+  $('slots').innerHTML=html;
+}
+
+/* ---------- Antippen ---------- */
+function toCanvas(e){var r=cv.getBoundingClientRect();return {x:(e.clientX-r.left)*W/r.width,y:(e.clientY-r.top)*H/r.height};}
+cv.addEventListener('pointerdown',function(e){
+  if(!G||G.busy)return;
+  var p=toCanvas(e),hit=null,best=1e9;
+  G.toks.forEach(function(t){if(t.gone)return;var d=Math.hypot(p.x-t.x,p.y-t.y);if(d<46&&d<best){best=d;hit=t;}});
+  if(!hit)return;
+  pickToken(hit);
+});
+function pickToken(t){
+  if(!G||G.busy||t.gone)return;
+  if(t.ch===G.word[G.pos]){
+    G.busy=true;t.gone=true;t.picked=true;sfx.pop();
+    G.carry={t:t,phase:'down',k:0};
+    // Koda läuft unter den Ballon
+    G.koda.target=t.x;G.koda.state='run';G.koda.face=t.x>=G.koda.x?1:-1;
+  }else{
+    t.shake=.5;G.mistakes++;sfx.no();G.koda.state='shake';G.koda.shakeT=.5;
+  }
+}
+window.addEventListener('keydown',function(e){
+  if(!G||G.busy||e.ctrlKey||e.metaKey)return;
+  var k=e.key.toUpperCase();if(k.length!==1||k<'A'||k>'Z')return;
+  var t=G.toks.find(function(t){return !t.gone&&t.ch===k&&k===G.word[G.pos];})||G.toks.find(function(t){return !t.gone&&t.ch===k;});
+  if(t)pickToken(t);
+});
+
+/* ---------- Ablauf ---------- */
+function letterArrived(){
+  G.pos++;renderSlots();sfx.ok();
+  if(G.pos>=G.word.length){
+    G.done.push(G.emoji+' '+G.word);G.party=1.8;G.koda.state='happy';sfx.word();
+    for(var i=0;i<10;i++)G.hearts.push({x:rnd(200,760),y:rnd(200,320),life:rnd(1,1.8)});
+    setTimeout(function(){G.wi++;if(G.wi>=ROUND)finish();else{setupWord();G.koda.state='idle';}},1900);
+  }else G.busy=false;
+}
+function finish(){
+  var s=G.mistakes<=1?3:G.mistakes<=4?2:1,h='';for(var i=0;i<3;i++)h+=i<s?'⭐':'<span class="off">⭐</span>';
+  $('stars').innerHTML=h;$('endTitle').textContent=['Gut gemacht!','Super gelesen!','Wau, perfekt!'][s-1];
+  $('endText').textContent='Koda hat alle Buchstaben eingesammelt. '+(G.mistakes===0?'Kein einziger falscher Ballon!':G.mistakes+' Mal daneben getippt.');
+  $('wordsDone').innerHTML=G.done.map(function(w){return '<span>'+w+'</span>';}).join('');
+  var b=loadBest();if(!b[G.li]||s>b[G.li]){b[G.li]=s;try{localStorage.setItem('koda-abc-best',JSON.stringify(b));}catch(e){}}
+  $('endScreen').hidden=false;$('again').focus();
+}
+function loadBest(){try{return JSON.parse(localStorage.getItem('koda-abc-best')||'{}');}catch(e){return {};}}
+function showMenu(){var b=loadBest(),p=[];LEVELS.forEach(function(l,i){if(b[i])p.push(l.name+' '+'⭐'.repeat(b[i]));});$('best').textContent=p.length?'Deine besten Runden · '+p.join(' · '):'';$('endScreen').hidden=true;$('startScreen').hidden=false;}
+document.querySelectorAll('[data-level]').forEach(function(b){b.addEventListener('click',function(){start(+b.getAttribute('data-level'));});});
+$('again').addEventListener('click',function(){start(G.li);});
+$('menu').addEventListener('click',showMenu);
+
+/* ---------- Ton ---------- */
+var sound=false,actx=null;
+function tone(f1,f2,d,type,v){if(!sound)return;try{actx=actx||new (window.AudioContext||window.webkitAudioContext)();var o=actx.createOscillator(),g=actx.createGain(),t=actx.currentTime;o.type=type||'sine';o.frequency.setValueAtTime(f1,t);o.frequency.exponentialRampToValueAtTime(f2,t+d);g.gain.setValueAtTime(v||.1,t);g.gain.exponentialRampToValueAtTime(.001,t+d);o.connect(g);g.connect(actx.destination);o.start(t);o.stop(t+d);}catch(e){}}
+var sfx={pop:function(){tone(900,300,.08,'square',.06);},ok:function(){tone(660,990,.12,'triangle',.1);},no:function(){tone(220,160,.18,'sine',.08);},word:function(){[523,659,784,1047].forEach(function(f,i){setTimeout(function(){tone(f,f,.2,'triangle',.1);},i*110);});}};
+$('soundBtn').addEventListener('click',function(){sound=!sound;this.textContent=sound?'🔊':'🔇';this.setAttribute('aria-label',sound?'Ton und Musik ausschalten':'Ton und Musik einschalten');if(sound){sfx.ok();FunMusic.start('sonnig');}else FunMusic.stop();});
+
+/* ---------- Spielschleife ---------- */
+function update(dt){
+  if(!G)return;
+  G.wag+=dt*(G.koda.state==='happy'?20:8);
+  var k=G.koda;
+  // Koda bewegen
+  if(k.state==='run'){var dx=k.target-k.x;if(Math.abs(dx)<6){k.x=k.target;k.state='catch';}else k.x+=Math.sign(dx)*Math.min(Math.abs(dx),520*dt);}
+  if(k.state==='shake'){k.shakeT-=dt;if(k.shakeT<=0)k.state='idle';}
+  if(k.state==='happy'&&k.y===0&&Math.random()<dt*3)k.vy=-360;
+  k.vy+=1500*dt;k.y+=k.vy*dt;if(k.y>0){k.y=0;k.vy=0;}
+  // gefangener Buchstabe: erst zu Koda, dann ins Wortfeld (nach oben)
+  var c=G.carry;
+  if(c){
+    if(c.phase==='down'){if(k.state==='catch'){k.vy=-380;c.phase='fall';c.k=0;c.sx=c.t.x;c.sy=c.t.y;}}
+    else if(c.phase==='fall'){c.k+=dt*3;var e=Math.min(1,c.k);c.t.x=c.sx+(k.x+70*k.face-c.sx)*e;c.t.y=c.sy+(GROUND-110-c.sy)*e;if(e>=1){c.phase='fly';c.k=0;c.sx=c.t.x;c.sy=c.t.y;k.state='idle';}}
+    else if(c.phase==='fly'){c.k+=dt*2.4;var e2=Math.min(1,c.k);c.t.x=c.sx+(W/2-c.sx)*e2;c.t.y=c.sy+(-60-c.sy)*e2;c.t.scale=1-e2*.4;if(e2>=1){G.carry=null;letterArrived();}}
+  }
+  // Ballons schweben, im Profi-Modus wandern sie
+  G.toks.forEach(function(t){if(t.picked)return;t.t+=dt;if(t.shake>0)t.shake-=dt;
+    t.y=t.by+Math.sin(t.t*1.4+t.ph)*8;
+    if(G.L.drift){t.bx+=Math.sin(t.t*.35+t.ph)*22*dt;t.bx=Math.max(70,Math.min(W-70,t.bx));}
+    t.x=t.bx+(t.shake>0?Math.sin(t.shake*50)*7:0);});
+  G.hearts=G.hearts.filter(function(h){h.life-=dt;h.y-=60*dt;return h.life>0;});
+}
+function drawGarden(t){
+  var g=ctx.createLinearGradient(0,0,0,H);g.addColorStop(0,'#8CCBF0');g.addColorStop(.7,'#DFF2FA');ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+  ctx.fillStyle='rgba(255,236,170,.95)';ell(870,70,40,40);ctx.fill();
+  for(var c=0;c<3;c++){var cx=((c*380+t*10)%1300)-150;ctx.fillStyle='rgba(255,255,255,.85)';ell(cx,60+c*30,60,18);ctx.fill();ell(cx+36,48+c*30,40,16);ctx.fill();}
+  ctx.fillStyle='#A8D27F';ctx.beginPath();ctx.moveTo(0,H);for(var x=0;x<=W;x+=12)ctx.lineTo(x,330-Math.sin(x*.008+1)*20);ctx.lineTo(W,H);ctx.fill();
+  // Zaun
+  ctx.fillStyle='#F4F1E8';for(var fx=10;fx<W;fx+=36){ctx.beginPath();ctx.moveTo(fx,370);ctx.lineTo(fx,330);ctx.lineTo(fx+9,320);ctx.lineTo(fx+18,330);ctx.lineTo(fx+18,370);ctx.fill();}
+  ctx.fillRect(0,336,W,7);ctx.fillRect(0,356,W,7);
+  ctx.fillStyle='#86B94F';ctx.fillRect(0,368,W,H-368);
+  for(var f=0;f<26;f++){var px=(f*137)%W,py=385+(f*53)%45;ctx.fillStyle=['#FFFFFF','#FDD835','#EC407A'][f%3];for(var k=0;k<5;k++){var a=k*Math.PI*2/5;ell(px+Math.cos(a)*4,py+Math.sin(a)*4,3.5,3);ctx.fill();}ctx.fillStyle='#FB8C00';ell(px,py,2.5,2.5);ctx.fill();}
+}
+function drawBalloon(tk){
+  var s=tk.scale||1,x=tk.x,y=tk.y;
+  if(!tk.picked){ctx.strokeStyle='rgba(80,70,60,.5)';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(x,y+40*s);ctx.quadraticCurveTo(x+8,y+70,x,y+100);ctx.stroke();}
+  ctx.save();ctx.translate(x,y);ctx.scale(s,s);
+  ctx.fillStyle=tk.c;ell(0,0,38,42);ctx.fill();
+  ctx.beginPath();ctx.moveTo(-6,40);ctx.lineTo(6,40);ctx.lineTo(0,48);ctx.fill();
+  ctx.fillStyle='rgba(255,255,255,.35)';ell(-14,-16,9,14,-.5);ctx.fill();
+  ctx.fillStyle='#fff';ell(0,2,26,26);ctx.fill();
+  ctx.fillStyle='#2B2420';ctx.font='800 36px Outfit, sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(tk.ch,0,4);ctx.textBaseline='alphabetic';
+  ctx.restore();
+}
+function draw(t){
+  ctx.setTransform(cv.width/W,0,0,cv.height/H,0,0);
+  drawGarden(t);
+  if(!G){ctx.save();ctx.translate(200,GROUND);ctx.scale(.8,.8);drawKoda(0,0,t*8,false,{stumble:0,wag:t*8,y:0,ball:false,blink:false});ctx.restore();return;}
+  G.toks.forEach(function(tk){if(!tk.gone)drawBalloon(tk);});
+  var k=G.koda;
+  ctx.save();ctx.translate(k.x+(k.state==='shake'?Math.sin(k.shakeT*40)*5:0),GROUND+k.y);ctx.scale(.8*k.face,.8);
+  drawKoda(0,0,k.state==='run'?t*14:0,k.y<0,{stumble:0,wag:G.wag,y:k.y,ball:false,blink:false});
+  ctx.restore();
+  if(G.carry&&G.carry.phase!=='down')drawBalloon(G.carry.t);
+  G.hearts.forEach(function(h){ctx.globalAlpha=Math.max(0,Math.min(1,h.life));var x=h.x,y=h.y,r=12;ctx.fillStyle='#E84A6A';ctx.beginPath();ctx.moveTo(x,y+r*.6);ctx.bezierCurveTo(x-r*1.4,y-r*.4,x-r*.6,y-r*1.4,x,y-r*.5);ctx.bezierCurveTo(x+r*.6,y-r*1.4,x+r*1.4,y-r*.4,x,y+r*.6);ctx.fill();ctx.globalAlpha=1;});
+  if(G.party>0){G.party-=1/60;ctx.fillStyle='rgba(255,255,255,.9)';rr(W/2-190,150,380,90,24);ctx.fill();ctx.fillStyle='#2F8F46';ctx.font='800 52px Outfit, sans-serif';ctx.textAlign='center';ctx.fillText(G.emoji+' '+G.word,W/2,214);}
+}
+function resize(){var r=cv.getBoundingClientRect(),d=Math.min(window.devicePixelRatio||1,2),w=Math.round(r.width*d),h=Math.round(r.width*H/W*d);if(w>0&&(cv.width!==w||cv.height!==h)){cv.width=w;cv.height=h;}}
+window.addEventListener('resize',resize);
+var last=performance.now();
+function loop(now){var dt=Math.min(.05,(now-last)/1000);last=now;update(dt);draw(now/1000);requestAnimationFrame(loop);}
+resize();showMenu();requestAnimationFrame(loop);
+window.KodaABC={get state(){return G;},start:start,pick:pickToken};
+})();
+</script>
+</body>
+</html>

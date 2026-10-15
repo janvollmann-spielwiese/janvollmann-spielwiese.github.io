@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link rel="icon" type="image/png" sizes="64x64" href="icons/favicon-64.png">
+<link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
+<link rel="manifest" href="fun-games.webmanifest">
+<meta name="theme-color" content="#C2621F">
+<meta name="apple-mobile-web-app-title" content="Fun-Games">
+<title>Kodas Uhrzeit</title>
+<meta name="description" content="Uhrzeit lernen mit Labrador Koda: Uhr stellen und ablesen in vier Stufen von vollen Stunden bis fünf Minuten.">
+<link href="fonts/fonts.css" rel="stylesheet">
+<style>
+:root{--bg:#F4EFE6;--surface:#FFFFFF;--ink:#2B2420;--muted:#6E625A;--line:#E3D8CB;--accent:#C2621F;--accent-ink:#9A4A12;--soft:#FBE7D3;
+  --ok:#2F8F46;--no:#C0392B;--no-soft:#FBE3E0;
+  --display:"Outfit","Futura","Avenir Next","Segoe UI",system-ui,sans-serif;--body:"Nunito Sans","Segoe UI",system-ui,sans-serif}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1D1916;--surface:#29231F;--ink:#F4ECE4;--muted:#BCAEA3;--line:#433A33;--accent-ink:#F2A26A;--soft:#3E2A1C;--ok:#7BD67F;--no:#FF8A80;--no-soft:#3E2220}}
+:root[data-theme="dark"]{--bg:#1D1916;--surface:#29231F;--ink:#F4ECE4;--muted:#BCAEA3;--line:#433A33;--accent-ink:#F2A26A;--soft:#3E2A1C;--ok:#7BD67F;--no:#FF8A80;--no-soft:#3E2220}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.5;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+.wrap{max-width:900px;margin:0 auto;padding:0 12px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 4px}
+.top a{font-family:var(--display);font-weight:700;text-decoration:none;color:var(--muted)}
+.top a:hover{color:var(--accent-ink)}
+.top h1{font-family:var(--display);font-weight:800;font-size:clamp(1.15rem,4vw,1.6rem);margin:0}
+@media (max-width:480px){.top .t{display:none}.top a{font-size:1.4rem}}
+.ibtn{flex:none;width:44px;height:44px;border-radius:50%;border:2px solid var(--line);background:var(--surface);font-size:1.2rem;cursor:pointer;color:var(--ink)}
+.card{background:var(--surface);border:3px solid var(--line);border-radius:22px;padding:clamp(14px,3vw,24px)}
+.btn{font:inherit;font-family:var(--display);font-weight:800;font-size:1.15rem;border:0;border-radius:16px;padding:14px 22px;cursor:pointer;background:var(--accent);color:#fff;box-shadow:0 5px 0 #8A410F}
+.btn:active{transform:translateY(4px);box-shadow:0 1px 0 #8A410F}
+.btn.ghost{background:var(--soft);color:var(--accent-ink);box-shadow:none}
+[hidden]{display:none!important}
+.intro{text-align:center}
+.intro h2{font-family:var(--display);font-weight:800;font-size:clamp(1.6rem,5vw,2.3rem);margin:8px 0 4px}
+.intro p{margin:0 0 12px;color:var(--muted)}
+.levels{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:14px 0 8px}
+.lvl{display:flex;flex-direction:column;align-items:flex-start;gap:0;text-align:left;font-size:1.2rem;padding:14px 16px}
+.lvl small{font-family:var(--body);font-weight:700;font-size:.9rem;opacity:.92}
+.lvl:nth-child(1){background:#4E8F3A;box-shadow:0 5px 0 #2F5E22}.lvl:nth-child(3){background:#3A78B5;box-shadow:0 5px 0 #24507D}.lvl:nth-child(4){background:#7A4FB0;box-shadow:0 5px 0 #4F2F7A}
+.best{margin:8px 0 0;color:var(--muted);font-size:.9rem;text-align:center}
+.game{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px;align-items:center}
+@media (max-width:700px){.game{grid-template-columns:minmax(0,1fr)}}
+.task{text-align:center}
+.paws{display:flex;justify-content:center;gap:5px;margin:0 0 10px;flex-wrap:wrap}
+.paws span{font-size:1.15rem;filter:grayscale(1);opacity:.3}
+.paws span.done{filter:none;opacity:1}.paws span.now{opacity:.8;transform:scale(1.25)}
+.event{font-size:clamp(2.6rem,9vw,3.6rem);line-height:1;margin-bottom:6px}
+.qtext{font-family:var(--display);font-weight:800;font-size:clamp(1.3rem,4.5vw,1.8rem);line-height:1.25;margin:0 0 6px}
+.qtext em{font-style:normal;color:var(--accent-ink)}
+.digital{display:inline-block;font-family:var(--display);font-weight:800;font-size:1.3rem;background:var(--soft);color:var(--accent-ink);border-radius:10px;padding:2px 12px;margin-bottom:10px}
+.opts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:6px}
+.opt{font-size:1.05rem;padding:12px 8px;line-height:1.2}
+.opt b{display:block;font-size:1.35rem}
+.opt.right{background:var(--ok);box-shadow:0 5px 0 #1E5E2D}
+.opt.wrong{background:var(--no-soft);color:var(--no);box-shadow:none}
+.feedback{font-family:var(--display);font-weight:800;font-size:1.2rem;min-height:1.6em;margin:10px 0 0;text-align:center}
+.feedback.ok{color:var(--ok)}.feedback.no{color:var(--no)}
+.clockbox{position:relative;max-width:380px;width:100%;margin:0 auto}
+svg.clock{display:block;width:100%;height:auto;touch-action:none;user-select:none;-webkit-user-select:none}
+.hand{cursor:grab}
+.clockhint{text-align:center;color:var(--muted);font-size:.9rem;margin:6px 0 0}
+.scene{display:block;width:100%;height:auto;aspect-ratio:480/150;border-radius:14px;margin-top:14px;background:#CDEBF5}
+.end{text-align:center}
+.end h2{font-family:var(--display);font-weight:800;font-size:clamp(1.8rem,6vw,2.6rem);margin:8px 0 0}
+.stars{font-size:clamp(2.6rem,10vw,3.6rem);letter-spacing:6px;margin:6px 0}
+.stars .off{opacity:.2;filter:grayscale(1)}
+.end p{color:var(--muted);margin:0 0 16px}
+.row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+footer{text-align:center;color:var(--muted);font-size:.85rem;padding:28px 16px calc(24px + env(safe-area-inset-bottom,0px))}
+footer a{color:var(--muted);font-weight:700;text-decoration:none;margin:0 8px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav class="top"><a href="fun-games.html" aria-label="Zurück zu Fun-Games">←<span class="t"> Fun-Games</span></a><h1>🕐 Kodas Uhrzeit</h1><button class="ibtn" id="soundBtn" type="button" aria-label="Ton und Musik einschalten" title="Ton und Musik">🔇</button></nav>
+
+  <div class="card">
+    <section class="intro" id="intro">
+      <h2>Wie spät ist es bei Koda?</h2>
+      <p>Koda hat einen vollen Tag: Frühstück, Gassi, Ball spielen, Mittagsschlaf … Hilf ihm, pünktlich zu sein! Mal stellst du die Uhr, mal liest du sie ab.</p>
+      <div class="levels">
+        <button class="btn lvl" type="button" data-level="0">🕐 Volle Stunden<small>3 Uhr, 7 Uhr …</small></button>
+        <button class="btn lvl" type="button" data-level="1">🕧 Halbe Stunden<small>halb acht …</small></button>
+        <button class="btn lvl" type="button" data-level="2">🕒 Viertelstunden<small>viertel nach, viertel vor</small></button>
+        <button class="btn lvl" type="button" data-level="3">⏱️ Fünf Minuten<small>10 nach, 5 vor halb …</small></button>
+      </div>
+      <p class="best" id="best"></p>
+    </section>
+
+    <section id="play" hidden>
+      <div class="paws" id="paws" aria-hidden="true"></div>
+      <div class="game">
+        <div class="task">
+          <div class="event" id="event" aria-hidden="true">🥣</div>
+          <p class="qtext" id="qtext"></p>
+          <div class="digital" id="digital"></div>
+          <div class="opts" id="opts"></div>
+          <div class="row" id="setRow"><button class="btn" type="button" id="checkBtn">✔ Fertig!</button></div>
+          <p class="feedback" id="feedback" role="status"></p>
+        </div>
+        <div>
+          <div class="clockbox"><svg class="clock" id="clock" viewBox="0 0 300 300" aria-label="Uhr"></svg></div>
+          <p class="clockhint" id="clockhint">Zieh die Zeiger an die richtige Stelle.</p>
+        </div>
+      </div>
+      <canvas class="scene" id="scene" width="480" height="150" aria-hidden="true"></canvas>
+    </section>
+
+    <section class="end" id="end" hidden>
+      <h2 id="endTitle">Super!</h2>
+      <div class="stars" id="stars"></div>
+      <p id="endText"></p>
+      <div class="row"><button class="btn" type="button" id="again">🔁 Nochmal</button><button class="btn ghost" type="button" id="menu">Andere Stufe</button></div>
+    </section>
+  </div>
+</div>
+<footer><a href="fun-games.html">Fun-Games</a>·<a href="./">Startseite</a>·<a href="impressum.html">Impressum</a></footer>
+<script src="fun-music.js"></script>
+<script>
+(function(){
+'use strict';
+var $=function(id){return document.getElementById(id);};
+var cvs=$('scene'),ctx=cvs.getContext('2d');
+function rr(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
+function ell(x,y,rx,ry,rot){ctx.beginPath();ctx.ellipse(x,y,rx,ry,rot||0,0,Math.PI*2);}
+function star(x,y,r){ctx.beginPath();for(var i=0;i<10;i++){var a=i*Math.PI/5-Math.PI/2,rad=i%2?r*.45:r;ctx.lineTo(x+Math.cos(a)*rad,y+Math.sin(a)*rad);}ctx.closePath();ctx.fill();}
+/* Koda-Zeichnung, identisch mit den anderen Koda-Spielen */
+var FUR='#C0652A',FUR_L='#D27E3F',FUR_D='#9A4D1C',EAR='#8E451A',NOSE='#4A2C22',COLLAR='#4E3424';
+function frontLeg(px,py,ang,col){
+  // Vorderlauf: Oberarm, gerader Unterarm, Pfote
+  ctx.save();ctx.translate(px,py);ctx.rotate(ang);
+  ctx.fillStyle=col;
+  ctx.beginPath();ctx.moveTo(-8,-6);ctx.quadraticCurveTo(-9,14,-5,24);ctx.lineTo(5,24);ctx.quadraticCurveTo(9,10,8,-6);ctx.closePath();ctx.fill();
+  ctx.translate(0,22);ctx.rotate(-ang*.6);
+  rr(-5,0,10,22,5);ctx.fill();
+  ell(3,22,8,4.5);ctx.fill();
+  ctx.restore();
+}
+function hindLeg(px,py,ang,col){
+  // Hinterlauf: kräftiger Oberschenkel, schräger Unterschenkel, Sprunggelenk, Pfote
+  ctx.save();ctx.translate(px,py);ctx.rotate(ang);
+  ctx.fillStyle=col;
+  ctx.beginPath();ctx.moveTo(-14,-10);ctx.quadraticCurveTo(-18,12,-4,22);ctx.lineTo(8,18);ctx.quadraticCurveTo(14,0,12,-10);ctx.closePath();ctx.fill();
+  ctx.translate(2,18);ctx.rotate(.55-ang*.4);
+  rr(-5,0,10,20,5);ctx.fill();
+  ctx.translate(0,18);ctx.rotate(-.55);
+  rr(-4.5,0,9,14,4.5);ctx.fill();
+  ell(4,14,8,4.5);ctx.fill();
+  ctx.restore();
+}
+function drawKoda(x,y,run,air,state){
+  // x = Mitte, y = Pfoten-Grundlinie, Blick nach rechts
+  var s=run,sw=air?0:Math.sin(s),sw2=air?0:Math.sin(s+Math.PI);
+  var bob=air?0:-Math.abs(Math.sin(s))*3;
+  ctx.save();ctx.translate(x,y+bob);
+  if(state.stumble>0)ctx.rotate(-.16*Math.sin(state.stumble*12));
+  if(state.blink)ctx.globalAlpha=.55;
+  // Schatten
+  ctx.save();ctx.translate(0,-bob-(air?state.y:0));ctx.fillStyle='rgba(0,0,0,'+(air?.1:.18)+')';ell(4,2,50,6);ctx.fill();ctx.restore();
+  // Rute (dicke Otterrute)
+  var wag=Math.sin(state.wag)*.3;
+  ctx.save();ctx.translate(-52,-62);ctx.rotate(-.35+wag);
+  ctx.fillStyle=FUR;ctx.beginPath();ctx.moveTo(4,-7);ctx.quadraticCurveTo(-22,-12,-42,0);ctx.quadraticCurveTo(-22,2,4,8);ctx.closePath();ctx.fill();
+  ctx.restore();
+  // ferne Läufe
+  hindLeg(-36,-50,air?-.6:sw2*.5,FUR_D);
+  frontLeg(36,-50,air?.9:sw*.55,FUR_D);
+  // Körper als eine Form: Rücken, Hals, Brust, Bauch, Keule
+  ctx.fillStyle=FUR;ctx.beginPath();
+  ctx.moveTo(-54,-60);
+  ctx.bezierCurveTo(-30,-76,6,-72,30,-76);
+  var hd=state.head||0,PX=48,PY=-62;
+  function rp(x,y){var dx=x-PX,dy=y-PY,c=Math.cos(hd),s=Math.sin(hd);return [PX+dx*c-dy*s,PY+dx*s+dy*c];}
+  var n1=rp(38,-90),n2=rp(46,-106),n3=rp(70,-94),n4=rp(68,-70);
+  ctx.quadraticCurveTo(n1[0],n1[1],n2[0],n2[1]);
+  ctx.lineTo(n3[0],n3[1]);
+  ctx.quadraticCurveTo(n4[0],n4[1],56,-58);
+  ctx.quadraticCurveTo(50,-38,32,-36);
+  ctx.bezierCurveTo(12,-38,-10,-46,-26,-44);
+  ctx.quadraticCurveTo(-46,-34,-58,-46);
+  ctx.quadraticCurveTo(-62,-54,-54,-60);
+  ctx.closePath();ctx.fill();
+  // Licht auf dem Rücken, Schatten am Bauch
+  ctx.fillStyle=FUR_L;ctx.beginPath();ctx.moveTo(-46,-64);ctx.bezierCurveTo(-24,-75,6,-71,28,-74);ctx.quadraticCurveTo(4,-66,-46,-60);ctx.closePath();ctx.fill();
+  ctx.fillStyle='rgba(120,50,15,.18)';ell(-2,-44,30,5,-.05);ctx.fill();
+  // heller Brustfleck
+  ctx.fillStyle='#E9A877';ell(53,-47,3,5,-.4);ctx.fill();
+  // nahe Läufe
+  hindLeg(-42,-50,air?-.8:sw*.55,FUR);
+  frontLeg(30,-48,air?1.05:sw2*.6,FUR);
+  // Kopf, Halsband und Ohr drehen sich beim Fressen mit
+  ctx.save();ctx.translate(PX,PY);ctx.rotate(hd);ctx.translate(-PX,-PY);
+  // Halsband
+  ctx.strokeStyle=COLLAR;ctx.lineWidth=6;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(46,-96);ctx.quadraticCurveTo(56,-86,62,-78);ctx.stroke();
+  ctx.fillStyle='#C9A24A';ell(58,-82,3,3);ctx.fill();
+  // Kopf: breiter Schädel, deutlicher Stopp, Schnauze
+  ctx.fillStyle=FUR;
+  ctx.beginPath();ctx.moveTo(48,-104);
+  ctx.quadraticCurveTo(52,-124,70,-122);
+  ctx.quadraticCurveTo(80,-121,82,-114);
+  ctx.quadraticCurveTo(96,-114,100,-106);
+  ctx.quadraticCurveTo(102,-96,94,-94);
+  ctx.quadraticCurveTo(84,-90,72,-92);
+  ctx.quadraticCurveTo(62,-88,56,-94);
+  ctx.closePath();ctx.fill();
+  ctx.fillStyle=FUR_L;ell(66,-116,11,4,-.2);ctx.fill();
+  // Nase
+  ctx.fillStyle=NOSE;ell(99,-107,5,4.2);ctx.fill();
+  ctx.fillStyle='rgba(255,255,255,.35)';ell(98,-108.5,1.6,1);ctx.fill();
+  // Maul, Zunge oder Ball
+  ctx.strokeStyle=NOSE;ctx.lineWidth=1.6;ctx.beginPath();ctx.moveTo(97,-98);ctx.quadraticCurveTo(86,-93,76,-95);ctx.stroke();
+  if(state.ball){ctx.fillStyle='#D7F25A';ell(95,-94,8,8);ctx.fill();ctx.strokeStyle='#fff';ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(88,-94,7,-.8,.8);ctx.stroke();}
+  else if(!(state.stumble>0)){ctx.fillStyle='#E46A7A';rr(81,-96,9,14+Math.sin(s*2)*2,5);ctx.fill();ctx.strokeStyle='#C24E60';ctx.beginPath();ctx.moveTo(85.5,-94);ctx.lineTo(85.5,-85);ctx.stroke();}
+  // Auge mit Braue
+  if(state.stumble>0){ctx.strokeStyle='#2A1A12';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(72,-114);ctx.lineTo(78,-109);ctx.moveTo(78,-114);ctx.lineTo(72,-109);ctx.stroke();}
+  else{ctx.fillStyle='#3A2216';ell(75,-112,3.4,3.6);ctx.fill();ctx.fillStyle='#fff';ell(76,-113.3,1.2,1.2);ctx.fill();
+    ctx.strokeStyle=FUR_D;ctx.lineWidth=1.6;ctx.beginPath();ctx.moveTo(70,-118);ctx.quadraticCurveTo(75,-120,80,-117);ctx.stroke();}
+  // Schlappohr, etwas dunkler
+  var flap=air?-.45:Math.sin(s*2)*.12;
+  ctx.save();ctx.translate(60,-118);ctx.rotate(.1+flap);
+  ctx.fillStyle=EAR;ctx.beginPath();ctx.moveTo(-6,0);ctx.quadraticCurveTo(-16,12,-12,28);ctx.quadraticCurveTo(-5,35,4,27);ctx.quadraticCurveTo(9,10,7,0);ctx.closePath();ctx.fill();
+  ctx.restore();
+  ctx.restore();
+  // Schwindelsterne
+  if(state.stumble>0){for(var k=0;k<3;k++){var a=state.wag*2+k*2.1;ctx.fillStyle='#FFD54A';star(70+Math.cos(a)*22,-136+Math.sin(a)*6,6);}}
+  ctx.restore();
+}
+
+/* ---------- Uhrzeit in Worten ---------- */
+var HW=['zwölf','eins','zwei','drei','vier','fünf','sechs','sieben','acht','neun','zehn','elf','zwölf'];
+function hw(h){return HW[((h-1)%12+12)%12+1];}
+function words(h,m){
+  var n=hw(h+1);
+  switch(m){
+    case 0: return (h%12===1?'ein':hw(h))+' Uhr';
+    case 5: return 'fünf nach '+hw(h);
+    case 10: return 'zehn nach '+hw(h);
+    case 15: return 'viertel nach '+hw(h);
+    case 20: return 'zwanzig nach '+hw(h);
+    case 25: return 'fünf vor halb '+n;
+    case 30: return 'halb '+n;
+    case 35: return 'fünf nach halb '+n;
+    case 40: return 'zwanzig vor '+n;
+    case 45: return 'viertel vor '+n;
+    case 50: return 'zehn vor '+n;
+    case 55: return 'fünf vor '+n;
+  }
+}
+function digital(h,m,day){return (day&&h<7?h+12:h)+':'+String(m).padStart(2,'0');}
+
+/* ---------- Kodas Tag ---------- */
+var EVENTS=[
+  {e:'🌅',t:'wacht Koda auf',h:[6,8]},{e:'🥣',t:'frühstückt Koda',h:[7,9]},{e:'🦮',t:'geht Koda Gassi',h:[8,11]},
+  {e:'🎾',t:'spielt Koda Ball',h:[9,12]},{e:'😴',t:'macht Koda Mittagsschlaf',h:[12,14]},{e:'🦴',t:'bekommt Koda einen Knochen',h:[1,4]},
+  {e:'🚗',t:'holt Koda die Kinder ab',h:[1,4]},{e:'🛁',t:'wird Koda gebadet',h:[3,6]},{e:'🍽️',t:'gibt es Abendessen für Koda',h:[5,7]},{e:'🌙',t:'geht Koda schlafen',h:[7,10]}
+];
+var LEVELS=[{name:'Volle Stunden',step:60,digital:true},{name:'Halbe Stunden',step:30,digital:true},{name:'Viertelstunden',step:15,digital:false},{name:'Fünf Minuten',step:5,digital:false}];
+function ri(a,b){return a+Math.floor(Math.random()*(b-a+1));}
+function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t;}return a;}
+
+/* ---------- Uhr (SVG) ---------- */
+var NS='http://www.w3.org/2000/svg',svg=$('clock'),hHand,mHand,cur={h:12,m:0},interactive=false,dragging=null;
+function el(n,a,p){var e=document.createElementNS(NS,n);for(var k in a)e.setAttribute(k,a[k]);(p||svg).appendChild(e);return e;}
+function buildClock(){
+  svg.innerHTML='';
+  el('circle',{cx:150,cy:150,r:142,fill:'#C2621F'});
+  el('circle',{cx:150,cy:150,r:132,fill:'#FFFDF8'});
+  for(var i=0;i<60;i++){var a=i*6*Math.PI/180,r1=i%5?122:114,r2=128;el('line',{x1:150+Math.sin(a)*r1,y1:150-Math.cos(a)*r1,x2:150+Math.sin(a)*r2,y2:150-Math.cos(a)*r2,stroke:'#6E625A','stroke-width':i%5?1.5:4,'stroke-linecap':'round'});}
+  for(var n=1;n<=12;n++){var b=n*30*Math.PI/180,t=el('text',{x:150+Math.sin(b)*95,y:150-Math.cos(b)*95+10,'text-anchor':'middle','font-family':'Outfit, sans-serif','font-weight':'800','font-size':'28',fill:'#2B2420'});t.textContent=n;}
+  // Minutenzahlen klein außen für Stufe 4
+  hHand=el('g',{class:'hand'});el('line',{x1:150,y1:162,x2:150,y2:82,stroke:'#2B2420','stroke-width':11,'stroke-linecap':'round'},hHand);el('circle',{cx:150,cy:150,r:28,fill:'transparent'},hHand);el('line',{x1:150,y1:150,x2:150,y2:70,stroke:'transparent','stroke-width':40},hHand);
+  mHand=el('g',{class:'hand'});el('line',{x1:150,y1:166,x2:150,y2:36,stroke:'#C2621F','stroke-width':7,'stroke-linecap':'round'},mHand);el('line',{x1:150,y1:150,x2:150,y2:30,stroke:'transparent','stroke-width':36},mHand);
+  el('circle',{cx:150,cy:150,r:9,fill:'#2B2420'});
+  // Koda-Pfote als Mittelknopf
+  var pt=el('text',{x:150,y:156,'text-anchor':'middle','font-size':'14'});pt.textContent='🐾';
+  render();
+}
+function render(){
+  var ma=cur.m*6,ha=(cur.h%12)*30+cur.m*.5;
+  mHand.setAttribute('transform','rotate('+ma+' 150 150)');hHand.setAttribute('transform','rotate('+ha+' 150 150)');
+}
+function angleOf(e){var r=svg.getBoundingClientRect(),x=(e.clientX-r.left)/r.width*300-150,y=(e.clientY-r.top)/r.height*300-150;var a=Math.atan2(x,-y)*180/Math.PI;return (a+360)%360;}
+function pick(e){
+  // Welcher Zeiger? Nah an der Mitte der kurze, außen der lange; bei vollen Stunden nur der kurze
+  if(R.L.step===60)return 'h';
+  var r=svg.getBoundingClientRect(),x=(e.clientX-r.left)/r.width*300-150,y=(e.clientY-r.top)/r.height*300-150,dist=Math.hypot(x,y),a=angleOf(e);
+  function diff(b){var d=Math.abs(a-b)%360;return d>180?360-d:d;}
+  var dh=diff((cur.h%12)*30+cur.m*.5),dm=diff(cur.m*6);
+  if(dist<88&&dh<35)return 'h';
+  if(dist>=88&&dm<35)return 'm';
+  if(dh<35&&dist<110)return 'h';
+  return dm<=dh?'m':'h';
+}
+svg.addEventListener('pointerdown',function(e){if(!interactive)return;e.preventDefault();dragging=pick(e);svg.setPointerCapture(e.pointerId);moveDrag(e);});
+function moveDrag(e){
+  if(!dragging)return;
+  var a=angleOf(e),step=R.L.step;
+  if(dragging==='m'){
+    var stepM=Math.min(step,30),m=Math.round(a/6/stepM)*stepM%60;
+    // Über die 12 gedreht: Stunde mitzählen
+    if(cur.m>=45&&m<=15&&m!==cur.m)cur.h=cur.h%12+1;else if(cur.m<=15&&m>=45&&m!==cur.m)cur.h=(cur.h+10)%12+1;
+    if(step===60)m=0;
+    cur.m=m;
+  }else{
+    var h=Math.round((a-cur.m*.5)/30);h=((h%12)+12)%12;cur.h=h===0?12:h;
+  }
+  render();
+}
+svg.addEventListener('pointermove',moveDrag);
+['pointerup','pointercancel'].forEach(function(ev){svg.addEventListener(ev,function(){dragging=null;});});
+function animateTo(h,m,done){
+  var from={h:cur.h,m:cur.m},t0=performance.now();
+  var fa=(from.h%12)*60+from.m,ta=(h%12)*60+m;if(ta<fa)ta+=720;
+  (function f(now){var k=Math.min(1,(now-t0)/900),e=1-Math.pow(1-k,3),v=fa+(ta-fa)*e;cur.h=Math.floor(v/60)%12||12;cur.m=Math.round(v%60);render();if(k<1)requestAnimationFrame(f);else{cur.h=h;cur.m=m;render();if(done)done();}})(t0);
+}
+
+/* ---------- Spielablauf ---------- */
+var ROUND=10,R=null;
+function show(id){['intro','play','end'].forEach(function(s){$(s).hidden=s!==id;});}
+function start(li){
+  R={L:LEVELS[li],li:li,i:0,first:0,tries:0,order:shuffle(EVENTS.slice()),locked:false};
+  show('play');buildClock();next();
+}
+function makeTime(ev){
+  var h24=ri(ev.h[0],ev.h[1]),h=((h24-1)%12)+1,step=R.L.step,m=step===60?0:ri(0,60/step-1)*step;
+  // in höheren Stufen bevorzugt die neuen Minuten üben
+  if(step===15&&Math.random()<.7)m=[15,45][ri(0,1)];
+  if(step===5&&Math.random()<.7)m=[5,10,20,25,35,40,50,55][ri(0,7)];
+  if(step===30&&Math.random()<.6)m=30;
+  return {h:h,m:m,h24:h24};
+}
+function next(){
+  if(R.i>=ROUND){finish();return;}
+  var ev=R.order[R.i%R.order.length],tm=makeTime(ev),type=R.i%2===0?'set':'read';
+  R.task={ev:ev,h:tm.h,m:tm.m,h24:tm.h24,type:type};R.tries=0;R.locked=false;
+  var paws='';for(var i=0;i<ROUND;i++)paws+='<span class="'+(i<R.i?'done':i===R.i?'now':'')+'">🐾</span>';$('paws').innerHTML=paws;
+  $('event').textContent=ev.e;
+  $('feedback').textContent='';$('feedback').className='feedback';
+  if(type==='set'){
+    $('qtext').innerHTML='Um <em>'+words(tm.h,tm.m)+'</em> '+ev.t+'. Stell die Uhr!';
+    $('digital').textContent=digital(tm.h,tm.m);$('digital').hidden=!R.L.digital;
+    $('opts').hidden=true;$('setRow').hidden=false;$('clockhint').hidden=false;
+    $('clockhint').textContent=R.L.step===60?'Zieh den kurzen Zeiger auf die richtige Stunde.':'Zieh den langen Zeiger für die Minuten und den kurzen für die Stunde.';
+    interactive=true;
+    // Startstellung: irgendeine andere Zeit
+    cur.h=((tm.h+ri(2,8)-1)%12)+1;cur.m=0;render();
+  }else{
+    $('qtext').innerHTML='Schau auf die Uhr: Wann '+ev.t+'?';
+    $('digital').hidden=true;$('setRow').hidden=true;$('opts').hidden=false;$('clockhint').hidden=true;
+    interactive=false;cur.h=tm.h;cur.m=tm.m;render();
+    var opts=distractors(tm.h,tm.m),box=$('opts');box.innerHTML='';
+    opts.forEach(function(o){var b=document.createElement('button');b.type='button';b.className='btn opt';b.innerHTML='<b>'+digital(o.h,o.m)+'</b>'+words(o.h,o.m);b.addEventListener('click',function(){answerRead(o,b);});box.appendChild(b);});
+  }
+}
+function distractors(h,m){
+  var set={},out=[{h:h,m:m}];set[h+':'+m]=1;var step=R.L.step;
+  var cands=[{h:h%12+1,m:m},{h:(h+10)%12+1,m:m},{h:h,m:(m+30)%60},{h:h,m:(60-m)%60},{h:m/5||12,m:(h%12)*5}];
+  if(m===30)cands.push({h:h%12+1,m:30},{h:h,m:0});
+  if(m===15||m===45)cands.push({h:h,m:60-m},{h:m===45?h%12+1:h,m:m===45?15:45});
+  if(step===60)cands=[{h:h%12+1,m:0},{h:(h+10)%12+1,m:0},{h:(h+5)%12+1,m:0},{h:(h+2)%12+1,m:0}];
+  shuffle(cands);
+  cands.forEach(function(c){var k=c.h+':'+c.m;if(out.length<4&&!set[k]&&c.m%Math.min(step,30)===0||out.length<4&&!set[k]&&step===5&&c.m%5===0){set[k]=1;out.push(c);}});
+  while(out.length<4){var c={h:ri(1,12),m:step===60?0:ri(0,60/Math.min(step,30)-1)*Math.min(step,30)},k=c.h+':'+c.m;if(!set[k]){set[k]=1;out.push(c);}}
+  return shuffle(out);
+}
+var PRAISE=['Super!','Genau richtig!','Wau, toll!','Pünktlich wie Koda!','Klasse!'];
+function correct(){
+  R.locked=true;if(R.tries===0)R.first++;R.i++;
+  $('feedback').textContent='🦴 '+PRAISE[ri(0,PRAISE.length-1)];$('feedback').className='feedback ok';
+  happy();sfx.ok();setTimeout(next,1400);
+}
+function answerRead(o,b){
+  if(R.locked||b.classList.contains('wrong'))return;
+  if(o.h===R.task.h&&o.m===R.task.m){b.classList.add('right');correct();}
+  else{R.tries++;b.classList.add('wrong');$('feedback').textContent='Schau noch mal genau auf die Zeiger.';$('feedback').className='feedback no';sfx.no();}
+}
+$('checkBtn').addEventListener('click',function(){
+  if(R.locked)return;
+  var t=R.task;
+  if(cur.h===t.h&&cur.m===t.m){interactive=false;correct();return;}
+  R.tries++;sfx.no();
+  var hint=cur.m!==t.m?'Der lange Zeiger stimmt noch nicht.':'Der kurze Zeiger stimmt noch nicht.';
+  if(R.tries>=2){R.locked=true;interactive=false;$('feedback').textContent='So wäre es richtig: '+words(t.h,t.m)+'.';$('feedback').className='feedback no';animateTo(t.h,t.m,function(){R.i++;setTimeout(next,1600);});}
+  else{$('feedback').textContent=hint+' Probier es noch einmal.';$('feedback').className='feedback no';}
+});
+function finish(){
+  show('end');
+  var s=R.first>=9?3:R.first>=6?2:1,h='';for(var i=0;i<3;i++)h+=i<s?'⭐':'<span class="off">⭐</span>';$('stars').innerHTML=h;
+  $('endTitle').textContent=['Gut gemacht!','Super gemacht!','Wau, perfekt!'][s-1];
+  $('endText').textContent='Koda war den ganzen Tag pünktlich. '+R.first+' von 10 Aufgaben hast du gleich beim ersten Versuch gelöst.';
+  var b=loadBest();if(!b[R.li]||s>b[R.li]){b[R.li]=s;try{localStorage.setItem('koda-uhr-best',JSON.stringify(b));}catch(e){}}
+  celebrate=3;$('again').focus();
+}
+function loadBest(){try{return JSON.parse(localStorage.getItem('koda-uhr-best')||'{}');}catch(e){return {};}}
+function showMenu(){show('intro');R=null;var b=loadBest(),p=[];LEVELS.forEach(function(l,i){if(b[i])p.push(l.name+' '+'⭐'.repeat(b[i]));});$('best').textContent=p.length?'Deine besten Runden · '+p.join(' · '):'';}
+document.querySelectorAll('[data-level]').forEach(function(b){b.addEventListener('click',function(){start(+b.getAttribute('data-level'));});});
+$('again').addEventListener('click',function(){start(R.li);});
+$('menu').addEventListener('click',showMenu);
+
+/* ---------- Ton ---------- */
+var sound=false,actx=null;
+function tone(f1,f2,d,type,v){if(!sound)return;try{actx=actx||new (window.AudioContext||window.webkitAudioContext)();var o=actx.createOscillator(),g=actx.createGain(),t=actx.currentTime;o.type=type||'sine';o.frequency.setValueAtTime(f1,t);o.frequency.exponentialRampToValueAtTime(f2,t+d);g.gain.setValueAtTime(v||.1,t);g.gain.exponentialRampToValueAtTime(.001,t+d);o.connect(g);g.connect(actx.destination);o.start(t);o.stop(t+d);}catch(e){}}
+var sfx={ok:function(){tone(660,990,.12,'triangle',.12);setTimeout(function(){tone(880,1320,.15,'triangle',.1);},110);},no:function(){tone(220,160,.18,'sine',.08);}};
+$('soundBtn').addEventListener('click',function(){sound=!sound;this.textContent=sound?'🔊':'🔇';this.setAttribute('aria-label',sound?'Ton und Musik ausschalten':'Ton und Musik einschalten');if(sound){sfx.ok();FunMusic.start('ruhig');}else FunMusic.stop();});
+
+/* ---------- Szene mit Koda ---------- */
+var kY=0,kV=0,wag=0,celebrate=0,hearts=[],W=480,H=150,GROUND=140;
+function happy(){kV=-300;for(var i=0;i<4;i++)hearts.push({x:180+Math.random()*120,y:60,life:1.2});}
+function drawScene(dt,t){
+  ctx.setTransform(cvs.width/W,0,0,cvs.height/H,0,0);
+  var g=ctx.createLinearGradient(0,0,0,H);g.addColorStop(0,'#BFE3F2');g.addColorStop(1,'#EAF6E4');ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+  ctx.fillStyle='#8BBF5E';ctx.fillRect(0,GROUND-6,W,H);
+  ctx.fillStyle='rgba(255,236,170,.9)';ell(430,34,18,18);ctx.fill();
+  kV+=1400*dt;kY+=kV*dt;if(kY>0){kY=0;kV=0;}
+  if(celebrate>0){celebrate-=dt;if(kY===0&&Math.random()<dt*3)kV=-300;if(Math.random()<dt*5)hearts.push({x:100+Math.random()*280,y:80,life:1.4});}
+  wag+=dt*(kY<0||celebrate>0?20:7);
+  ctx.save();ctx.translate(200,GROUND+kY);ctx.scale(.7,.7);
+  drawKoda(0,0,kY<0?0:Math.sin(t*1.5)*.2,kY<0,{stumble:0,wag:wag,y:kY,ball:false,blink:false});ctx.restore();
+  for(var i=hearts.length-1;i>=0;i--){var p=hearts[i];p.life-=dt;p.y-=40*dt;ctx.globalAlpha=Math.max(0,Math.min(1,p.life));var x=p.x,y=p.y,r=7;ctx.fillStyle='#E84A6A';ctx.beginPath();ctx.moveTo(x,y+r*.6);ctx.bezierCurveTo(x-r*1.4,y-r*.4,x-r*.6,y-r*1.4,x,y-r*.5);ctx.bezierCurveTo(x+r*.6,y-r*1.4,x+r*1.4,y-r*.4,x,y+r*.6);ctx.fill();ctx.globalAlpha=1;if(p.life<=0)hearts.splice(i,1);}
+}
+function resize(){var r=cvs.getBoundingClientRect(),d=Math.min(window.devicePixelRatio||1,2),w=Math.round(r.width*d),h=Math.round(r.width*H/W*d);if(w>0&&(cvs.width!==w||cvs.height!==h)){cvs.width=w;cvs.height=h;}}
+window.addEventListener('resize',resize);
+var last=performance.now();
+function loop(now){var dt=Math.min(.05,(now-last)/1000);last=now;if(!$('play').hidden){resize();drawScene(dt,now/1000);}requestAnimationFrame(loop);}
+showMenu();requestAnimationFrame(loop);
+window.KodaUhr={get round(){return R;},get clock(){return cur;},start:start,words:words};
+})();
+</script>
+</body>
+</html>
