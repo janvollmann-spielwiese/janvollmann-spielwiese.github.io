@@ -87,7 +87,7 @@ footer a{color:var(--muted);font-weight:700;text-decoration:none;margin:0 8px}
 </head>
 <body>
 <div class="wrap">
-  <nav class="top"><a href="fun-games.html" aria-label="Zurück zu Fun-Games">←<span class="t"> Fun-Games</span></a><h1>🦴 Kodas Rechenspiel</h1><button class="ibtn" id="soundBtn" type="button" aria-label="Ton und Vorlesen einschalten" title="Ton und Vorlesen">🔇</button></nav>
+  <nav class="top"><a href="fun-games.html" aria-label="Zurück zu Fun-Games">←<span class="t"> Fun-Games</span></a><h1>🦴 Kodas Rechenspiel</h1><button class="ibtn" id="soundBtn" type="button" aria-label="Ton und Musik einschalten" title="Ton und Musik">🔇</button></nav>
 
   <div class="card">
     <canvas class="scene" id="scene" width="480" height="220" aria-hidden="true"></canvas>
@@ -130,6 +130,7 @@ footer a{color:var(--muted);font-weight:700;text-decoration:none;margin:0 8px}
 </div>
 <footer><a href="fun-games.html">Fun-Games</a>·<a href="./">Startseite</a>·<a href="impressum.html">Impressum</a></footer>
 
+<script src="fun-music.js"></script>
 <script>
 (function(){
 'use strict';
@@ -240,14 +241,8 @@ function drawKoda(x,y,run,air,state){
   ctx.restore();
 }
 
-/* ---------- Ton und Vorlesen (standardmäßig aus) ---------- */
-var sound=false,actx=null,voice=null;
-function pickVoice(){try{var v=speechSynthesis.getVoices();voice=v.find(function(x){return /^de/i.test(x.lang);})||null;}catch(e){}}
-if('speechSynthesis' in window){pickVoice();speechSynthesis.onvoiceschanged=pickVoice;}
-function say(t){
-  if(!sound||!('speechSynthesis' in window))return;
-  try{speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.lang='de-DE';if(voice)u.voice=voice;u.rate=.95;u.pitch=1.1;speechSynthesis.speak(u);}catch(e){}
-}
+/* ---------- Ton und Musik (standardmäßig aus) ---------- */
+var sound=false,actx=null;
 function tone(f1,f2,dur,type,vol){
   if(!sound)return;
   try{actx=actx||new (window.AudioContext||window.webkitAudioContext)();var o=actx.createOscillator(),g=actx.createGain(),t=actx.currentTime;
@@ -255,8 +250,8 @@ function tone(f1,f2,dur,type,vol){
     g.gain.setValueAtTime(vol||.12,t);g.gain.exponentialRampToValueAtTime(.001,t+dur);o.connect(g);g.connect(actx.destination);o.start(t);o.stop(t+dur);}catch(e){}
 }
 $('soundBtn').addEventListener('click',function(){
-  sound=!sound;this.textContent=sound?'🔊':'🔇';this.setAttribute('aria-label',sound?'Ton und Vorlesen ausschalten':'Ton und Vorlesen einschalten');
-  if(sound){tone(260,140,.12,'sawtooth',.1);if(R&&!$('play').hidden)say(R.task.speak);}else{try{speechSynthesis.cancel();}catch(e){}}
+  sound=!sound;this.textContent=sound?'🔊':'🔇';this.setAttribute('aria-label',sound?'Ton und Musik ausschalten':'Ton und Musik einschalten');
+  if(sound){tone(260,140,.12,'sawtooth',.1);FunMusic.start('ruhig');}else FunMusic.stop();
 });
 
 /* ---------- Aufgaben ---------- */
@@ -326,7 +321,6 @@ function startRound(){
   show('play');
   var info=R.rounds>1?'Runde '+(R.round+1)+' von '+R.rounds+' · '+R.L.rounds[R.round].sub:R.L.rounds[0].sub;
   $('roundInfo').textContent=info;
-  if(R.rounds>1)say('Runde '+(R.round+1)+'. '+R.L.rounds[R.round].sub);
   next(R.rounds>1);
 }
 function next(quiet){
@@ -347,7 +341,6 @@ function next(quiet){
     b.addEventListener('click',function(){answer(v,b);});box.appendChild(b);
   });
   $('feedback').textContent='';$('feedback').className='feedback';
-  if(quiet)setTimeout(function(){say(t.speak);},1800);else say(t.speak);
 }
 function renderBones(spec){
   var el=$('bones');el.innerHTML='';
@@ -374,14 +367,12 @@ function answer(v,b){
     else{$('feedback').textContent=p+' Beim ersten Versuch gibt es einen Knochen.';happy(false);}
     $('feedback').className='feedback ok';
     tone(660,990,.12,'triangle',.12);setTimeout(function(){tone(880,1320,.15,'triangle',.1);},110);
-    var sol=R.level==='count'?' Es sind '+(NUMW[R.task.a]||R.task.a)+'.':'';
-    say(p+sol);
     setTimeout(function(){next(false);},1400);
   }else{
     R.tries++;b.classList.add('wrong');b.setAttribute('aria-disabled','true');
     var e=ENCOURAGE[Math.floor(Math.random()*ENCOURAGE.length)];
     $('feedback').textContent=e;$('feedback').className='feedback no';
-    tone(220,160,.18,'sine',.08);say(e);oops();
+    tone(220,160,.18,'sine',.08);oops();
   }
 }
 /* Stimmung nach dem Fressen: je mehr Knochen, desto glücklicher */
@@ -399,7 +390,6 @@ function feedKoda(){
   $('feedTitle').textContent=n?'Koda futtert …':'Koda schaut in den Napf …';
   $('mood').innerHTML='';$('feedText').textContent='';$('feedNext').hidden=true;
   feed={phase:'walk',t:0,eaten:0,n:n};
-  say(n?'Koda futtert seine Knochen.':'Koda schaut in den Napf.');
 }
 function feedDone(){
   var n=feed.n,m=moodFor(n);
@@ -411,7 +401,6 @@ function feedDone(){
   var btn=$('feedNext');btn.hidden=false;
   btn.textContent=last?'⭐ Zum Ergebnis':'▶️ Weiter mit Runde '+(R.round+2);
   btn.focus();
-  say(m.title+' '+m.text);
 }
 $('feedNext').addEventListener('click',function(){
   if(R.round+1<R.rounds){R.round++;startRound();}else finish();
@@ -423,7 +412,6 @@ function finish(){
   var h='';for(var i=0;i<3;i++)h+=i<s?'⭐':'<span class="off">⭐</span>';$('stars').innerHTML=h;
   $('endTitle').textContent=['Gut gemacht!','Super gemacht!','Wau, perfekt!'][s-1];
   $('endText').textContent=(R.rounds>1?'Alle '+R.rounds+' Runden geschafft! ':'')+'Koda hat '+R.eatenTotal+' von '+total+' Knochen gefuttert.';
-  say($('endTitle').textContent+' '+$('endText').textContent);
   var b=loadBest();if(!b[R.level]||s>b[R.level]){b[R.level]=s;saveBest(b);}
   celebrate=3;$('again').focus();
 }
