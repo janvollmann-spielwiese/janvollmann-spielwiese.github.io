@@ -255,7 +255,7 @@ button{font:inherit;cursor:pointer}
 
 <script src="vendor/peerjs.min.js"></script>
 <script src="vendor/qrcode.js"></script>
-<script src="quiz-data.js"></script>
+<script src="quiz-data.js?v=20261029a"></script>
 <script>
 (function(){
 'use strict';
@@ -271,7 +271,7 @@ QZ.rounds.forEach(function(r){var qs=r.qs.filter(function(q){return !q.skip;});i
   STEPS.push({type:'round',r:r,rn:rn,count:qs.length});
   qs.forEach(function(q,k){QCOUNT++;STEPS.push({type:'q',r:r,rn:rn,q:q,k:k,count:qs.length,n:QCOUNT});});});
 var SHAPES=['▲','◆','●','■'],SHAPE_NAMES=['Dreieck','Raute','Kreis','Quadrat'];
-var READY_MS=window.QUIZ_READY_MS||4000,MAX_PTS=1000,PREFIX='jvquiz-',BLUR=36,BOARD_N=10;
+var READY_MS=window.QUIZ_READY_MS||4000,MAX_PTS=1000,PREFIX='jvquiz-',BLUR=18,BLUR_UNTIL=.4,BOARD_N=10;
 var PEER_OPTS=window.QUIZ_PEER||{};
 PEER_OPTS.debug=PEER_OPTS.debug||0;
 function peerId(code){return PREFIX+code.toLowerCase();}
@@ -430,7 +430,7 @@ function host(){
     H.timer=setInterval(function(){
       var el2=(performance.now()-H.t0)/1000,left=Math.max(0,C.T/1000-el2);
       $('timer').textContent=Math.ceil(left);$('timer').classList.toggle('low',left<=5);
-      setBlur(BLUR*Math.max(0,1-el2/(C.T/1000*.8)));
+      setBlur(BLUR*Math.max(0,1-el2/(C.T/1000*BLUR_UNTIL)));
       if(left<=0)reveal();
     },100);
   }
