@@ -7,6 +7,7 @@
    right= alternativ: Text der richtigen Antwort (z. B. 'Falsch')
    fixed= Reihenfolge nicht mischen (z. B. Wahr/Falsch)
    blur = Bild startet unscharf und wird während des Countdowns scharf
+   blur = Bild startet leicht unscharf und ist nach gut einem Drittel der Zeit scharf
    info = Auflösungstext nach der Frage (O-Ton)
    poll = Abstimmung ohne richtige Antwort und ohne Punkte
    skip = Frage wird übersprungen */
@@ -107,17 +108,17 @@ var QUIZ={
       {q:'Wer hat hier schon einmal übernachtet?',img:'ort-bastian',a:['Bastian','Gordon','Philipp','Michael H']},
       {q:'Wer hat hier schon einmal übernachtet?',big:'„Holzhütte im Wat Po – ohne WLAN, ohne Minibar, aber mit maximaler innerer Einkehr.“',a:['Alex','Michael W','Ricky','Jan']}
     ]},
-    {ico:'👶',title:'Kindheitsbilder',sub:'Das große Finale – jetzt gibt es doppelte Punkte!',time:20,double:true,qs:[
-      {q:'Wer ist das?',img:'kind-mh',a:['Michael H','Jürgen','Michael W','Bastian']},
-      {q:'Wer ist das?',img:'kind-ricky',a:['Ricky','Philipp','Gordon','Alex']},
-      {q:'Wer ist das?',img:'kind-bianca',a:['Bianca','Jan','Bastian','Michael H']},
-      {q:'Wer ist das?',img:'kind-gordon',a:['Gordon','Ricky','Philipp','Jan']},
-      {q:'Wer ist das?',img:'kind-philipp',a:['Philipp','Alex','Michael W','Gordon']},
-      {q:'Wer ist das?',img:'kind-juergen',a:['Jürgen','Michael H','Bianca','Ricky']},
-      {q:'Wer ist das?',img:'kind-bastian',a:['Bastian','Jürgen','Alex','Michael W']},
-      {q:'Wer ist das?',img:'kind-mw',a:['Michael W','Bastian','Jan','Michael H']},
-      {q:'Wer ist das?',img:'kind-jan',a:['Jan','Philipp','Gordon','Michael W']},
-      {q:'Wer hat dieses Foto geschickt?',img:'kind-alex',a:['Alex','Bianca','Ricky','Jürgen'],info:'Alex – mit Schwester! Und jetzt die Bonusfrage …'},
+    {ico:'👶',title:'Kindheitsbilder',sub:'Das große Finale mit doppelten Punkten – die Bilder werden in den ersten Sekunden scharf.',time:20,double:true,qs:[
+      {q:'Wer ist das?',img:'kind-mh',blur:true,a:['Michael H','Jürgen','Michael W','Bastian']},
+      {q:'Wer ist das?',img:'kind-ricky',blur:true,a:['Ricky','Philipp','Gordon','Alex']},
+      {q:'Wer ist das?',img:'kind-bianca',blur:true,a:['Bianca','Jan','Bastian','Michael H']},
+      {q:'Wer ist das?',img:'kind-gordon',blur:true,a:['Gordon','Ricky','Philipp','Jan']},
+      {q:'Wer ist das?',img:'kind-philipp',blur:true,a:['Philipp','Alex','Michael W','Gordon']},
+      {q:'Wer ist das?',img:'kind-juergen',blur:true,a:['Jürgen','Michael H','Bianca','Ricky']},
+      {q:'Wer ist das?',img:'kind-bastian',blur:true,a:['Bastian','Jürgen','Alex','Michael W']},
+      {q:'Wer ist das?',img:'kind-mw',blur:true,a:['Michael W','Bastian','Jan','Michael H']},
+      {q:'Wer ist das?',img:'kind-jan',blur:true,a:['Jan','Philipp','Gordon','Michael W']},
+      {q:'Wer hat dieses Foto geschickt?',img:'kind-alex',blur:true,a:['Alex','Bianca','Ricky','Jürgen'],info:'Alex – mit Schwester! Und jetzt die Bonusfrage …'},
       // Bonus als Abstimmung: Alex löst live auf. Steht die Lösung fest, poll entfernen und right:'Links' oder right:'Rechts' setzen.
       {q:'Bonusfrage: Wer von beiden ist Alex?',img:'kind-alex-bonus',a:['Links','Rechts'],fixed:true,poll:true,info:'Alex, jetzt bist du dran: Löse auf! 😉'}
     ]}
